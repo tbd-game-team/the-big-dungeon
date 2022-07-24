@@ -162,11 +162,11 @@ build-StandaloneLinux64-il2cpp:
     BUILD_TARGET: StandaloneLinux64
     SCRIPTING_BACKEND: IL2CPP
 
-build-StandaloneOSX:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-mac-mono-$IMAGE_VERSION
-  variables:
-    BUILD_TARGET: StandaloneOSX
+#build-StandaloneOSX:
+#  <<: *build
+#  image: $IMAGE:$UNITY_VERSION-mac-mono-$IMAGE_VERSION
+#  variables:
+#    BUILD_TARGET: StandaloneOSX
 
 #Note: build target names changed in recent versions, use this for versions < 2017.2:
 # build-StandaloneOSXUniversal:
@@ -191,20 +191,20 @@ build-WebGL:
   variables:
     BUILD_TARGET: WebGL
 
-build-android:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
-  variables:
-    BUILD_TARGET: Android
-    BUILD_APP_BUNDLE: "false"
+#build-android:
+#  <<: *build
+#  image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
+#  variables:
+#    BUILD_TARGET: Android
+#    BUILD_APP_BUNDLE: "false"
 
-build-android-il2cpp:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
-  variables:
-    BUILD_TARGET: Android
-    BUILD_APP_BUNDLE: "false"
-    SCRIPTING_BACKEND: IL2CPP
+#build-android-il2cpp:
+#  <<: *build
+#  image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
+#  variables:
+#    BUILD_TARGET: Android
+#    BUILD_APP_BUNDLE: "false"
+#    SCRIPTING_BACKEND: IL2CPP
 
 #deploy-android:
 #  stage: deploy
@@ -217,11 +217,11 @@ build-android-il2cpp:
 #    - fastlane supply --aab "${BUILD_NAME}.aab" --track internal --package_name com.youcompany.yourgame --json_key ./gpc_token.json
 #  needs: ["build-android"]
 
-build-ios-xcode:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-ios-$IMAGE_VERSION
-  variables:
-    BUILD_TARGET: iOS
+#build-ios-xcode:
+#  <<: *build
+#  image: $IMAGE:$UNITY_VERSION-ios-$IMAGE_VERSION
+#  variables:
+#    BUILD_TARGET: iOS
 
 #build-and-deploy-ios:
 #  stage: deploy
