@@ -4,7 +4,8 @@ namespace Assets.Scripts
 {
     public class Player : MonoBehaviour
     {
-        // Start is called before the first frame update
+        [SerializeField] public float speed = 2;
+
         public void Start()
         {
         }
@@ -17,7 +18,7 @@ namespace Assets.Scripts
             if (x > 0) transform.localScale = Vector3.one;
             else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
 
-            transform.Translate(new Vector3(x, y, 0) * Time.deltaTime);
+            transform.Translate(new Vector3(x, y, 0).normalized * Time.deltaTime * speed);
         }
     }
 }
