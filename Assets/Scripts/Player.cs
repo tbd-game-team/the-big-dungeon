@@ -4,7 +4,7 @@ namespace Assets.Scripts
 {
     public class Player : MonoBehaviour
     {
-        [SerializeField] public float speed = 2;
+        [SerializeField] public float speed = 7.5f;
 
         public void Start()
         {
