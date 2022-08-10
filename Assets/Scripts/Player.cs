@@ -4,7 +4,12 @@ namespace Assets.Scripts
 {
     public class Player : MonoBehaviour
     {
-        [SerializeField] public float speed = 7.5f;
+        [Header("Movement")]
+        /// <summary>
+        /// Character Walk Speed
+        /// </summary>
+        [SerializeField]
+        private float walkSpeed = 7.5f;
 
         public void Start()
         {
@@ -18,7 +23,7 @@ namespace Assets.Scripts
             if (x > 0) transform.localScale = Vector3.one;
             else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
 
-            transform.Translate(new Vector3(x, y, 0).normalized * Time.deltaTime * speed);
+            transform.Translate(new Vector3(x, y, 0).normalized * Time.deltaTime * walkSpeed);
         }
     }
 }
