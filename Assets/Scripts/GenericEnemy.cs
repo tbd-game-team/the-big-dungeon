@@ -21,6 +21,10 @@ public class GenericEnemy : MonoBehaviour
 
     [Header("Combat")]
     [SerializeField]
+    private float attackRange = 3f;
+
+    [Header("Combat")]
+    [SerializeField]
     private float fireCooldown = .5f;
 
     private float nextFire = .0f;
@@ -31,39 +35,48 @@ public class GenericEnemy : MonoBehaviour
 
     void FixedUpdate()
     {
-        var dir = transform.LookAt(target.transform);
-        var x = 1;
-        var y = 1;
 
-        handleAnimation(x, y);
-        handleMovement(x, y);
-        handleCombat(x, y);
+        var movement = handleMovement();
+        handleAnimation(movement);
+        handleCombat();
     }
 
-    void handleAnimation(float x, float y)
+    Vector3 handleMovement()
     {
-        if (x > 0)
+        var distance = Vector3.Distance(transform.position, target.transform.position);
+        var movement = (target.transform.position - transform.position).normalized * Time.deltaTime * speed;
+
+        if (distance >= attackRange)
+        {
+            transform.LookAt(target.transform);
+            transform.Translate(movement);
+        }
+        else
+        {
+            movement = new Vector3(0, 0, 0);
+        }
+        return movement;
+    }
+
+    void handleAnimation(Vector3 movement)
+    {
+        if (movement.x > 0)
         {
             transform.localScale = Vector3.one;
         }
-        else if (x < 0)
+        else if (movement.x < 0)
         {
             transform.localScale = new Vector3(-1, 1, 1);
         }
     }
 
-    void handleMovement(float x, float y)
-    {
-        transform.Translate(new Vector3(x, y, 0).normalized * Time.deltaTime * speed);
-    }
-
     void handleCombat()
     {
-        float distance = Vector3.Distance(object1.transform.position, object2.transform.position);
+        var distance = Vector3.Distance(transform.position, target.transform.position);
 
-        if (distance < 100 && Time.time >= nextFire)
+        if (distance < attackRange && Time.time >= nextFire)
         {
-            nextFire = Time.time + fireRate;
+            nextFire = Time.time + fireCooldown;
             Instantiate(projectilePrefab, transform.position, Quaternion.identity);
         }
     }
