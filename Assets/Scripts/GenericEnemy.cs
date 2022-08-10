@@ -15,6 +15,10 @@ public class GenericEnemy : MonoBehaviour
     [SerializeField]
     private GameObject target;
 
+    [Header("Movement")]
+    [SerializeField]
+    private float personalSpace = 1f;
+
     [Header("Combat")]
     [SerializeField]
     private GameObject projectilePrefab;
@@ -48,8 +52,11 @@ public class GenericEnemy : MonoBehaviour
 
         if (distance >= attackRange)
         {
-            transform.LookAt(target.transform);
             transform.Translate(movement);
+        }
+        else if (distance < personalSpace)
+        {
+            transform.Translate(-movement);
         }
         else
         {
@@ -60,11 +67,11 @@ public class GenericEnemy : MonoBehaviour
 
     void handleAnimation(Vector3 movement)
     {
-        if (movement.x > 0)
+        if (movement.x < 0)
         {
             transform.localScale = Vector3.one;
         }
-        else if (movement.x < 0)
+        else if (movement.x > 0)
         {
             transform.localScale = new Vector3(-1, 1, 1);
         }
@@ -77,7 +84,7 @@ public class GenericEnemy : MonoBehaviour
         if (distance < attackRange && Time.time >= nextFire)
         {
             nextFire = Time.time + fireCooldown;
-            Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+            Instantiate(projectilePrefab, transform.position, transform.rotation);
         }
     }
 }
