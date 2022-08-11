@@ -2,26 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class GenericProjectile : MonoBehaviour
 {
 
-    private Animator characterAnimator;
+    [SerializeField]
+    private float speed = 40f;
+
+    private Rigidbody2D rb;
+    public GameObject explosion;
+    private Vector2 screenBounds;
 
     private void Awake()
     {
-        characterAnimator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
     }
 
-    // Start is called before the first frame update
     void Start()
     {
-
+        rb.velocity = new Vector2(speed, 0);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-
+        if (other.tag == "Player")
+        {
+            Instantiate(explosion, transform.position, transform.rotation);
+            Destroy(this.gameObject);
+        }
     }
 }

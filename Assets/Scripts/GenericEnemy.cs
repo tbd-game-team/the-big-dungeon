@@ -84,6 +84,7 @@ public class GenericEnemy : MonoBehaviour
         if (distance < attackRange && Time.time >= nextFire)
         {
             nextFire = Time.time + fireCooldown;
+
             Instantiate(projectilePrefab, transform.position, transform.rotation);
         }
     }
