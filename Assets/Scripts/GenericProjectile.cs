@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
 public class GenericProjectile : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class GenericProjectile : MonoBehaviour
 
     void Start()
     {
+        rb.mass = 0;
         rb.velocity = new Vector2(speed, 0);
     }
 

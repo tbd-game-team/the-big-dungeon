@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// [RequireComponent(typeof(Rigidbody2D))]
 public class GenericEnemy : MonoBehaviour
 {
     [Header("Movement")]
@@ -21,6 +22,12 @@ public class GenericEnemy : MonoBehaviour
     private float fireCooldown = .5f;
 
     private float nextFire = .0f;
+    // private Rigidbody2D rb;
+
+    private void Awake()
+    {
+        // rb = GetComponent<Rigidbody2D>();
+    }
 
     void Start()
     {
