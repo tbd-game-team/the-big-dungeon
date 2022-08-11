@@ -24,7 +24,16 @@ public class GenericProjectile : MonoBehaviour
         rb.velocity = new Vector2(speed, 0);
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void FixedUpdate()
+    {
+        Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
+        if (viewPos.x < -.1 || viewPos.x > 1.1 || viewPos.y < -.1 || viewPos.y > 1.1)
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
         {

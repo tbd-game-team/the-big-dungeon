@@ -5,29 +5,18 @@ using UnityEngine;
 public class GenericEnemy : MonoBehaviour
 {
     [Header("Movement")]
-    /// <summary>
-    /// Character Walk Speed
-    /// </summary>
     [SerializeField]
     private float speed = 3.5f;
-
-    [Header("Movement")]
     [SerializeField]
     private GameObject target;
-
-    [Header("Movement")]
     [SerializeField]
     private float personalSpace = 1f;
 
     [Header("Combat")]
     [SerializeField]
     private GameObject projectilePrefab;
-
-    [Header("Combat")]
     [SerializeField]
     private float attackRange = 3f;
-
-    [Header("Combat")]
     [SerializeField]
     private float fireCooldown = .5f;
 
