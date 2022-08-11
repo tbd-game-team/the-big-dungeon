@@ -25,7 +25,10 @@ public class Egg : MonoBehaviour
     {
         if (Time.time >= nextFire)
         {
-            Instantiate(enemyPrefab, transform.position, transform.rotation);
+            var enemy = Instantiate(enemyPrefab, transform.position, transform.rotation);
+            var enemyController = enemy.GetComponent<GenericEnemy>();
+            enemyController.target = GameObject.FindWithTag("Player");
+
             Destroy(this.gameObject);
         }
     }

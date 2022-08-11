@@ -9,7 +9,7 @@ public class GenericEnemy : MonoBehaviour
     [SerializeField]
     private float speed = 3.5f;
     [SerializeField]
-    private GameObject target;
+    public GameObject target;
     [SerializeField]
     private float personalSpace = 1f;
 
