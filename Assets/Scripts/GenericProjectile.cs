@@ -28,6 +28,7 @@ public class GenericProjectile : MonoBehaviour
 
     void FixedUpdate()
     {
+        rb.velocity = new Vector2(speed, 0);
         Vector3 viewPos = Camera.main.WorldToViewportPoint(transform.position);
         if (viewPos.x < -.1 || viewPos.x > 1.1 || viewPos.y < -.1 || viewPos.y > 1.1)
         {
