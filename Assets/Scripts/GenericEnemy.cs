@@ -27,6 +27,10 @@ public class GenericEnemy : MonoBehaviour
     private void Awake()
     {
         // rb = GetComponent<Rigidbody2D>();
+        if (target == null)
+        {
+            target = GameObject.FindWithTag("Player");
+        }
     }
 
     void Start()
@@ -35,7 +39,6 @@ public class GenericEnemy : MonoBehaviour
 
     void FixedUpdate()
     {
-
         var movement = handleMovement();
         handleAnimation(movement);
         handleCombat();
