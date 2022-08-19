@@ -84,7 +84,12 @@ public class GenericEnemy : MonoBehaviour
         {
             nextFire = Time.time + fireCooldown;
 
-            Instantiate(projectilePrefab, transform.position, transform.rotation);
+            var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
+            // var projectileController = projectile.GetComponent<GenericProjectile>();
+
+            var relative = projectile.transform.InverseTransformPoint(target.transform.position);
+            var angle = 90 - Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
+            projectile.transform.Rotate(0, 0, angle);
         }
     }
 }
