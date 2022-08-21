@@ -17,6 +17,7 @@ public class dashMove : MonoBehaviour
     public float dashSpeed;
     public float dashTime;
     public float TimeBetweenDash;
+    public GameObject effect; 
 
     [Header("Info")]
     [SerializeField]
@@ -45,6 +46,8 @@ public class dashMove : MonoBehaviour
             if(Input.GetMouseButtonDown(1)){
                 pauseTimer = TimeBetweenDash;
                 dashing = true;
+                var ps = Instantiate(effect, transform.position, Quaternion.identity);
+                Destroy(ps, 1f);
                 x = Input.GetAxis("Horizontal");
                 y = Input.GetAxis("Vertical");
             }
