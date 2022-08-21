@@ -47,9 +47,12 @@ public class dashMove : MonoBehaviour
             if(Input.GetMouseButtonDown(1)){
                 pauseTimer = TimeBetweenDash;
                 dashing = true;
+                // Instantiate Particle System
                 var ps = Instantiate(effect, transform.position, Quaternion.identity);
+                // Start Camera Shake
                 StartCoroutine(camShake.Shake(0.2f, 0.1f));
                 Destroy(ps, 1f);
+                // Get Dash direction
                 x = Input.GetAxis("Horizontal");
                 y = Input.GetAxis("Vertical");
             }

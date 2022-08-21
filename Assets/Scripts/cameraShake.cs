@@ -24,3 +24,6 @@ public class cameraShake : MonoBehaviour
         transform.localPosition = originalPos;
     }
 }
+
+// code found on Medium by Mohamed Hijazi 
+// https://medium.com/nerd-for-tech/tip-of-the-day-simple-2d-camera-shake-in-unity-521d454ac89b
