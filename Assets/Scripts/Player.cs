@@ -4,6 +4,12 @@ namespace Assets.Scripts
 {
     public class Player : MonoBehaviour
     {
+        [Header("Atributes")]
+        [SerializeField]
+        private int health = 5;
+        [SerializeField]
+        private int power = 5; 
+
         [Header("Movement")]
         /// <summary>
         /// Character Walk Speed
