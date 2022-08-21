@@ -18,6 +18,7 @@ public class dashMove : MonoBehaviour
     public float dashTime;
     public float TimeBetweenDash;
     public GameObject effect; 
+    public cameraShake camShake;
 
     [Header("Info")]
     [SerializeField]
@@ -47,6 +48,7 @@ public class dashMove : MonoBehaviour
                 pauseTimer = TimeBetweenDash;
                 dashing = true;
                 var ps = Instantiate(effect, transform.position, Quaternion.identity);
+                StartCoroutine(camShake.Shake(0.2f, 0.1f));
                 Destroy(ps, 1f);
                 x = Input.GetAxis("Horizontal");
                 y = Input.GetAxis("Vertical");
