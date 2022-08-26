@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class GenericRangedEnemy : MonoBehaviour
 {
     [Header("Movement")]
@@ -22,11 +22,9 @@ public class GenericRangedEnemy : MonoBehaviour
     private float fireCooldown = .5f;
 
     private float nextFire = .0f;
-    // private Rigidbody2D rb;
 
     private void Awake()
     {
-        // rb = GetComponent<Rigidbody2D>();
         if (target == null)
         {
             target = GameObject.FindWithTag("Player");
@@ -37,10 +35,14 @@ public class GenericRangedEnemy : MonoBehaviour
     {
     }
 
-    void FixedUpdate()
+    void Update()
     {
         var movement = handleMovement();
         handleAnimation(movement);
+    }
+
+    void FixedUpdate()
+    {
         handleCombat();
     }
 
