@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
-// [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class GenericEnemy : MonoBehaviour
 {
     [Header("Movement")]
@@ -22,11 +23,12 @@ public class GenericEnemy : MonoBehaviour
     private float fireCooldown = .5f;
 
     private float nextFire = .0f;
-    // private Rigidbody2D rb;
+
+    private Animator characterAnimator;
 
     private void Awake()
     {
-        // rb = GetComponent<Rigidbody2D>();
+        characterAnimator = GetComponent<Animator>();
         if (target == null)
         {
             target = GameObject.FindWithTag("Player");
@@ -37,10 +39,14 @@ public class GenericEnemy : MonoBehaviour
     {
     }
 
-    void FixedUpdate()
+    void Update()
     {
         var movement = handleMovement();
         handleAnimation(movement);
+    }
+
+    void FixedUpdate()
+    {
         handleCombat();
     }
 
@@ -66,11 +72,12 @@ public class GenericEnemy : MonoBehaviour
 
     void handleAnimation(Vector3 movement)
     {
-        if (movement.x < 0)
+        characterAnimator.SetFloat(Keys.ANIMATION_SPEED_KEY, movement.magnitude / Time.deltaTime);
+        if (movement.x > 0)
         {
             transform.localScale = Vector3.one;
         }
-        else if (movement.x > 0)
+        else if (movement.x < 0)
         {
             transform.localScale = new Vector3(-1, 1, 1);
         }
