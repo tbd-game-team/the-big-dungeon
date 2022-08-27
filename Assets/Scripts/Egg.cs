@@ -35,7 +35,7 @@ public class Egg : MonoBehaviour
 
     void FixedUpdate()
     {
-        var eggBreakAnimTime = 1;
+        var eggBreakAnimTime = 2;
         if (Time.time >= nextFire)
         {
             var enemy = Instantiate(enemyPrefab, transform.position, transform.rotation);
