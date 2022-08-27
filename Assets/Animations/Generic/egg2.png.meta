@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 4d087a4bc7b4a26a4a4b45ebd2892fa1
+guid: 78a1bd29b02de5660bdb2bd7b517f03f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4072622106568590741
-    second: egg_0
+      213: -2105468032008271056
+    second: egg2_0
   - first:
-      213: -5012961933758602109
-    second: egg_1
+      213: -8032658023429646862
+    second: egg2_1
   - first:
-      213: 4488566306593746544
-    second: egg_2
+      213: -1945711993114041180
+    second: egg2_2
   - first:
-      213: -5172895037355950900
-    second: egg_3
+      213: 8290364387396028401
+    second: egg2_3
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -58,7 +58,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 10
+  spritePixelsToUnits: 20
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -103,7 +103,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: egg_0
+      name: egg2_0
       rect:
         serializedVersion: 2
         x: 0
@@ -117,14 +117,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b6a739195c32b77c0800000000000000
-      internalID: -4072622106568590741
+      spriteID: 03bc43aeaffd7c2e0800000000000000
+      internalID: -2105468032008271056
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: egg_1
+      name: egg2_1
       rect:
         serializedVersion: 2
         x: 16
@@ -138,14 +138,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 38463c95ea16e6ab0800000000000000
-      internalID: -5012961933758602109
+      spriteID: 2f5d8472614468090800000000000000
+      internalID: -8032658023429646862
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: egg_2
+      name: egg2_2
       rect:
         serializedVersion: 2
         x: 0
@@ -159,14 +159,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 07eae4f36479a4e30800000000000000
-      internalID: 4488566306593746544
+      spriteID: 4a4683740417ff4e0800000000000000
+      internalID: -1945711993114041180
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: egg_3
+      name: egg2_3
       rect:
         serializedVersion: 2
         x: 16
@@ -180,8 +180,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ccc7406ee5f2638b0800000000000000
-      internalID: -5172895037355950900
+      spriteID: 1f70a417c7a4d0370800000000000000
+      internalID: 8290364387396028401
       vertices: []
       indices: 
       edges: []
