@@ -44,7 +44,7 @@ namespace Assets.Scripts
         public void FixedUpdate(){}
 
         private void Update() {
-            if(alive){
+            if(alive && !GameManager.Instance.isPaused){
                 handleMovement();
                 handleInvincibility();
 

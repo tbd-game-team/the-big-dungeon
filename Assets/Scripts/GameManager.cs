@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject pausePanel;
+    private bool paused = false;
+
 
     private static GameManager _instance;   
  
@@ -21,6 +24,13 @@ public class GameManager : MonoBehaviour
         _instance = this;
     }
 
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            pause();
+            pausePanel.SetActive(true);
+        }
+    }
+
 
     public void restartGame(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -28,10 +38,18 @@ public class GameManager : MonoBehaviour
     }
 
     public void pause(){
+        paused = true;
         Time.timeScale = 0;
     }
 
     public void resume(){
+        paused = false;
         Time.timeScale = 1;
+    }
+
+    public bool isPaused{
+        get{
+            return paused;
+        }
     }
 }
