@@ -17,14 +17,27 @@ namespace Assets.Scripts
         [SerializeField]
         private float walkSpeed = 7.5f;
 
+        [Header("Attack")]
+        // Attack parameters
+        private Animator weaponAnimator;
+        private GameObject weapon;
+        private bool attacking = false;
+
+
         public void Start()
         {
+            weapon = gameObject.transform.GetChild(0).gameObject;
+            weaponAnimator = weapon.GetComponent<Animator>();
         }
 
         public void FixedUpdate(){}
 
         private void Update() {
             handleMovement();
+
+            if(Input.GetMouseButtonDown(0)){
+                    attack();
+            }
         }
 
         private void handleMovement(){
@@ -35,6 +48,10 @@ namespace Assets.Scripts
             else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
 
             transform.Translate(new Vector2(x, y) * Time.deltaTime * walkSpeed);
+        }
+
+        private void attack(){
+            weaponAnimator.SetTrigger("attack");
         }
     }
 }
