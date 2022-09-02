@@ -53,5 +53,20 @@ namespace Assets.Scripts
         private void attack(){
             weaponAnimator.SetTrigger("attack");
         }
+
+        private void OnTriggerEnter2D(Collider2D other) {
+            if (other.gameObject.tag == "Enemy"){
+                print("Player damaged");
+                damage(1);
+            }
+        }
+
+        private void damage(int amount){
+            if(health - amount <= 0){
+                // dead
+            }else{
+                health -= amount;
+            }
+        }
     }
 }
