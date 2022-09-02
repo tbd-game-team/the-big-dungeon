@@ -50,7 +50,9 @@ public class dashMove : MonoBehaviour
                 // Instantiate Particle System
                 var ps = Instantiate(effect, transform.position, Quaternion.identity);
                 // Start Camera Shake
-                StartCoroutine(camShake.Shake(0.2f, 0.1f));
+                if(camShake != null){
+                    StartCoroutine(camShake.Shake(0.2f, 0.1f));
+                }
                 Destroy(ps, 1f);
                 // Get Dash direction
                 x = Input.GetAxis("Horizontal");
