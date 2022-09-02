@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 namespace Assets.Scripts
 {
@@ -15,26 +16,44 @@ namespace Assets.Scripts
         [SerializeField]
         private float walkSpeed = 7.5f;
 
-        [Header("Attack")]
+        [Header("UI")]
+        public HealthUi healthUi;
+        public GameObject gameOverPanel;
+        private bool alive = true;
+
+        [Header("Combat")]
         // Attack parameters
+        public float invincibleTime;
+        public Color collideColor;
+        public cameraShake camShake;
         private Animator weaponAnimator;
         private GameObject weapon;
-        private bool attacking = false;
+        private float invincibleTimer;
+        public bool invincible;
+
+        
+
+        
 
 
         public void Start()
         {
             weapon = gameObject.transform.GetChild(0).gameObject;
             weaponAnimator = weapon.GetComponent<Animator>();
+            invincibleTimer = invincibleTime;
+            invincible = false;
         }
 
         public void FixedUpdate(){}
 
         private void Update() {
-            handleMovement();
+            if(alive && !GameManager.Instance.isPaused){
+                handleMovement();
+                handleInvincibility();
 
-            if(Input.GetMouseButtonDown(0)){
+                if(Input.GetMouseButtonDown(0)){
                     attack();
+                }
             }
         }
 
@@ -54,17 +73,53 @@ namespace Assets.Scripts
 
         private void OnTriggerEnter2D(Collider2D other) {
             if (other.gameObject.tag == "Enemy"){
-                print("Player damaged");
                 damage(1);
             }
         }
 
         private void damage(int amount){
-            if(health - amount <= 0){
-                // dead
-            }else{
-                health -= amount;
+            if(!invincible){
+                if(health - amount <= 0){
+                    GameManager.Instance.pause();
+                    alive = false;
+                    health = 0;
+                    gameOverPanel.SetActive(true);
+                }else{
+                    health -= amount;
+                    invincible = true;
+                    StartCoroutine("Flasher");
+                }
+                if(camShake != null){
+                    StartCoroutine(camShake.Shake(0.4f, 0.3f));
+                }
+                healthUi.updateHearts(health);
             }
         }
+
+        private void handleInvincibility(){
+            if(invincibleTimer <= 0 && invincible){
+                invincibleTimer = invincibleTime;
+                invincible = false;
+            }if(invincible){
+                invincibleTimer -= Time.deltaTime;
+            }
+        }
+
+        public int getHealth(){
+            return health;
+        }
+
+        IEnumerator Flasher() 
+         {
+            var renderer = gameObject.GetComponent<SpriteRenderer>();
+            var normalColor = renderer.color;
+             for (int i = 0; i < 4; i++)
+             {
+              renderer.color = collideColor;
+              yield return new WaitForSeconds(invincibleTime/8);
+              renderer.color = normalColor; 
+              yield return new WaitForSeconds(invincibleTime/8);
+             }
+          }
     }
 }
