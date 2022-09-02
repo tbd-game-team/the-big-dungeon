@@ -8,16 +8,12 @@ public class HealthUi : MonoBehaviour
 {
     public Sprite fullHeart;
     public Sprite emptyHeart;
-    
+    public Animator hitPanel;
     
     private Image[] hearts;
     private int maxHealth = 5;
 
-    private int oldHealth;
-
-
     private void Start() {
-        oldHealth = maxHealth;
         hearts = gameObject.GetComponentsInChildren<Image>();
         foreach(Image heart in hearts){
             heart.sprite = fullHeart;
@@ -32,5 +28,8 @@ public class HealthUi : MonoBehaviour
                 hearts[i].sprite = emptyHeart;
             }
         }
+        hitPanel.SetTrigger("hit");
     }
+
+
 }

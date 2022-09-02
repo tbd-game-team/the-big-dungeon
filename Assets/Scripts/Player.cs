@@ -25,10 +25,13 @@ namespace Assets.Scripts
         // Attack parameters
         public float invincibleTime;
         public Color collideColor;
+        public cameraShake camShake;
         private Animator weaponAnimator;
         private GameObject weapon;
         private float invincibleTimer;
         public bool invincible;
+
+        
 
         
 
@@ -85,6 +88,9 @@ namespace Assets.Scripts
                     health -= amount;
                     invincible = true;
                     StartCoroutine("Flasher");
+                }
+                if(camShake != null){
+                    StartCoroutine(camShake.Shake(0.4f, 0.3f));
                 }
                 healthUi.updateHearts(health);
             }
