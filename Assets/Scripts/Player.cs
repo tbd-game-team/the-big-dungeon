@@ -7,8 +7,6 @@ namespace Assets.Scripts
         [Header("Atributes")]
         [SerializeField]
         private int health = 5;
-        [SerializeField]
-        private int power = 5; 
 
         [Header("Movement")]
         /// <summary>
