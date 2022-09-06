@@ -4,12 +4,17 @@ using Random = UnityEngine.Random;
 
 public static class BinarySpacePartitioningAlgorithm
 {
-
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */    public static List<BoundsInt> BSP(BoundsInt dungeonSpace, int minWidth, int minHeight)
+   
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Implements the Binary Space Partitioning algorithm.
+    /// The space is arbitrarily divided into two subspaces. The subspaces are further subdivided recursively.
+    /// </summary>
+    /// <param name="dungeonSpace">space to be divided</param>
+    /// <param name="minWidth">minimum width of the subspaces</param>
+    /// <param name="minHeight">minimum height of the subspaces</param>
+    /// <returns>list of subspaces</returns>
+    public static List<BoundsInt> BSP(BoundsInt dungeonSpace, int minWidth, int minHeight)
     {
         Queue<BoundsInt> roomsQueue = new Queue<BoundsInt>();
         List<BoundsInt> roomsList = new List<BoundsInt>();
@@ -25,23 +30,23 @@ public static class BinarySpacePartitioningAlgorithm
                 if (Random.value < 0.5f)
                 {
                     // split vertically
-                    SplitSpace(0, minWidth, minHeight, roomsQueue, room);
+                    SplitSpace(0, roomsQueue, room);
                 }
                 else
                 {
                     // split horizontally
-                    SplitSpace(1, minWidth, minHeight, roomsQueue, room);
+                    SplitSpace(1, roomsQueue, room);
                 }
             }
             else if (widthStatus)
             {
                 // split vertically
-                SplitSpace(0, minWidth, minHeight, roomsQueue, room);
+                SplitSpace(0, roomsQueue, room);
             }
             else if (heightStatus)
             {
                 // split horizontally
-                SplitSpace(1, minWidth, minHeight, roomsQueue, room);
+                SplitSpace(1,roomsQueue, room);
 
             }
             else
@@ -52,11 +57,15 @@ public static class BinarySpacePartitioningAlgorithm
         return roomsList;
     }
     
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    private static void SplitSpace(int orientation, int minHeight, int maxHeight, Queue<BoundsInt> roomsQueue, BoundsInt room)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// divides space horizontally or vertically into two subspaces
+    /// </summary>
+    /// <param name="orientation">specifies whether space is split horizontally (1) or vertically (0).</param>
+    /// <param name="roomsQueue">queue of spaces</param>
+    /// <param name="room">space to split</param>
+    /// <returns></returns>
+    private static void SplitSpace(int orientation, Queue<BoundsInt> roomsQueue, BoundsInt room)
     {
         Vector3Int bottomLeftCorner1 = new Vector3Int();
         Vector3Int size1 = new Vector3Int();
@@ -89,6 +98,7 @@ public static class BinarySpacePartitioningAlgorithm
         }
         BoundsInt room1 = new BoundsInt(bottomLeftCorner1, size1);
         BoundsInt room2 = new BoundsInt(bottomLeftCorner2, size2);
+        // append new subspaces to queue
         roomsQueue.Enqueue(room1);
         roomsQueue.Enqueue(room2);
     }
