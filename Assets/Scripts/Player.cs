@@ -31,22 +31,28 @@ namespace Assets.Scripts
         private float invincibleTimer;
         public bool invincible;
 
-        
-
-        
-
+        private BoxCollider2D boxCollider;
+        private Rigidbody2D rb;
+        private Vector3 moveDelta;
 
         public void Start()
         {
             weapon = gameObject.transform.GetChild(0).gameObject;
+
             weaponAnimator = weapon.GetComponent<Animator>();
+            boxCollider = GetComponent<BoxCollider2D>();
+            rb = GetComponent<Rigidbody2D>();
+
             invincibleTimer = invincibleTime;
             invincible = false;
+            
+            // spawn position of player
+            transform.position = ActorGenerator.GetPlayerPosition();
         }
 
-        public void FixedUpdate(){}
+        //public void Update(){}
 
-        private void Update() {
+        private void FixedUpdate() {
             if(alive && !GameManager.Instance.isPaused){
                 handleMovement();
                 handleInvincibility();
@@ -57,14 +63,27 @@ namespace Assets.Scripts
             }
         }
 
+        /*
+        * @author: Florian Weber, Neele Kemper
+        * 
+        */
         private void handleMovement(){
             var x = Input.GetAxis("Horizontal");
             var y = Input.GetAxis("Vertical");
+            moveDelta = new Vector3(x, y, 0);
 
-            if (x > 0) transform.localScale = Vector3.one;
-            else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
+            // Swap spirit direction
+            if (moveDelta.x > 0)
+            {
+                transform.localScale = Vector3.one;
+            }
+            else if (moveDelta.x < 0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
 
-            transform.Translate(new Vector2(x, y) * Time.deltaTime * walkSpeed);
+
+            rb.MovePosition(transform.position + moveDelta * Time.deltaTime * walkSpeed);
         }
 
         private void attack(){
@@ -74,6 +93,9 @@ namespace Assets.Scripts
         private void OnTriggerEnter2D(Collider2D other) {
             if (other.gameObject.tag == "Enemy"){
                 damage(1);
+            } else if(other.gameObject.tag == "Coin"){
+                // @Fabian: Todo
+                Debug.Log("You win!");
             }
         }
 

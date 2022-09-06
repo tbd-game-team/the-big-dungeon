@@ -11,6 +11,9 @@ public class GenericEnemy : MonoBehaviour
     [SerializeField]
     public GameObject target;
     [SerializeField]
+
+    public GameObject enemyPrefab;
+    [SerializeField]
     private float personalSpace = 1f;
 
     [Header("Combat")]
@@ -35,6 +38,15 @@ public class GenericEnemy : MonoBehaviour
 
     void Start()
     {
+
+        List<Vector3> positions = ActorGenerator.GetEnemyPositions();
+        foreach(Vector3 pos in positions)
+        {   
+            //@Niklas:when i try to instantiate the enemies, the game crashes!
+            //Instantiate(enemyPrefab, pos, Quaternion.identity);
+            Debug.Log("Enemy Positions: ("+pos.x+", "+pos.y+")");
+        }
+
     }
 
     void FixedUpdate()
