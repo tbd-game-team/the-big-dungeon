@@ -4,10 +4,12 @@ using Random = UnityEngine.Random;
 
 public class CorridorGenerator
 {       
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Connects each space center in the passed list with the center to which it has the shortest distance by creating coridors.
+    /// </summary>
+    /// <param name="roomCenters">list of room centers</param>
+    /// <returns>coridors, defined as a hash set of vectors</returns>
     public static HashSet<Vector2Int> ConnectSpaces(List<Vector2Int> roomCenters)
     {
         HashSet<Vector2Int> cooridors = new HashSet<Vector2Int>();
@@ -17,9 +19,9 @@ public class CorridorGenerator
 
         while (roomCenters.Count > 0)
         {
-            Vector2Int closest = FindClosestPoint(currentRoomCenter, roomCenters);
+            Vector2Int closest = FindClosestCenter(currentRoomCenter, roomCenters);
             roomCenters.Remove(closest);
-            HashSet<Vector2Int> newCorridor = CreateStraightCorridor(currentRoomCenter, closest);
+            HashSet<Vector2Int> newCorridor = CreateSingleCorridor(currentRoomCenter, closest);
             currentRoomCenter = closest;
             cooridors.UnionWith(newCorridor);
 
@@ -28,13 +30,15 @@ public class CorridorGenerator
     }
     
         
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    private static Vector2Int FindClosestPoint(Vector2Int currentRoomCenter, List<Vector2Int> roomCenters)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Calculates for the passed room center, the nearest center.
+    /// </summary>
+    /// <param name="currentRoomCenter">specific room center</param>
+    /// <param name="roomCenters"list of room centers</param>
+    /// <returns>position (vector) of the closest room center.</returns>
+    private static Vector2Int FindClosestCenter(Vector2Int currentRoomCenter, List<Vector2Int> roomCenters)
     {
-
         Vector2Int closest = new Vector2Int();
         float distance = float.MaxValue;
         foreach (Vector2Int position in roomCenters)
@@ -49,64 +53,58 @@ public class CorridorGenerator
         return closest;
     }
         
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    private static HashSet<Vector2Int> CreateStraightCorridor(Vector2Int currentRoomCenter, Vector2Int destination)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Connects the passed room center with an other room center, via a corridor.
+    /// </summary>
+    /// <param name="currentRoomCenter">specific room center</param>
+    /// <param name="destinationCenter">target room center (vector)</param>
+    /// <returns>single coridor, defined as a hash set of vectors</returns>
+    private static HashSet<Vector2Int> CreateSingleCorridor(Vector2Int currentRoomCenter, Vector2Int destinationCenter)
     {
         HashSet<Vector2Int> corridor = new HashSet<Vector2Int>();
         Vector2Int position = currentRoomCenter;
         corridor.Add(position);
-        
-        /*
-        while (position.y != destination.y)
-        {
-            position = CreateVerticalCorridor(position, destination);
-            corridor.Add(position);
-        }
-
-        while (position.x != destination.x)
-        {
-            position= CreateHorizontalCorridor(position, destination);
-            corridor.Add(position);
-
-        }*/
-
-        
-        
-        while (position.y != destination.y || position.x != destination.x)
+                
+        while (position.y != destinationCenter.y || position.x != destinationCenter.x)
         {   
-           
-            if (position.y != destination.y && position.x != destination.x)
+            /*
+            The corridor mostly runs vertically at first. 
+            To make it look a little more natural, a random step is taken in a horizontal direction now and then. 
+            But not too often, this would make the corridor winding, which reduces the game's fun.
+            */
+            if (position.y != destinationCenter.y && position.x != destinationCenter.x)
             {   
+                // 
                 if (Random.Range(0, 100) < 80)
                 {
-                    position = CreateVerticalCorridor(position, destination);
+                    position = CreateVerticalCorridor(position, destinationCenter);
                 }
                 else
                 {
-                    position= CreateHorizontalCorridor(position, destination);
+                    position= CreateHorizontalCorridor(position, destinationCenter);
                 }
             }
-            else if (position.y != destination.y)
+            else if (position.y != destinationCenter.y)
             {
-                position = CreateVerticalCorridor(position, destination);
+                position = CreateVerticalCorridor(position, destinationCenter);
             }
             else
             {
-                position= CreateHorizontalCorridor(position, destination);
+                position= CreateHorizontalCorridor(position, destinationCenter);
             }
             corridor.Add(position);
         }
         return corridor;
-
     }
     
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Creates a new corridor coordinate in the vertical direction.
+    /// </summary>
+    /// <param name="position">current position (vector)</param>
+    /// <param name="destination">target position (vector)</param>
+    /// <returns>new cooridor position (vector)</returns>
     private static Vector2Int CreateVerticalCorridor(Vector2Int position, Vector2 destination)
     {
         if (destination.y > position.y)
@@ -120,10 +118,13 @@ public class CorridorGenerator
         return position;
     }
     
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Creates a new corridor coordinate in the horizontal direction.
+    /// </summary>
+    /// <param name="position">current position (vector)</param>
+    /// <param name="destination">target position (vector)</param>
+    /// <returns>new cooridor position (vector)</returns>
     private static Vector2Int CreateHorizontalCorridor(Vector2Int position, Vector2 destination)
     {
         if (destination.x > position.x)
