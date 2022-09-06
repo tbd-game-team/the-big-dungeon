@@ -80,7 +80,7 @@ public class CorridorGenerator
            
             if (position.y != destination.y && position.x != destination.x)
             {   
-                if (Random.Range(0, 100) < 85)
+                if (Random.Range(0, 100) < 80)
                 {
                     position = CreateVerticalCorridor(position, destination);
                 }
