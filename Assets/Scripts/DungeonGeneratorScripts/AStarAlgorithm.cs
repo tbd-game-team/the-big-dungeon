@@ -38,7 +38,7 @@ public class AStarAlgorithm
             openList.Remove(currentCoordinate);
             closedList.Add(currentCoordinate);
 
-            List<Coordinate> neighbours = GetNeighbours(currentCoordinate.tileX, currentCoordinate.tileY, width, height);
+            List<Coordinate> neighbours = GetNeighbours(currentCoordinate.x, currentCoordinate.y, width, height);
 
             foreach (Coordinate neighbourCoordinate in neighbours)
             {
@@ -46,7 +46,7 @@ public class AStarAlgorithm
                 {
                     continue;
                 }
-                if(map[neighbourCoordinate.tileX, neighbourCoordinate.tileY] == AlgorithmUtils.wallTile){
+                if(map[neighbourCoordinate.x, neighbourCoordinate.y] == AlgorithmUtils.wallTile){
                     closedList.Add(neighbourCoordinate);
                     continue;
                 }

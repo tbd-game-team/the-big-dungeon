@@ -82,21 +82,21 @@ public static class AlgorithmUtils
         foreach (Coordinate c in rooms)
         {
 
-            if (c.tileX < bottomLeftCornerMin.x)
+            if (c.x < bottomLeftCornerMin.x)
             {
-                bottomLeftCornerMin = new Vector2Int(c.tileX, bottomLeftCornerMin.y);
+                bottomLeftCornerMin = new Vector2Int(c.x, bottomLeftCornerMin.y);
             }
-            if (c.tileY < bottomLeftCornerMin.y)
+            if (c.y < bottomLeftCornerMin.y)
             {
-                bottomLeftCornerMin = new Vector2Int(bottomLeftCornerMin.x, c.tileY);
+                bottomLeftCornerMin = new Vector2Int(bottomLeftCornerMin.x, c.y);
             }
-            if (c.tileX > upperRightCornerMax.x)
+            if (c.x > upperRightCornerMax.x)
             {
-                upperRightCornerMax = new Vector2Int(c.tileX, upperRightCornerMax.y);
+                upperRightCornerMax = new Vector2Int(c.x, upperRightCornerMax.y);
             }
-            if (c.tileY > upperRightCornerMax.y)
+            if (c.y > upperRightCornerMax.y)
             {
-                upperRightCornerMax = new Vector2Int(upperRightCornerMax.x, c.tileY);
+                upperRightCornerMax = new Vector2Int(upperRightCornerMax.x, c.y);
             }
         }
 

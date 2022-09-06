@@ -111,7 +111,7 @@ public static class CellularAutomataAlgorithm
             {
                 foreach (Coordinate tile in wallRegion)
                 {
-                    map[tile.tileX, tile.tileY] = AlgorithmUtils.floorTile;
+                    map[tile.x, tile.y] = AlgorithmUtils.floorTile;
                 }
             }
         }
@@ -128,7 +128,7 @@ public static class CellularAutomataAlgorithm
             {
                 foreach (Coordinate tile in roomRegion)
                 {
-                    map[tile.tileX, tile.tileY] = AlgorithmUtils.wallTile;
+                    map[tile.x, tile.y] = AlgorithmUtils.wallTile;
                 }
             }
             else
@@ -157,7 +157,7 @@ public static class CellularAutomataAlgorithm
 
                     foreach (Coordinate tile in newRegion)
                     {
-                        mapFalgs[tile.tileX, tile.tileY] = 1;
+                        mapFalgs[tile.x, tile.y] = 1;
                     }
                 }
             }
@@ -180,11 +180,11 @@ public static class CellularAutomataAlgorithm
             Coordinate tile = queue.Dequeue();
             tiles.Add(tile);
 
-            for (int x = tile.tileX - 1; x < tile.tileX + 2; x++)
+            for (int x = tile.x - 1; x < tile.x + 2; x++)
             {
-                for (int y = tile.tileY - 1; y < tile.tileY + 2; y++)
+                for (int y = tile.y - 1; y < tile.y + 2; y++)
                 {
-                    if (AlgorithmUtils.IsInMapRange(x, y, width, height) && (y == tile.tileY || x == tile.tileX))
+                    if (AlgorithmUtils.IsInMapRange(x, y, width, height) && (y == tile.y || x == tile.x))
                     {
                         if (mapFlags[x, y] == 0 && map[x, y] == tileType)
                         {

@@ -59,7 +59,7 @@ public static class BinarySpacePartitioningAlgorithm
     
     /// <summary>
     /// @author: Neele Kemper
-    /// divides space horizontally or vertically into two subspaces
+    /// Divides space horizontally or vertically into two subspaces
     /// </summary>
     /// <param name="orientation">specifies whether space is split horizontally (1) or vertically (0).</param>
     /// <param name="roomsQueue">queue of spaces</param>
