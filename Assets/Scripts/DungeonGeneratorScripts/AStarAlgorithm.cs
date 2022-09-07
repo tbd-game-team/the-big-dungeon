@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class AStarAlgorithm
-{   
-    private static float move_straight_cost = 10.0f;
-    private static float move_diagonal_cost = 20.0f;
+{
+    private static float moveStraightCost = 10.0f;
+    private static float moveDiagonalCost = 20.0f;
 
-        
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,]map, int width, int height)
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="startCoordinate"></param>
+    /// <param name="targetCoordinate"></param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+    public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,] map, int width, int height)
     {
         List<Coordinate> path = new List<Coordinate>();
         List<Coordinate> openList = new List<Coordinate> { startCoordinate };
@@ -23,14 +29,14 @@ public class AStarAlgorithm
         startCoordinate.gCost = 0;
         startCoordinate.hCost = CalculateDistanceCost(startCoordinate, targetCoordinate);
         startCoordinate.CalculateFCost();
-        
-       
+
+
         while (openList.Count > 0)
-        {   
+        {
             Coordinate currentCoordinate = GetLowestFCostTile(openList);
             pathCoordinate = currentCoordinate;
             if (currentCoordinate.EqulasTo(targetCoordinate))
-            {   
+            {
                 path = CalculatedPath(pathCoordinate);
                 break;
             }
@@ -42,11 +48,12 @@ public class AStarAlgorithm
 
             foreach (Coordinate neighbourCoordinate in neighbours)
             {
-                if(neighbourCoordinate.IsInList(closedList))
+                if (neighbourCoordinate.IsInList(closedList))
                 {
                     continue;
                 }
-                if(map[neighbourCoordinate.x, neighbourCoordinate.y] == AlgorithmUtils.wallTile){
+                if (map[neighbourCoordinate.x, neighbourCoordinate.y] == AlgorithmUtils.wallTile)
+                {
                     closedList.Add(neighbourCoordinate);
                     continue;
                 }
@@ -61,7 +68,7 @@ public class AStarAlgorithm
                     neighbourCoordinate.CalculateFCost();
 
                     if (!neighbourCoordinate.IsInList(openList))
-                    {   
+                    {
                         openList.Add(neighbourCoordinate);
                     }
                 }
@@ -70,12 +77,17 @@ public class AStarAlgorithm
         return path;
     }
 
-        
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    private static List<Coordinate> GetNeighbours(int gridX, int gridY,  int width, int height)
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="gridX"></param>
+    /// <param name="gridY"></param>#
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+    private static List<Coordinate> GetNeighbours(int gridX, int gridY, int width, int height)
     {
         List<Coordinate> neighbours = new List<Coordinate>();
         for (int neighbourX = gridX - 1; neighbourX < gridX + 2; neighbourX++)
@@ -94,24 +106,28 @@ public class AStarAlgorithm
         return neighbours;
     }
 
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
     private static float CalculateDistanceCost(Coordinate a, Coordinate b)
     {
         float xDistance = Mathf.Abs(a.centerX - b.centerX);
         float yDistance = Mathf.Abs(a.centerY - b.centerY);
         float remainingDistance = Mathf.Abs(xDistance - yDistance);
         float minDist = Mathf.Min(xDistance, yDistance);
-        return move_diagonal_cost * minDist + move_straight_cost * remainingDistance;
+        return moveDiagonalCost * minDist + moveStraightCost * remainingDistance;
     }
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="tileList"></param>
+    /// <returns></returns>
     private static Coordinate GetLowestFCostTile(List<Coordinate> tileList)
     {
         Coordinate lowestFCostTile = tileList[0];
@@ -124,11 +140,13 @@ public class AStarAlgorithm
         }
         return lowestFCostTile;
     }
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="targetCoordinate"></param>
+    /// <returns></returns>
     private static List<Coordinate> CalculatedPath(Coordinate targetCoordinate)
     {
         List<Coordinate> pathList = new List<Coordinate>();

@@ -36,7 +36,7 @@ public class CorridorGenerator
     /// </summary>
     /// <param name="currentRoomCenter">specific room center</param>
     /// <param name="roomCenters"list of room centers</param>
-    /// <returns>position (vector) of the closest room center.</returns>
+    /// <returns>position  of the closest room center.</returns>
     private static Vector2Int FindClosestCenter(Vector2Int currentRoomCenter, List<Vector2Int> roomCenters)
     {
         Vector2Int closest = new Vector2Int();
@@ -58,7 +58,7 @@ public class CorridorGenerator
     /// Connects the passed room center with an other room center, via a corridor.
     /// </summary>
     /// <param name="currentRoomCenter">specific room center</param>
-    /// <param name="destinationCenter">target room center (vector)</param>
+    /// <param name="destinationCenter">target room center</param>
     /// <returns>single coridor, defined as a hash set of vectors</returns>
     private static HashSet<Vector2Int> CreateSingleCorridor(Vector2Int currentRoomCenter, Vector2Int destinationCenter)
     {
@@ -102,9 +102,9 @@ public class CorridorGenerator
     /// @author: Neele Kemper
     /// Creates a new corridor coordinate in the vertical direction.
     /// </summary>
-    /// <param name="position">current position (vector)</param>
-    /// <param name="destination">target position (vector)</param>
-    /// <returns>new cooridor position (vector)</returns>
+    /// <param name="position">current position</param>
+    /// <param name="destination">target position</param>
+    /// <returns>new cooridor position </returns>
     private static Vector2Int CreateVerticalCorridor(Vector2Int position, Vector2 destination)
     {
         if (destination.y > position.y)
@@ -122,9 +122,9 @@ public class CorridorGenerator
     /// @author: Neele Kemper
     /// Creates a new corridor coordinate in the horizontal direction.
     /// </summary>
-    /// <param name="position">current position (vector)</param>
-    /// <param name="destination">target position (vector)</param>
-    /// <returns>new cooridor position (vector)</returns>
+    /// <param name="position">current position</param>
+    /// <param name="destination">target position</param>
+    /// <returns>new cooridor position </returns>
     private static Vector2Int CreateHorizontalCorridor(Vector2Int position, Vector2 destination)
     {
         if (destination.x > position.x)

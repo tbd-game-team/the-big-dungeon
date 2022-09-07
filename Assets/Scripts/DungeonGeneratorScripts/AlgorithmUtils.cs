@@ -7,12 +7,16 @@ public static class AlgorithmUtils
     public static int floorTile = 0;
 
 
-        
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    public static HashSet<Vector2Int> MapToHashSet(int[,] map, Vector2Int startPosition, int width, int height)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="startPosition"></param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+    public static HashSet<Vector2Int> MapToHashSet(Vector2Int startPosition, int[,] map, int width, int height)
     {
         HashSet<Vector2Int> room = new HashSet<Vector2Int>();
         for (int x = 0; x < width; x++)
@@ -32,17 +36,21 @@ public static class AlgorithmUtils
         return room;
     }
 
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    public static int[,] HashSetToMap(HashSet<Vector2Int> rooms, int dungeonWidth, int dungeonHeight)
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="rooms"></param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+    public static int[,] HashSetToMap(HashSet<Vector2Int> rooms, int width, int height)
     {
-        int[,] map = new int[dungeonWidth, dungeonHeight];
-        for (int x = 0; x < dungeonWidth; x++)
+        int[,] map = new int[width, height];
+        for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < dungeonHeight; y++)
+            for (int y = 0; y < height; y++)
             {
 
                 map[x, y] = wallTile;
@@ -51,7 +59,7 @@ public static class AlgorithmUtils
         }
         foreach (Vector2Int room in rooms)
         {
-            if (IsInMapRange(room.x, room.y, dungeonWidth, dungeonHeight))
+            if (IsInMapRange(room.x, room.y, width, height))
             {
                 map[room.x, room.y] = floorTile;
             }
@@ -60,20 +68,29 @@ public static class AlgorithmUtils
         return map;
     }
 
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
     public static bool IsInMapRange(int x, int y, int width, int height)
     {
         return x > -1 && x < width && y > -1 && y < height;
     }
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="rooms"></param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
     public static BoundsInt CreateBoundingBox(List<Coordinate> rooms, int width, int height)
     {
         Vector2Int bottomLeftCornerMin = new Vector2Int(width - 1, height - 1);
@@ -108,12 +125,17 @@ public static class AlgorithmUtils
         BoundsInt newRoom = new BoundsInt((Vector3Int)bottomLeftCorner, (Vector3Int)size);
         return newRoom;
     }
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    public static List<Vector2Int> CreateRoomCenters(List<BoundsInt> roomsList, int width, int height, int[,] map)
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="roomsList"></param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+    public static List<Vector2Int> CreateRoomCenters(List<BoundsInt> roomsList, int[,] map, int width, int height)
     {
         List<Vector2Int> roomCenters = new List<Vector2Int>();
         foreach (BoundsInt room in roomsList)
@@ -144,6 +166,41 @@ public static class AlgorithmUtils
             }
         }
         return roomCenters;
+    }
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+    public static int CountSurroundingWalls(int x, int y, int[,] map, int width, int height)
+    {
+        int wallCount = 0;
+        // 3x3 Grid
+        for (int w = x - 1; w < x + 2; w++)
+        {
+            for (int h = y - 1; h < y + 2; h++)
+            {
+                if (AlgorithmUtils.IsInMapRange(w, h, width, height))
+                {
+                    if (!(w == x && h == y)) // Do not add center in
+                    {
+                        wallCount += map[w, h];
+                    }
+
+                }
+                else
+                {
+                    wallCount++;
+                }
+            }
+        }
+        return wallCount;
     }
 
 }

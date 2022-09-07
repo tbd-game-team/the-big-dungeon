@@ -20,10 +20,11 @@ public class DungeonGenerator : MonoBehaviour
         CreateDungeon();
     }
     
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <returns></returns>
     private void CreateDungeon()
     {
         List<BoundsInt> binarySpaces = SplitDungeonSpace();
@@ -33,8 +34,8 @@ public class DungeonGenerator : MonoBehaviour
         floor = CreateCellularAutomataRooms(binarySpaces);
 
         int[,] dungeonMap = AlgorithmUtils.HashSetToMap(floor, dungeonWidth, dungeonHeight);
-        CellularAutomataAlgorithm.FilterWalls(wallRegionsThreshold, dungeonWidth, dungeonHeight, dungeonMap);
-        List<BoundsInt> finalRooms = CellularAutomataAlgorithm.FilterRooms(roomRegionsThreshold, dungeonWidth, dungeonHeight, dungeonMap);
+        CellularAutomataAlgorithm.FilterWalls(wallRegionsThreshold, dungeonMap, dungeonWidth, dungeonHeight);
+        List<BoundsInt> finalRooms = CellularAutomataAlgorithm.FilterRooms(roomRegionsThreshold, dungeonMap, dungeonWidth, dungeonHeight);
         HashSet<Vector2Int> corridors = CreateCorridors(floor, finalRooms);
         floor.UnionWith(corridors);
 
@@ -42,10 +43,10 @@ public class DungeonGenerator : MonoBehaviour
         floor.UnionWith(corridors);
 
         dungeonMap = AlgorithmUtils.HashSetToMap(floor, dungeonWidth, dungeonHeight);
-        CellularAutomataAlgorithm.FilterWalls(20, dungeonWidth, dungeonHeight, dungeonMap);
-        floor = AlgorithmUtils.MapToHashSet(dungeonMap, new Vector2Int(0, 0), dungeonWidth, dungeonHeight);
+        CellularAutomataAlgorithm.FilterWalls(20, dungeonMap, dungeonWidth, dungeonHeight);
+        floor = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
-        ActorGenerator.PlaceActors(floor, finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
+        ActorGenerator.PlaceActors( finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
 
         tilemapVisualizer.Clear();
         tilemapVisualizer.PaintFloorTiles(floor);
@@ -54,10 +55,11 @@ public class DungeonGenerator : MonoBehaviour
 
     }
     
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <returns></returns>
     private List<BoundsInt> SplitDungeonSpace()
     {
         Vector3Int bottomLeftCorner = new Vector3Int(0, 0, 0);
@@ -67,10 +69,12 @@ public class DungeonGenerator : MonoBehaviour
         return roomsList;
     }
     
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="roomsList"></param>
+    /// <returns></returns>
     private HashSet<Vector2Int> CreateCellularAutomataRooms(List<BoundsInt> roomsList)
     {
         HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
@@ -86,14 +90,17 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     
-    /*
-    * @author: Neele Kemper
-    * 
-    */   
+    /// <summary>
+    /// @author: Neele Kemper
+    /// 
+    /// </summary>
+    /// <param name="floor"></param>
+    /// <param name="roomsList"></param>
+    /// <returns></returns> 
     private HashSet<Vector2Int> CreateCorridors(HashSet<Vector2Int> floor, List<BoundsInt> roomsList)
     {
         int[,] dungeonMap = AlgorithmUtils.HashSetToMap(floor, dungeonWidth, dungeonHeight);
-        List<Vector2Int> roomCenters = AlgorithmUtils.CreateRoomCenters(roomsList, dungeonWidth, dungeonHeight, dungeonMap);
+        List<Vector2Int> roomCenters = AlgorithmUtils.CreateRoomCenters(roomsList, dungeonMap, dungeonWidth, dungeonHeight);
         HashSet<Vector2Int> corridors = CorridorGenerator.ConnectSpaces(roomCenters);
         return corridors;
     }
