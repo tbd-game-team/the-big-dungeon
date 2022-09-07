@@ -9,7 +9,13 @@ public static class CellularAutomataAlgorithm
     /// @author: Neele Kemper
     /// 
     /// </summary>
-    /// <param name=""></param>
+    /// <param name="startPosition"></param>
+    /// <param name="roomWidth"></param>
+    /// <param name="roomHeight"></param>
+    /// <param name="iterations"></param>
+    /// <param name="density"></param>
+    /// <param name="wallRegionsThreshold"></param>
+    /// <param name="roomRegionsThreshold"></param>
     /// <returns></returns>
     public static HashSet<Vector2Int> CA(Vector2Int startPosition, int roomWidth, int roomHeight, int iterations, int density, int wallRegionsThreshold, int roomRegionsThreshold)
     {
