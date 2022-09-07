@@ -51,8 +51,6 @@ public class DungeonGenerator : MonoBehaviour
         tilemapVisualizer.Clear();
         tilemapVisualizer.PaintFloorTiles(floor);
         WallGenerator.CreateWalls(floor, tilemapVisualizer);
-
-
     }
     
     /// <summary>
@@ -88,7 +86,6 @@ public class DungeonGenerator : MonoBehaviour
         }
         return floor;
     }
-
     
     /// <summary>
     /// @author: Neele Kemper

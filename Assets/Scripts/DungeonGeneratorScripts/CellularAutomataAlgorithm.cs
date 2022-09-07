@@ -88,9 +88,6 @@ public static class CellularAutomataAlgorithm
         }
     }
 
-    
-
-    
     /// <summary>
     /// @author: Neele Kemper
     /// 

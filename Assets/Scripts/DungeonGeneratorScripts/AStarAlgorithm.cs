@@ -7,7 +7,6 @@ public class AStarAlgorithm
     private static float moveStraightCost = 10.0f;
     private static float moveDiagonalCost = 20.0f;
 
-
     /// <summary>
     /// @author: Neele Kemper
     /// 
@@ -76,7 +75,6 @@ public class AStarAlgorithm
         }
         return path;
     }
-
 
     /// <summary>
     /// @author: Neele Kemper

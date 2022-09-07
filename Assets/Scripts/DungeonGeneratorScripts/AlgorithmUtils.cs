@@ -8,7 +8,6 @@ public static class AlgorithmUtils
     // a floor tile is defined as 0 in the dungeon map
     public static int floorTile = 0;
 
-
     /// <summary>
     /// @author: Neele Kemper
     /// Convert the dungeon map into a hash set of vectors.
@@ -37,7 +36,6 @@ public static class AlgorithmUtils
 
         return room;
     }
-
 
     /// <summary>
     /// @author: Neele Kemper
@@ -69,7 +67,6 @@ public static class AlgorithmUtils
         }
         return map;
     }
-
 
     /// <summary>
     /// @author: Neele Kemper

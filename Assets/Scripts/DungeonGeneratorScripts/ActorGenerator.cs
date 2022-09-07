@@ -9,7 +9,6 @@ public static class ActorGenerator
     private static Vector3 targetPosition = new Vector3();
     private static List<Vector3> enemyPositions = new List<Vector3>();
 
-
     /// <summary>
     /// @author: Neele Kemper
     /// Calculate the position of the player, the target coin and the enemies.
@@ -122,7 +121,6 @@ public static class ActorGenerator
         }
     }
 
-
     /// <summary>
     /// @author: Neele Kemper
     /// Get the player's spawn position.
@@ -132,7 +130,6 @@ public static class ActorGenerator
     {
         return playerPosition;
     }
-
 
     /// <summary>
     /// @author: Neele Kemper
