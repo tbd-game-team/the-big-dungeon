@@ -4,7 +4,6 @@ using Random = UnityEngine.Random;
 
 public static class BinarySpacePartitioningAlgorithm
 {
-   
     /// <summary>
     /// @author: Neele Kemper
     /// Implements the Binary Space Partitioning algorithm.

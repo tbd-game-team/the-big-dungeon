@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
-/*
-* @author: Sunny Valley Studio 
-* available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
-*/
+/// <summary>
+/// @author: Sunny Valley Studio 
+/// available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
+/// </summary>
 public static class WallByteTypesHelper
 {
     public static HashSet<int> wallTop = new HashSet<int>

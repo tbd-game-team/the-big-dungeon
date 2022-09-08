@@ -2,17 +2,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-/*
-* @author: Sunny Valley Studio 
-* available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
-*/
+/// <summary>
+/// @author: Sunny Valley Studio 
+/// available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
+/// </summary>
 public class TilemapVisualizer : MonoBehaviour
 {   
-    
-    public Tilemap floorTilemap;
-    public Tilemap wallTilemap;
-    public TileBase floorTile;
-    public TileBase wallTop, wallSideRight, wallSiderLeft, wallBottom, wallFull, 
+    [Header("Tilemap")]
+    [SerializeField]    
+    private Tilemap floorTilemap;
+    [SerializeField]
+    private Tilemap wallTilemap;
+
+    [Header("Tile")]
+    [SerializeField]
+    private TileBase floorTile;
+    [SerializeField]
+    private TileBase wallTop, wallSideRight, wallSiderLeft, wallBottom, wallFull, 
     wallInnerCornerDownLeft, wallInnerCornerDownRight, 
     wallDiagonalCornerDownRight, wallDiagonalCornerDownLeft, wallDiagonalCornerUpRight, wallDiagonalCornerUpLeft;
 

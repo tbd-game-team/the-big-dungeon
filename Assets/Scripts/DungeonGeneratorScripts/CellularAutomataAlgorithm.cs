@@ -4,31 +4,44 @@ using Random = UnityEngine.Random;
 
 
 public static class CellularAutomataAlgorithm
-{    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    public static HashSet<Vector2Int> CA(Vector2Int startPosition, int roomWidth, int roomHeight, int iterations, int density, int wallRegionsThreshold, int roomRegionsThreshold)
+{
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Create a hash set representing the rooms in the dungeon using the cellular automaton (CA) .
+    /// A CA is a collection of cells arranged in a grid of specified shape, such that each cell changes state as a function of time, according to a defined set of rules driven by the states of neighboring cell
+    /// </summary>
+    /// <param name="startPosition">position of the bottom left corner of the subspace (the dungon has been divided by BSP subspace)</param>
+    /// <param name="spaceWidth">width of space</param>
+    /// <param name="spaceHeight">height of space</param>d
+    /// <param name="iterations">number of iteration for the application of cellular automata rules.</param>
+    /// <param name="density">density of the floor cells</param>
+    /// <returns></returns>
+    public static HashSet<Vector2Int> CA(Vector2Int startPosition, int spaceWidth, int spaceHeight, int iterations, int density)
     {
-
-        int[,] map = MakeNoiseGrid(roomWidth, roomHeight, density);
+        int[,] map = MakeNoiseGrid(density, spaceWidth, spaceHeight);
         for (int i = 0; i < iterations; i++)
         {
-            ApplyCellularAutomate(roomWidth, roomHeight, map);
+            ApplyCellularAutomaton(map, spaceWidth, spaceHeight);
         }
-        HashSet<Vector2Int> room = AlgorithmUtils.MapToHashSet(map, startPosition, roomWidth, roomHeight);
+        HashSet<Vector2Int> room = AlgorithmUtils.MapToHashSet(startPosition, map, spaceWidth, spaceHeight);
         return room;
     }
 
-    private static int[,] MakeNoiseGrid(int width, int height, int density)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Create a random grid of floor (live) and wall (dead) cells.
+    /// </summary>
+    /// <param name="density">density of the floor cells</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns>random grid</returns>
+    private static int[,] MakeNoiseGrid(int density, int width, int height)
     {
         int[,] noiseGrid = new int[width, height];
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-
                 if (Random.Range(1, 100) > density)
                 {
                     noiseGrid[x, y] = AlgorithmUtils.floorTile;
@@ -37,28 +50,33 @@ public static class CellularAutomataAlgorithm
                 {
                     noiseGrid[x, y] = AlgorithmUtils.wallTile;
                 }
-
             }
         }
         return noiseGrid;
-    }    
+    }
 
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    private static void ApplyCellularAutomate(int width, int height, int[,] map)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Do a cellular automata iteration and apply the rules to all cells. 
+    /// </summary>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+    private static void ApplyCellularAutomaton(int[,] map, int width, int height)
     {
+        // iterate over all cells in the dungeon
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                int neighbourWallCount = CountSurroundingWalls(x, y, width, height, map);
-
+                int neighbourWallCount = AlgorithmUtils.CountSurroundingWalls(x, y, map, width, height);
+                // if celle has less than 4 neighbors, it becomes a wall (dead)
                 if (neighbourWallCount > 4)
                 {
                     map[x, y] = AlgorithmUtils.wallTile;
                 }
+                // if celle has more than 4 neighbors, it becomes a floor (alive)
                 else if (neighbourWallCount < 4)
                 {
                     map[x, y] = AlgorithmUtils.floorTile;
@@ -68,42 +86,18 @@ public static class CellularAutomataAlgorithm
         }
     }
 
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    public static int CountSurroundingWalls(int x, int y, int width, int height, int[,] map)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Remove all wall regions that are smaller than the passed threshold from the dungeon.
+    /// </summary>
+    /// <param name="wallRegionsThreshold">minimum size for wall regions</param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+    public static void FilterWalls(int wallRegionsThreshold, int[,] map, int width, int height)
     {
-        int wallCount = 0;
-        // 3x3 Grid
-        for (int w = x - 1; w < x + 2; w++)
-        {
-            for (int h = y - 1; h < y + 2; h++)
-            {
-                if (AlgorithmUtils.IsInMapRange(w, h, width, height))
-                {
-                    if (!(w == x && h == y)) // Do not add center in
-                    {
-                        wallCount += map[w, h];
-                    }
-
-                }
-                else
-                {
-                    wallCount++;
-                }
-            }
-        }
-        return wallCount;
-    }
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    public static void FilterWalls(int wallRegionsThreshold, int width, int height, int[,] map){
-         List<List<Coordinate>> wallRegions = GetRegions(AlgorithmUtils.wallTile, width, height, map);
+        List<List<Coordinate>> wallRegions = GetRegions(AlgorithmUtils.wallTile, map, width, height);
 
         foreach (List<Coordinate> wallRegion in wallRegions)
         {
@@ -117,11 +111,20 @@ public static class CellularAutomataAlgorithm
         }
     }
 
-    public static List<BoundsInt> FilterRooms(int roomRegionsThreshold, int width, int height, int[,] map)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Remove all rooms (floor regions) that are smaller than the passed threshold from the dungeon.
+    /// </summary>
+    /// <param name="roomRegionsThreshold">minimum size for rooms</param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns>list of rooms larger than the threshold</returns>
+    public static List<BoundsInt> FilterRooms(int roomRegionsThreshold, int[,] map, int width, int height)
     {
-        List<List<Coordinate>> roomRegions = GetRegions(AlgorithmUtils.floorTile, width, height, map);
+        List<List<Coordinate>> roomRegions = GetRegions(AlgorithmUtils.floorTile, map, width, height);
         List<BoundsInt> finalRooms = new List<BoundsInt>();
-        
+
         foreach (List<Coordinate> roomRegion in roomRegions)
         {
             if (roomRegion.Count < roomRegionsThreshold)
@@ -141,7 +144,17 @@ public static class CellularAutomataAlgorithm
         return finalRooms;
     }
 
-     private static List<List<Coordinate>> GetRegions(int tileType, int width, int height, int[,] map)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Get all regions of one type of the dungeon
+    /// A region is an area of type a surrounded by coordinates of type b.
+    /// </summary>
+    /// <param name="coordType">type of the regions, i.e. floor or wall</param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns>list of regions</returns>
+    private static List<List<Coordinate>> GetRegions(int coordType, int[,] map, int width, int height)
     {
         List<List<Coordinate>> regions = new List<List<Coordinate>>();
         int[,] mapFalgs = new int[width, height];
@@ -150,9 +163,9 @@ public static class CellularAutomataAlgorithm
         {
             for (int y = 0; y < height; y++)
             {
-                if (mapFalgs[x, y] == 0 && map[x, y] == tileType)
+                if (mapFalgs[x, y] == 0 && map[x, y] == coordType)
                 {
-                    List<Coordinate> newRegion = GetRegionTiles(x, y, width, height, map);
+                    List<Coordinate> newRegion = GetRegionCoordinates(x, y, map, width, height);
                     regions.Add(newRegion);
 
                     foreach (Coordinate tile in newRegion)
@@ -165,39 +178,58 @@ public static class CellularAutomataAlgorithm
         return regions;
     }
 
-    private static List<Coordinate> GetRegionTiles(int startX, int startY, int width, int height, int[,] map)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Get all coordinates of a region
+    /// </summary>
+    /// <param name="startX">x-coordinate</param>
+    /// <param name="startY">y-coordinate</param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns>list of coordinates describing a region</returns>
+    private static List<Coordinate> GetRegionCoordinates(int startX, int startY, int[,] map, int width, int height)
     {
-        List<Coordinate> tiles = new List<Coordinate>();
-        int[,] mapFlags = new int[width, height];
-        int tileType = map[startX, startY];
+        List<Coordinate> coordinates = new List<Coordinate>();
+        // create a map where the coordinates are marked (value is set to 1) when they have been visited
+        int[,] visitedCoordinates = new int[width, height];
+        visitedCoordinates[startX, startY] = 1;
 
-        Queue<Coordinate> queue = new Queue<Coordinate>();
-        queue.Enqueue(new Coordinate(startX, startY));
-        mapFlags[startX, startY] = 1;
+        // save the coordinate type (Floor or Wall) of the first coordinate
+        int coordType = map[startX, startY];
+        visitedCoordinates[startX, startY] = 1;
 
-        while (queue.Count > 0)
+        // initialize the list of open coordinates and put the starting coordinate on the open queue
+        Queue<Coordinate> openQueue = new Queue<Coordinate>();
+        openQueue.Enqueue(new Coordinate(startX, startY));
+
+        // while the open queue is not empty
+        while (openQueue.Count > 0)
         {
-            Coordinate tile = queue.Dequeue();
-            tiles.Add(tile);
+            // remove first coordinate from queue
+            Coordinate coord = openQueue.Dequeue();
+            // push coord on the coordinates list
+            coordinates.Add(coord);
 
-            for (int x = tile.x - 1; x < tile.x + 2; x++)
+            // iterate over all neighbor of the coordinate
+            for (int x = coord.x - 1; x < coord.x + 2; x++)
             {
-                for (int y = tile.y - 1; y < tile.y + 2; y++)
+                for (int y = coord.y - 1; y < coord.y + 2; y++)
                 {
-                    if (AlgorithmUtils.IsInMapRange(x, y, width, height) && (y == tile.y || x == tile.x))
+                    if (AlgorithmUtils.IsInMapRange(x, y, width, height))
                     {
-                        if (mapFlags[x, y] == 0 && map[x, y] == tileType)
+                        // if neighbor has not been visited yet and vpm same type is the start coordinate, add the neighbor to the open queue.
+                        if (visitedCoordinates[x, y] == 0 && map[x, y] == coordType)
                         {
-                            mapFlags[x, y] = 1;
-                            queue.Enqueue(new Coordinate(x, y));
+                            // mark the coordinate as visited.
+                            visitedCoordinates[x, y] = 1;
+                            openQueue.Enqueue(new Coordinate(x, y));
                         }
                     }
                 }
             }
         }
-
-        return tiles;
+        return coordinates;
     }
-
 
 }

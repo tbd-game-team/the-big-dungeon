@@ -3,61 +3,81 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    public TilemapVisualizer tilemapVisualizer = null;
-    public int minRoomWidth = 8;
-    public int minRoomHeight = 8;
-    public int dungeonWidth = 100;
-    public int dungeonHeight = 100;
+    [Header("Visualization")]
+    [SerializeField]
+    private TilemapVisualizer tilemapVisualizer = null;
 
-    public int cellularDensity = 45;
-    public int cellularIterations = 10;
 
-    public int wallRegionsThreshold = 5;
-    public int roomRegionsThreshold = 5;
+    [Header("Dungeon Generation")]
+    [SerializeField]
+    private int minRoomWidth = 8;
+    [SerializeField]
+    private int minRoomHeight = 8;
+    [SerializeField]
+    private int dungeonWidth = 100;
+    [SerializeField]
+    private int dungeonHeight = 100;
+    [SerializeField]
+    private int cellularAutomatonDensity = 45;
+    [SerializeField]
+    private int cellularAutomatonIterations = 10;
+    [SerializeField]
+    private int wallRegionsThreshold = 5;
+    [SerializeField]
+    private int roomRegionsThreshold = 5;
 
     void Awake()
     {
         CreateDungeon();
     }
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Generate the dungeon
+    /// </summary>
+    /// <returns></returns>
     private void CreateDungeon()
     {
+        HashSet<Vector2Int> dungeon = new HashSet<Vector2Int>();
+
+        // 1. Partition the space into subspaces using the Binary Space Partitioning (BSP) algorithm.
         List<BoundsInt> binarySpaces = SplitDungeonSpace();
 
+        // 2. Create rooms in each subspace using the Cellular Automaton (CA) Algorithm. 
+        dungeon = CreateCellularAutomatonRooms(binarySpaces);
+        int[,] dungeonMap = AlgorithmUtils.HashSetToMap(dungeon, dungeonWidth, dungeonHeight);
 
-        HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
-        floor = CreateCellularAutomataRooms(binarySpaces);
+        // 3. Remove too small space and wall regions.
+        CellularAutomataAlgorithm.FilterWalls(wallRegionsThreshold, dungeonMap, dungeonWidth, dungeonHeight);
+        List<BoundsInt> finalRooms = CellularAutomataAlgorithm.FilterRooms(roomRegionsThreshold, dungeonMap, dungeonWidth, dungeonHeight);
 
-        int[,] dungeonMap = AlgorithmUtils.HashSetToMap(floor, dungeonWidth, dungeonHeight);
-        CellularAutomataAlgorithm.FilterWalls(wallRegionsThreshold, dungeonWidth, dungeonHeight, dungeonMap);
-        List<BoundsInt> finalRooms = CellularAutomataAlgorithm.FilterRooms(roomRegionsThreshold, dungeonWidth, dungeonHeight, dungeonMap);
-        HashSet<Vector2Int> corridors = CreateCorridors(floor, finalRooms);
-        floor.UnionWith(corridors);
+        // 4. Connect the closest CA rooms with each other.
+        HashSet<Vector2Int> corridors = CreateCorridors(dungeon, finalRooms);
+        dungeon.UnionWith(corridors);
 
-        corridors = CreateCorridors(floor, binarySpaces);
-        floor.UnionWith(corridors);
+        // 5. Connect the closest subspaces with each other.
+        corridors = CreateCorridors(dungeon, binarySpaces);
+        dungeon.UnionWith(corridors);
+        dungeonMap = AlgorithmUtils.HashSetToMap(dungeon, dungeonWidth, dungeonHeight);
 
-        dungeonMap = AlgorithmUtils.HashSetToMap(floor, dungeonWidth, dungeonHeight);
-        CellularAutomataAlgorithm.FilterWalls(20, dungeonWidth, dungeonHeight, dungeonMap);
-        floor = AlgorithmUtils.MapToHashSet(dungeonMap, new Vector2Int(0, 0), dungeonWidth, dungeonHeight);
+        // 6. Remove the too small wall regions that were created during the creation of the coridor.
+        CellularAutomataAlgorithm.FilterWalls(20, dungeonMap, dungeonWidth, dungeonHeight);
+        dungeon = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
-        ActorGenerator.PlaceActors(floor, finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
+        // 7. Calculate the position of the player, the target coin and the enemies.
+        ActorGenerator.PlaceActors(finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
 
+        // 8. Visualize the dungeon
         tilemapVisualizer.Clear();
-        tilemapVisualizer.PaintFloorTiles(floor);
-        WallGenerator.CreateWalls(floor, tilemapVisualizer);
-
-
+        tilemapVisualizer.PaintFloorTiles(dungeon);
+        WallGenerator.CreateWalls(dungeon, tilemapVisualizer);
     }
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Divide the space into subspaces using the BSP algorithm.
+    /// </summary>
+    /// <returns>list of subspaces</returns>
     private List<BoundsInt> SplitDungeonSpace()
     {
         Vector3Int bottomLeftCorner = new Vector3Int(0, 0, 0);
@@ -66,12 +86,14 @@ public class DungeonGenerator : MonoBehaviour
         List<BoundsInt> roomsList = BinarySpacePartitioningAlgorithm.BSP(dungeonSpace, minRoomWidth, minRoomHeight);
         return roomsList;
     }
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-    private HashSet<Vector2Int> CreateCellularAutomataRooms(List<BoundsInt> roomsList)
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Create rooms in the dungeon subspaces using CA.
+    /// </summary>
+    /// <param name="roomsList">list of dungeon subspaces</param>
+    /// <returns>hash set of rooms created by CA</returns>
+    private HashSet<Vector2Int> CreateCellularAutomatonRooms(List<BoundsInt> roomsList)
     {
         HashSet<Vector2Int> floor = new HashSet<Vector2Int>();
         foreach (BoundsInt room in roomsList)
@@ -79,21 +101,23 @@ public class DungeonGenerator : MonoBehaviour
             int width = room.size.x;
             int height = room.size.y;
             Vector2Int startPosition = (Vector2Int)room.min;
-            HashSet<Vector2Int> cellularRoom = CellularAutomataAlgorithm.CA(startPosition, width, height, cellularIterations, cellularDensity, wallRegionsThreshold, roomRegionsThreshold);
+            HashSet<Vector2Int> cellularRoom = CellularAutomataAlgorithm.CA(startPosition, width, height, cellularAutomatonIterations, cellularAutomatonDensity);
             floor.UnionWith(cellularRoom);
         }
         return floor;
     }
 
-    
-    /*
-    * @author: Neele Kemper
-    * 
-    */   
-    private HashSet<Vector2Int> CreateCorridors(HashSet<Vector2Int> floor, List<BoundsInt> roomsList)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Connect the rooms closest to each other with coridors.
+    /// </summary>
+    /// <param name="floor">hash set that defines the current dungeon.</param>
+    /// <param name="roomsList">list of rooms</param>
+    /// <returns>hash set of corridors</returns> 
+    private HashSet<Vector2Int> CreateCorridors(HashSet<Vector2Int> dungeon, List<BoundsInt> roomsList)
     {
-        int[,] dungeonMap = AlgorithmUtils.HashSetToMap(floor, dungeonWidth, dungeonHeight);
-        List<Vector2Int> roomCenters = AlgorithmUtils.CreateRoomCenters(roomsList, dungeonWidth, dungeonHeight, dungeonMap);
+        int[,] dungeonMap = AlgorithmUtils.HashSetToMap(dungeon, dungeonWidth, dungeonHeight);
+        List<Vector2Int> roomCenters = AlgorithmUtils.CreateRoomCenters(roomsList, dungeonMap, dungeonWidth, dungeonHeight);
         HashSet<Vector2Int> corridors = CorridorGenerator.ConnectSpaces(roomCenters);
         return corridors;
     }
