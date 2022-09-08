@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-/*
-* @author: Sunny Valley Studio 
-* available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
-*/
+/// <summary>
+/// @author: Sunny Valley Studio 
+/// available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
+/// </summary>
 public static class WallGenerator 
 {
     public static void CreateWalls(HashSet<Vector2Int> floorPositions, TilemapVisualizer tilemapVisualizer)

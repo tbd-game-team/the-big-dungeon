@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-/*
-* @author: Sunny Valley Studio 
-* available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
-*/
+/// <summary>
+/// @author: Sunny Valley Studio 
+/// available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
+/// </summary>
 public class TilemapVisualizer : MonoBehaviour
 {   
     

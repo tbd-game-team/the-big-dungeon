@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-/*
-* @author: Sunny Valley Studio 
-* available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
-*/
+/// <summary>
+/// @author: Sunny Valley Studio 
+/// available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
+/// </summary>
 public static class Direction2D
 {
     public static List<Vector2Int> cardinalDirectionsList = new List<Vector2Int>
