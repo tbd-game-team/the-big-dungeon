@@ -35,6 +35,10 @@ namespace Assets.Scripts
         private Rigidbody2D rb;
         private Vector3 moveDelta;
 
+        private AudioSource footstepsSound;
+        private bool isMoving;
+        private Vector2 lastPosition;
+
         public void Start()
         {
             weapon = gameObject.transform.GetChild(0).gameObject;
@@ -42,22 +46,28 @@ namespace Assets.Scripts
             weaponAnimator = weapon.GetComponent<Animator>();
             boxCollider = GetComponent<BoxCollider2D>();
             rb = GetComponent<Rigidbody2D>();
+            footstepsSound = GetComponent<AudioSource>();
 
             invincibleTimer = invincibleTime;
             invincible = false;
-            
+
             // spawn position of player
             transform.position = ActorGenerator.GetPlayerPosition();
+            lastPosition =  rb.position;
         }
 
         //public void Update(){}
 
-        private void FixedUpdate() {
-            if(alive && !GameManager.Instance.isPaused){
+        private void FixedUpdate()
+        {   
+            if (alive && !GameManager.Instance.isPaused)
+            {
                 handleMovement();
                 handleInvincibility();
+                handleMovementSound();
 
-                if(Input.GetMouseButtonDown(0)){
+                if (Input.GetMouseButtonDown(0))
+                {
                     attack();
                 }
             }
@@ -67,7 +77,8 @@ namespace Assets.Scripts
         * @author: Florian Weber, Neele Kemper
         * 
         */
-        private void handleMovement(){
+        private void handleMovement()
+        {
             var x = Input.GetAxis("Horizontal");
             var y = Input.GetAxis("Vertical");
             moveDelta = new Vector3(x, y, 0);
@@ -82,66 +93,110 @@ namespace Assets.Scripts
                 transform.localScale = new Vector3(-1, 1, 1);
             }
 
-
+            
             rb.MovePosition(transform.position + moveDelta * Time.deltaTime * walkSpeed);
+   
+            if (rb.position != lastPosition){
+            
+                isMoving = true;
+            } else {
+                 isMoving = false;
+            }   
+            lastPosition =  rb.position;
+           
+
+
         }
 
-        private void attack(){
+        /// <summary>
+        /// @author: Neele Kemper
+        /// Manages the footprint sounds of the player when moving.
+        /// </summary>
+        /// <returns></returns>
+        private void handleMovementSound()
+        {
+            if (isMoving && !footstepsSound.isPlaying)
+            {
+                footstepsSound.Play();
+            }
+            else if(!isMoving)
+            {
+                footstepsSound.Stop();
+            }
+        }
+
+        private void attack()
+        {
             weaponAnimator.SetTrigger("attack");
         }
 
-        private void OnTriggerEnter2D(Collider2D other) {
-            if (other.gameObject.tag == "Enemy"){
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.gameObject.tag == "Enemy")
+            {
                 damage(1);
-            } else if(other.gameObject.tag == "Coin"){
+            }
+            else if (other.gameObject.tag == "Coin")
+            {
                 // @Fabian: Todo
                 Debug.Log("You win!");
             }
         }
 
-        private void damage(int amount){
-            if(!invincible){
-                if(health - amount <= 0){
+        private void damage(int amount)
+        {
+            if (!invincible)
+            {
+                if (health - amount <= 0)
+                {
                     GameManager.Instance.pause();
                     alive = false;
                     health = 0;
                     gameOverPanel.SetActive(true);
-                }else{
+                }
+                else
+                {
                     health -= amount;
                     invincible = true;
                     StartCoroutine("Flasher");
                 }
-                if(camShake != null){
+                if (camShake != null)
+                {
                     StartCoroutine(camShake.Shake(0.4f, 0.3f));
                 }
                 healthUi.updateHearts(health);
             }
         }
 
-        private void handleInvincibility(){
-            if(invincibleTimer <= 0 && invincible){
+        private void handleInvincibility()
+        {
+            if (invincibleTimer <= 0 && invincible)
+            {
                 invincibleTimer = invincibleTime;
                 invincible = false;
-            }if(invincible){
+            }
+            if (invincible)
+            {
                 invincibleTimer -= Time.deltaTime;
             }
         }
 
-        public int getHealth(){
+        public int getHealth()
+        {
             return health;
         }
 
-        IEnumerator Flasher() 
-         {
+        IEnumerator Flasher()
+        {
             var renderer = gameObject.GetComponent<SpriteRenderer>();
             var normalColor = renderer.color;
-             for (int i = 0; i < 4; i++)
-             {
-              renderer.color = collideColor;
-              yield return new WaitForSeconds(invincibleTime/8);
-              renderer.color = normalColor; 
-              yield return new WaitForSeconds(invincibleTime/8);
-             }
-          }
+            for (int i = 0; i < 4; i++)
+            {
+                renderer.color = collideColor;
+                yield return new WaitForSeconds(invincibleTime / 8);
+                renderer.color = normalColor;
+                yield return new WaitForSeconds(invincibleTime / 8);
+            }
+        }
     }
 }
