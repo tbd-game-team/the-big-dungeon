@@ -1,15 +1,14 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public static class ActorGenerator
-{   
+{
     private static Vector3 playerPosition = new Vector3();
     private static Vector3 targetPosition = new Vector3();
     private static List<Vector3> enemyPositions = new List<Vector3>();
 
-    
     /*
     * @author: Neele Kemper
     * 
@@ -44,9 +43,9 @@ public static class ActorGenerator
         enemyRooms.RemoveAt(targetIndex);
         pathLengthList.RemoveAt(targetIndex);
         CalculateEnemyPositions(enemyRooms, pathLengthList, map, width, height);
-
+        EnemySpawner.SpawnStarterEnemies();
     }
-        
+
     /*
     * @author: Neele Kemper
     * 
@@ -73,7 +72,7 @@ public static class ActorGenerator
             {
                 enemyDensity = 0.09f;
             }
-            int roomArea = (room.size.x * room.size.y)/2;
+            int roomArea = (room.size.x * room.size.y) / 2;
             int nEnemies = Mathf.Max(1, (int)(roomArea * enemyDensity));
             if (nEnemies == 0)
             {
@@ -87,10 +86,10 @@ public static class ActorGenerator
                 if (AlgorithmUtils.IsInMapRange(x, y, width, height))
                 {
                     Vector3 pos = new Vector3(x, y, 0);
-                    int surroundingWalls = CellularAutomataAlgorithm.CountSurroundingWalls(x,y,width,height,map);
-                    bool isFloor =(map[x, y] == AlgorithmUtils.floorTile);
-                    if (isFloor && !enemyPositions.Contains(pos) && surroundingWalls < 2)  
-                    {   
+                    int surroundingWalls = CellularAutomataAlgorithm.CountSurroundingWalls(x, y, width, height, map);
+                    bool isFloor = (map[x, y] == AlgorithmUtils.floorTile);
+                    if (isFloor && !enemyPositions.Contains(pos) && surroundingWalls < 2)
+                    {
                         enemyPositions.Add(pos);
                         count++;
 
@@ -101,7 +100,7 @@ public static class ActorGenerator
         }
     }
 
-        
+
     /*
     * @author: Neele Kemper
     * 
@@ -111,7 +110,7 @@ public static class ActorGenerator
         return playerPosition;
     }
 
-    
+
     /*
     * @author: Neele Kemper
     * 
@@ -120,7 +119,7 @@ public static class ActorGenerator
     {
         return targetPosition;
     }
-    
+
     /*
     * @author: Neele Kemper
     * 
@@ -130,4 +129,3 @@ public static class ActorGenerator
         return enemyPositions;
     }
 }
-

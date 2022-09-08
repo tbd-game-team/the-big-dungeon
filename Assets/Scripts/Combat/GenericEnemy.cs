@@ -11,9 +11,6 @@ public class GenericEnemy : MonoBehaviour
     [SerializeField]
     public GameObject target;
     [SerializeField]
-
-    public GameObject enemyPrefab;
-    [SerializeField]
     private float personalSpace = 1f;
 
     [Header("Combat")]
@@ -37,22 +34,9 @@ public class GenericEnemy : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-
-        List<Vector3> positions = ActorGenerator.GetEnemyPositions();
-        foreach(Vector3 pos in positions)
-        {   
-            //@Niklas:when i try to instantiate the enemies, the game crashes!
-            //Instantiate(enemyPrefab, pos, Quaternion.identity);
-            Debug.Log("Enemy Positions: ("+pos.x+", "+pos.y+")");
-        }
-
-    }
-
     void Update()
     {
-        var movement = handleMovement();
+        var movement = HandleMovement();
         handleAnimation(movement);
     }
 
@@ -61,7 +45,7 @@ public class GenericEnemy : MonoBehaviour
         handleCombat();
     }
 
-    Vector3 handleMovement()
+    Vector3 HandleMovement()
     {
         var distance = Vector3.Distance(transform.position, target.transform.position);
         var movement = (target.transform.position - transform.position).normalized * Time.deltaTime * speed;
