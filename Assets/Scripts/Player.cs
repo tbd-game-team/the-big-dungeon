@@ -35,9 +35,10 @@ namespace Assets.Scripts
         private Rigidbody2D rb;
         private Vector3 moveDelta;
 
-        private AudioSource footstepsSound;
         private bool isMoving;
         private Vector2 lastPosition;
+
+        public AudioManager audioManager;
 
         public void Start()
         {
@@ -46,26 +47,34 @@ namespace Assets.Scripts
             weaponAnimator = weapon.GetComponent<Animator>();
             boxCollider = GetComponent<BoxCollider2D>();
             rb = GetComponent<Rigidbody2D>();
-            footstepsSound = GetComponent<AudioSource>();
+
 
             invincibleTimer = invincibleTime;
             invincible = false;
 
             // spawn position of player
             transform.position = ActorGenerator.GetPlayerPosition();
-            lastPosition =  rb.position;
+            lastPosition = rb.position;
+
+            audioManager = FindObjectOfType<AudioManager>();// GetComponent<AudioManager>();
         }
 
-        //public void Update(){}
 
         private void FixedUpdate()
-        {   
+        {
             if (alive && !GameManager.Instance.isPaused)
             {
                 handleMovement();
+
+            }
+        }
+
+        private void Update()
+        {
+            if (alive && !GameManager.Instance.isPaused)
+            {
                 handleInvincibility();
                 handleMovementSound();
-
                 if (Input.GetMouseButtonDown(0))
                 {
                     attack();
@@ -73,10 +82,11 @@ namespace Assets.Scripts
             }
         }
 
-        /*
-        * @author: Florian Weber, Neele Kemper
-        * 
-        */
+        /// <summary>
+        /// @author: Florian Weber, Neele Kemper
+        /// 
+        /// </summary>
+        /// <returns></returns>
         private void handleMovement()
         {
             var x = Input.GetAxis("Horizontal");
@@ -93,41 +103,45 @@ namespace Assets.Scripts
                 transform.localScale = new Vector3(-1, 1, 1);
             }
 
-            
+
             rb.MovePosition(transform.position + moveDelta * Time.deltaTime * walkSpeed);
-   
-            if (rb.position != lastPosition){
-            
+
+            if (rb.position != lastPosition)
+            {
+
                 isMoving = true;
-            } else {
-                 isMoving = false;
-            }   
-            lastPosition =  rb.position;
-           
+            }
+            else
+            {
+                isMoving = false;
+            }
+            lastPosition = rb.position;
+
 
 
         }
 
         /// <summary>
         /// @author: Neele Kemper
-        /// Manages the footprint sounds of the player when moving.
+        /// Manages the footsteps sounds of the player when moving.
         /// </summary>
         /// <returns></returns>
         private void handleMovementSound()
         {
-            if (isMoving && !footstepsSound.isPlaying)
+            if (isMoving && !audioManager.isPlaying("PlayerFootsteps"))
             {
-                footstepsSound.Play();
+                audioManager.Play("PlayerFootsteps");
             }
-            else if(!isMoving)
+            else if (!isMoving)
             {
-                footstepsSound.Stop();
+                audioManager.Stop("PlayerFootsteps");
             }
         }
 
         private void attack()
         {
             weaponAnimator.SetTrigger("attack");
+            audioManager.Play("PlayerSword");
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -151,6 +165,7 @@ namespace Assets.Scripts
                 {
                     GameManager.Instance.pause();
                     alive = false;
+                    audioManager.Play("PlayerDeath");
                     health = 0;
                     gameOverPanel.SetActive(true);
                 }
@@ -158,6 +173,7 @@ namespace Assets.Scripts
                 {
                     health -= amount;
                     invincible = true;
+                    audioManager.Play("PlayerPain");
                     StartCoroutine("Flasher");
                 }
                 if (camShake != null)
