@@ -12,7 +12,7 @@ public static class AlgorithmUtils
     /// @author: Neele Kemper
     /// Convert the dungeon map into a hash set of vectors.
     /// </summary>
-    /// <param name="startPosition">position of the lower left corner of the map</param>
+    /// <param name="startPosition">position of the bottom left corner of the map</param>
     /// <param name="map">dungeon map</param>
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
@@ -172,7 +172,7 @@ public static class AlgorithmUtils
     /// @author: Neele Kemper
     /// Count the number of surrounded walls for the passed coordinate.
     /// </summary>
-    /// <param name="x"x x-coordinate></param>
+    /// <param name="x"x-coordinate></param>
     /// <param name="y">y-coordinate</param>
     /// <param name="map">dungeon map</param>
     /// <param name="width">width of the dungeon</param>

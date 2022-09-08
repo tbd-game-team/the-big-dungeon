@@ -19,7 +19,7 @@ public class DungeonGenerator : MonoBehaviour
     {
         CreateDungeon();
     }
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// 
@@ -46,13 +46,13 @@ public class DungeonGenerator : MonoBehaviour
         CellularAutomataAlgorithm.FilterWalls(20, dungeonMap, dungeonWidth, dungeonHeight);
         floor = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
-        ActorGenerator.PlaceActors( finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
+        ActorGenerator.PlaceActors(finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
 
         tilemapVisualizer.Clear();
         tilemapVisualizer.PaintFloorTiles(floor);
         WallGenerator.CreateWalls(floor, tilemapVisualizer);
     }
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// 
@@ -66,7 +66,7 @@ public class DungeonGenerator : MonoBehaviour
         List<BoundsInt> roomsList = BinarySpacePartitioningAlgorithm.BSP(dungeonSpace, minRoomWidth, minRoomHeight);
         return roomsList;
     }
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// 
@@ -81,12 +81,12 @@ public class DungeonGenerator : MonoBehaviour
             int width = room.size.x;
             int height = room.size.y;
             Vector2Int startPosition = (Vector2Int)room.min;
-            HashSet<Vector2Int> cellularRoom = CellularAutomataAlgorithm.CA(startPosition, width, height, cellularIterations, cellularDensity, wallRegionsThreshold, roomRegionsThreshold);
+            HashSet<Vector2Int> cellularRoom = CellularAutomataAlgorithm.CA(startPosition, width, height, cellularIterations, cellularDensity);
             floor.UnionWith(cellularRoom);
         }
         return floor;
     }
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// 

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 
-public class Coordinate 
+public class Coordinate
 {
     public int x;
     public int y;
@@ -22,7 +22,7 @@ public class Coordinate
         centerX = x + 0.5f;
         centerY = y + 0.5f;
     }
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// Calculates the FCost of the coordinate for the A* algorithm.
@@ -32,7 +32,7 @@ public class Coordinate
     {
         fCost = gCost + hCost;
     }
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// Checks if the coordinate is in the passed list of coordinates.
@@ -45,12 +45,12 @@ public class Coordinate
         {
             if (c.x == x && c.y == y)
             {
-                return true; 
+                return true;
             }
         }
         return false;
     }
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// Checks if the coordinate equals the passed coordinate.
@@ -59,7 +59,7 @@ public class Coordinate
     /// <returns>true, if coordinates are equal, otherwise false.</returns>
     public bool EqulasTo(Coordinate c)
     {
-        if(x == c.x && y == c.y)
+        if (x == c.x && y == c.y)
         {
             return true;
         }
