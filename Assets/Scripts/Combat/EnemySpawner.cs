@@ -4,6 +4,24 @@ using UnityEngine;
 
 public static class EnemySpawner
 {
+    private static Dictionary<string, GameObject> prefabCache = new Dictionary<string, GameObject>();
+
+    /// <summary>
+    /// Loads prefab from disk. The enemy class can only be recognized if the file is put correctly.
+    /// </summary>
+    private static GameObject GetPrefab(string prefabName)
+    {
+        if (prefabCache.TryGetValue(prefabName, out GameObject value))
+        {
+            return value;
+        }
+
+        var prefab = Resources.Load(prefabName, typeof(GameObject)) as GameObject;
+        prefabCache[prefabName] = prefab;
+
+        return prefab;
+    }
+
     /// <summary>
     /// Spawn the initially in the level placed enemies.
     /// This information is taken from the ActorGenerator.
@@ -21,15 +39,14 @@ public static class EnemySpawner
     }
 
     /// <summary>
-    /// Spawns a single enemy. The enemy class can only be recognized if the file is put correctly.
+    /// Spawns a single enemy.
     /// </summary>
     /// <param name="prefabName">Name of the enemy prefab resource.</param>
     /// <param name="loc">Where the enemy is to be spawned.</param>
     public static void SpawnEnemy(string prefabName, Vector3 loc)
     {
         var locations = ActorGenerator.GetEnemyPositions();
-
-        var prefab = Resources.Load(prefabName);
+        var prefab = GetPrefab(prefabName);
         var enemy = Object.Instantiate(prefab, loc, Quaternion.identity) as GameObject;
 
         var enemyController = enemy.GetComponent<GenericEnemy>();
