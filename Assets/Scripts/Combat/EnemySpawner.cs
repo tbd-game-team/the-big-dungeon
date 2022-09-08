@@ -10,11 +10,9 @@ public static class EnemySpawner
 
         foreach (var loc in locations)
         {
-            var pathOfPrefabDirectory = "Prefabs/Combat";
             var prefabName = "Enemy";
-
-            var prefab = Resources.Load(pathOfPrefabDirectory + prefabName, typeof(GameObject)) as GameObject;
-            var enemy = Object.Instantiate(prefab, loc, Quaternion.identity);
+            var prefab = Resources.Load(prefabName);
+            var enemy = Object.Instantiate(prefab, loc, Quaternion.identity) as GameObject;
 
             var enemyController = enemy.GetComponent<GenericEnemy>();
             enemyController.target = GameObject.FindWithTag("Player");
