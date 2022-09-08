@@ -8,11 +8,17 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class TilemapVisualizer : MonoBehaviour
 {   
-    
-    public Tilemap floorTilemap;
-    public Tilemap wallTilemap;
-    public TileBase floorTile;
-    public TileBase wallTop, wallSideRight, wallSiderLeft, wallBottom, wallFull, 
+    [Header("Tilemap")]
+    [SerializeField]    
+    private Tilemap floorTilemap;
+    [SerializeField]
+    private Tilemap wallTilemap;
+
+    [Header("Tile")]
+    [SerializeField]
+    private TileBase floorTile;
+    [SerializeField]
+    private TileBase wallTop, wallSideRight, wallSiderLeft, wallBottom, wallFull, 
     wallInnerCornerDownLeft, wallInnerCornerDownRight, 
     wallDiagonalCornerDownRight, wallDiagonalCornerDownLeft, wallDiagonalCornerUpRight, wallDiagonalCornerUpLeft;
 

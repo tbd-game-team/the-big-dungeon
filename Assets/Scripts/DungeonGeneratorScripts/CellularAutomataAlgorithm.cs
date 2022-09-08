@@ -64,7 +64,7 @@ public static class CellularAutomataAlgorithm
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
     private static void ApplyCellularAutomaton(int[,] map, int width, int height)
-    {   
+    {
         // iterate over all cells in the dungeon
         for (int x = 0; x < width; x++)
         {
@@ -229,7 +229,6 @@ public static class CellularAutomataAlgorithm
                 }
             }
         }
-
         return coordinates;
     }
 
