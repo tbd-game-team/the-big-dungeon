@@ -77,7 +77,6 @@ namespace Assets.Scripts
                 handleMovementSound();
                 if (Input.GetMouseButtonDown(0))
                 {   
-                    Debug.Log("attack");
                     attack();
                 }
             }
@@ -166,6 +165,7 @@ namespace Assets.Scripts
                 {
                     GameManager.Instance.pause();
                     alive = false;
+                    audioManager.Stop("PlayerFootsteps");
                     audioManager.Play("PlayerDeath");
                     health = 0;
                     gameOverPanel.SetActive(true);

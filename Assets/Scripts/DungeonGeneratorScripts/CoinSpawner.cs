@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// @author: Neele Kemper
+/// Place the target coin.
+/// </summary>
 public class CoinSpawner : MonoBehaviour
 {
-    /*
-    * @author: Neele Kemper
-    * 
-    */
-   void Start()
+    void Start()
     {
         transform.position = ActorGenerator.GetTargetPosition();
     }
