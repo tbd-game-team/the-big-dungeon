@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class GenericEnemy : MonoBehaviour
 {
     [Header("Movement")]
@@ -10,9 +10,6 @@ public class GenericEnemy : MonoBehaviour
     private float speed = 3.5f;
     [SerializeField]
     public GameObject target;
-    [SerializeField]
-
-    public GameObject enemyPrefab;
     [SerializeField]
     private float personalSpace = 1f;
 
@@ -25,38 +22,30 @@ public class GenericEnemy : MonoBehaviour
     private float fireCooldown = .5f;
 
     private float nextFire = .0f;
-    // private Rigidbody2D rb;
+
+    private Animator characterAnimator;
 
     private void Awake()
     {
-        // rb = GetComponent<Rigidbody2D>();
+        characterAnimator = GetComponent<Animator>();
         if (target == null)
         {
             target = GameObject.FindWithTag("Player");
         }
     }
 
-    void Start()
+    void Update()
     {
-
-        List<Vector3> positions = ActorGenerator.GetEnemyPositions();
-        foreach(Vector3 pos in positions)
-        {   
-            //@Niklas:when i try to instantiate the enemies, the game crashes!
-            //Instantiate(enemyPrefab, pos, Quaternion.identity);
-            Debug.Log("Enemy Positions: ("+pos.x+", "+pos.y+")");
-        }
-
+        var movement = HandleMovement();
+        handleAnimation(movement);
     }
 
     void FixedUpdate()
     {
-        var movement = handleMovement();
-        handleAnimation(movement);
         handleCombat();
     }
 
-    Vector3 handleMovement()
+    Vector3 HandleMovement()
     {
         var distance = Vector3.Distance(transform.position, target.transform.position);
         var movement = (target.transform.position - transform.position).normalized * Time.deltaTime * speed;
@@ -78,11 +67,12 @@ public class GenericEnemy : MonoBehaviour
 
     void handleAnimation(Vector3 movement)
     {
-        if (movement.x < 0)
+        characterAnimator.SetFloat(Keys.ANIMATION_SPEED_KEY, movement.magnitude / Time.deltaTime);
+        if (movement.x > 0)
         {
             transform.localScale = Vector3.one;
         }
-        else if (movement.x > 0)
+        else if (movement.x < 0)
         {
             transform.localScale = new Vector3(-1, 1, 1);
         }
@@ -96,7 +86,12 @@ public class GenericEnemy : MonoBehaviour
         {
             nextFire = Time.time + fireCooldown;
 
-            Instantiate(projectilePrefab, transform.position, transform.rotation);
+            var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
+            // var projectileController = projectile.GetComponent<GenericProjectile>();
+
+            var relative = projectile.transform.InverseTransformPoint(target.transform.position);
+            var angle = 90 - Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
+            projectile.transform.Rotate(0, 0, angle);
         }
     }
 }

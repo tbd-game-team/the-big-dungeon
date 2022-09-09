@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -45,19 +45,22 @@ namespace Assets.Scripts
 
             invincibleTimer = invincibleTime;
             invincible = false;
-            
+
             // spawn position of player
             transform.position = ActorGenerator.GetPlayerPosition();
         }
 
         //public void Update(){}
 
-        private void FixedUpdate() {
-            if(alive && !GameManager.Instance.isPaused){
+        private void FixedUpdate()
+        {
+            if (alive && !GameManager.Instance.isPaused)
+            {
                 handleMovement();
                 handleInvincibility();
 
-                if(Input.GetMouseButtonDown(0)){
+                if (Input.GetMouseButtonDown(0))
+                {
                     attack();
                 }
             }
@@ -67,7 +70,8 @@ namespace Assets.Scripts
         * @author: Florian Weber, Neele Kemper
         * 
         */
-        private void handleMovement(){
+        private void handleMovement()
+        {
             var x = Input.GetAxis("Horizontal");
             var y = Input.GetAxis("Vertical");
             moveDelta = new Vector3(x, y, 0);
@@ -86,62 +90,78 @@ namespace Assets.Scripts
             rb.MovePosition(transform.position + moveDelta * Time.deltaTime * walkSpeed);
         }
 
-        private void attack(){
+        private void attack()
+        {
             weaponAnimator.SetTrigger("attack");
         }
 
-        private void OnTriggerEnter2D(Collider2D other) {
-            if (other.gameObject.tag == "Enemy"){
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (other.gameObject.tag == "Enemy")
+            {
                 damage(1);
-            } else if(other.gameObject.tag == "Coin"){
+            }
+            else if (other.gameObject.tag == "Coin")
+            {
                 // @Fabian: Todo
                 Debug.Log("You win!");
             }
         }
 
-        private void damage(int amount){
-            if(!invincible){
-                if(health - amount <= 0){
+        private void damage(int amount)
+        {
+            if (!invincible)
+            {
+                if (health - amount <= 0)
+                {
                     GameManager.Instance.pause();
                     alive = false;
                     health = 0;
                     gameOverPanel.SetActive(true);
-                }else{
+                }
+                else
+                {
                     health -= amount;
                     invincible = true;
                     StartCoroutine("Flasher");
                 }
-                if(camShake != null){
+                if (camShake != null)
+                {
                     StartCoroutine(camShake.Shake(0.4f, 0.3f));
                 }
                 healthUi.updateHearts(health);
             }
         }
 
-        private void handleInvincibility(){
-            if(invincibleTimer <= 0 && invincible){
+        private void handleInvincibility()
+        {
+            if (invincibleTimer <= 0 && invincible)
+            {
                 invincibleTimer = invincibleTime;
                 invincible = false;
-            }if(invincible){
+            }
+            if (invincible)
+            {
                 invincibleTimer -= Time.deltaTime;
             }
         }
 
-        public int getHealth(){
+        public int getHealth()
+        {
             return health;
         }
 
-        IEnumerator Flasher() 
-         {
+        IEnumerator Flasher()
+        {
             var renderer = gameObject.GetComponent<SpriteRenderer>();
             var normalColor = renderer.color;
-             for (int i = 0; i < 4; i++)
-             {
-              renderer.color = collideColor;
-              yield return new WaitForSeconds(invincibleTime/8);
-              renderer.color = normalColor; 
-              yield return new WaitForSeconds(invincibleTime/8);
-             }
-          }
+            for (int i = 0; i < 4; i++)
+            {
+                renderer.color = collideColor;
+                yield return new WaitForSeconds(invincibleTime / 8);
+                renderer.color = normalColor;
+                yield return new WaitForSeconds(invincibleTime / 8);
+            }
+        }
     }
 }
