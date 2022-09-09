@@ -154,6 +154,7 @@ namespace Assets.Scripts
             {
                 // @Fabian: Todo
                 Debug.Log("You win!");
+                audioManager.Play("PlayerCoinSelection");
             }
         }
 
