@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public static class ActorGenerator
@@ -53,7 +53,7 @@ public static class ActorGenerator
         enemyRooms.RemoveAt(targetIndex);
         pathLengthList.RemoveAt(targetIndex);
         CalculateEnemyPositions(enemyRooms, pathLengthList, map, width, height);
-
+        EnemySpawner.SpawnStarterEnemies();
     }
 
     /// <summary>
@@ -151,4 +151,3 @@ public static class ActorGenerator
         return enemyPositions;
     }
 }
-
