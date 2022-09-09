@@ -6,7 +6,7 @@ public static class EnemySpawner
 {
     public static void SpawnStarterEnemies()
     {
-        var locations = ActorGenerator.GetEnemyPositions();
+        var locations = SpawnPositionGenerator.GetEnemyPositions();
 
         foreach (var loc in locations)
         {
@@ -18,7 +18,7 @@ public static class EnemySpawner
             enemyController.target = GameObject.FindWithTag("Player");
 
 
-            Debug.Log("Enemy Positions: (" + loc.x + ", " + loc.y + ")");
+            //Debug.Log("Enemy Positions: (" + loc.x + ", " + loc.y + ")");
         }
     }
 }

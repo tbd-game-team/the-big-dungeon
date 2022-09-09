@@ -53,7 +53,7 @@ namespace Assets.Scripts
             invincible = false;
 
             // spawn position of player
-            transform.position = ActorGenerator.GetPlayerPosition();
+            transform.position = SpawnPositionGenerator.GetPlayerPosition();
             lastPosition = rb.position;
 
             audioManager = FindObjectOfType<AudioManager>();// GetComponent<AudioManager>();
@@ -155,6 +155,10 @@ namespace Assets.Scripts
                 // @Fabian: Todo
                 Debug.Log("You win!");
                 audioManager.Play("PlayerCoinSelection");
+            } 
+            else if(other.gameObject.tag == "HealthPotion")
+            {
+                restoreHealth(other);
             }
         }
 
@@ -184,6 +188,21 @@ namespace Assets.Scripts
                 }
                 healthUi.updateHearts(health);
             }
+        }
+
+        private void restoreHealth(Collider2D potion)
+        {
+            if (health< healthUi.maxHealthPlayer && alive)
+            {
+                health+=1;
+                audioManager.Play("PlayeDrinkPotion");
+                healthUi.updateHearts(health);
+            } 
+            else 
+            {
+                audioManager.Play("PlayeShatterPotion");
+            } 
+            Destroy(potion.gameObject);
         }
 
         private void handleInvincibility()

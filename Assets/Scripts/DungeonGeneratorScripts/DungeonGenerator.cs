@@ -65,7 +65,7 @@ public class DungeonGenerator : MonoBehaviour
         dungeon = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
         // 7. Calculate the position of the player, the target coin and the enemies.
-        ActorGenerator.PlaceActors(finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
+        SpawnPositionGenerator.CalculatePositions(finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
 
         // 8. Visualize the dungeon
         tilemapVisualizer.Clear();

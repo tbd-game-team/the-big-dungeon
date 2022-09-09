@@ -11,7 +11,7 @@ public class HealthUi : MonoBehaviour
     public Animator hitPanel;
     
     private Image[] hearts;
-    private int maxHealth = 5;
+    public int maxHealthPlayer = 5;
 
     private void Start() {
         hearts = gameObject.GetComponentsInChildren<Image>();
@@ -21,14 +21,18 @@ public class HealthUi : MonoBehaviour
     }
 
     public void updateHearts(int currentHealth){
-        for(int i = 0; i < maxHealth; i++){
+        bool damageTaken = false;
+        for(int i = 0; i < maxHealthPlayer; i++){
             if(i<currentHealth){
                 hearts[i].sprite = fullHeart;
             }else{
                 hearts[i].sprite = emptyHeart;
+                damageTaken = true;
             }
         }
-        hitPanel.SetTrigger("hit");
+        if(damageTaken){
+            hitPanel.SetTrigger("hit");
+        }
     }
 
 

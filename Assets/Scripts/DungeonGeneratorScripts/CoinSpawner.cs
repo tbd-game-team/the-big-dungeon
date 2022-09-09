@@ -10,6 +10,6 @@ public class CoinSpawner : MonoBehaviour
 {
     void Start()
     {
-        transform.position = ActorGenerator.GetTargetPosition();
+        transform.position = SpawnPositionGenerator.GetTargetPosition();
     }
 }

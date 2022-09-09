@@ -3,22 +3,23 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public static class ActorGenerator
+public static class SpawnPositionGenerator
 {
     private static Vector3 playerPosition = new Vector3();
     private static Vector3 targetPosition = new Vector3();
+    private static List<Vector3> healthPotionPositions = new List<Vector3>();
     private static List<Vector3> enemyPositions = new List<Vector3>();
 
     /// <summary>
     /// @author: Neele Kemper
-    /// Calculate the position of the player, the target coin and the enemies.
+    /// Calculate the position of the player, the target coin, helath potions and the enemies.
     /// </summary>
     /// <param name="rooms">list of rooms in the dugeon.</param>
     /// <param name="map">dungeon map</param>
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
-    public static void PlaceActors(List<BoundsInt> rooms, int[,] map, int width, int height)
+    public static void CalculatePositions(List<BoundsInt> rooms, int[,] map, int width, int height)
     {
         // sort rooms ascending according to their size.
         rooms.Sort((r1, r2) => ((r1.size.x * r1.size.y).CompareTo(r2.size.x * r2.size.y)));
@@ -52,13 +53,15 @@ public static class ActorGenerator
         // enemies are placed in all other rooms.
         enemyRooms.RemoveAt(targetIndex);
         pathLengthList.RemoveAt(targetIndex);
-        CalculateEnemyPositions(enemyRooms, pathLengthList, map, width, height);
+
+        CalculateEnemyAndPotionPositions(enemyRooms, pathLengthList, map, width, height);
         EnemySpawner.SpawnStarterEnemies();
     }
 
     /// <summary>
     /// @author: Neele Kemper
     /// Calculate the position of the enemie using the distance from the player positions and the size of the room.
+    /// The positions of the health potions are also determined.
     /// The farther the room is from the starting position, the more enemies will be spawned in that room.
     /// </summary>
     /// <param name="rooms">list of rooms in the dugeon.</param>
@@ -67,7 +70,7 @@ public static class ActorGenerator
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
-    private static void CalculateEnemyPositions(List<BoundsInt> rooms, List<int> pathLengths, int[,] map, int width, int height)
+    private static void CalculateEnemyAndPotionPositions(List<BoundsInt> rooms, List<int> pathLengths, int[,] map, int width, int height)
     {
         int nSteps = 3;
         int stepsWide = (pathLengths.Max() - pathLengths.Min()) / nSteps;
@@ -97,6 +100,31 @@ public static class ActorGenerator
 
             int count = 0;
 
+            // randomly determine if a health potion is placed in a random position in the room..
+            if (Random.Range(1, 100) < 33)
+            {   
+                bool positionFound = false;
+                while (!positionFound)
+                {
+                    int x = Random.Range(room.min.x, room.max.x);
+                    int y = Random.Range(room.min.y, room.max.y);
+                    if (AlgorithmUtils.IsInMapRange(x, y, width, height))
+                    {
+                        Vector3 pos = new Vector3(x, y, 0);
+                        // do not place enemies directly against walls (this may cause them to overlap with the walls)
+                        bool isFloor = (map[x, y] == AlgorithmUtils.floorTile);
+                        if (isFloor)
+                        {
+                            healthPotionPositions.Add(pos);
+                            positionFound = true;
+
+                        }
+                    }
+                }
+
+
+            }
+
             // calculate the position for each enemy
             while (count < nEnemies)
             {
@@ -109,7 +137,7 @@ public static class ActorGenerator
                     // do not place enemies directly against walls (this may cause them to overlap with the walls)
                     int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(x, y, map, width, height);
                     bool isFloor = (map[x, y] == AlgorithmUtils.floorTile);
-                    if (isFloor && !enemyPositions.Contains(pos) && surroundingWalls < 2)
+                    if (isFloor && !enemyPositions.Contains(pos) && !healthPotionPositions.Contains(pos) && surroundingWalls < 2)
                     {
                         enemyPositions.Add(pos);
                         count++;
@@ -149,5 +177,15 @@ public static class ActorGenerator
     public static List<Vector3> GetEnemyPositions()
     {
         return enemyPositions;
+    }
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Get the spawn positions of the health potions.
+    /// </summary>
+    /// <returns>enemy positions</returns>
+    public static List<Vector3> GetHealthPotionPositions()
+    {
+        return healthPotionPositions;
     }
 }
