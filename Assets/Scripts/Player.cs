@@ -76,7 +76,8 @@ namespace Assets.Scripts
                 handleInvincibility();
                 handleMovementSound();
                 if (Input.GetMouseButtonDown(0))
-                {
+                {   
+                    Debug.Log("attack");
                     attack();
                 }
             }
