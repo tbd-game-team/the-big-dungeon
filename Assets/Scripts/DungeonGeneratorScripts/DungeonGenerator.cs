@@ -44,7 +44,11 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     private void CreateDungeon()
-    {
+    {   
+        // 0. Reset old dungeon 
+        SpawnPositionGenerator.Clear();
+        tilemapVisualizer.Clear();
+
         HashSet<Vector2Int> dungeon = new HashSet<Vector2Int>();
 
         // 1. Partition the space into subspaces using the Binary Space Partitioning (BSP) algorithm.
@@ -72,10 +76,9 @@ public class DungeonGenerator : MonoBehaviour
         dungeon = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
         // 7. Calculate the position of the player, the target coin and the enemies.
-        SpawnPositionGenerator.CalculatePositions(finalRooms, healthPotionProbability,enemyDenisityLevels, dungeonMap, dungeonWidth, dungeonHeight);
-
+        SpawnPositionGenerator.CalculatePositions(finalRooms, healthPotionProbability, enemyDenisityLevels, dungeonMap, dungeonWidth, dungeonHeight);
+        
         // 8. Visualize the dungeon
-        tilemapVisualizer.Clear();
         tilemapVisualizer.PaintFloorTiles(dungeon);
         WallGenerator.CreateWalls(dungeon, tilemapVisualizer);
     }

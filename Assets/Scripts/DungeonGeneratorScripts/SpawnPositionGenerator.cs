@@ -84,7 +84,7 @@ public static class SpawnPositionGenerator
         {
             BoundsInt room = rooms[i];
             int length = pathLengths[i];
-            
+
             float enemyDensity = 0.0f;
             // the further the room is from the starting position, the more enemies will be spawned (enemy density increases).
             for (int j = 1; j <= nLevel; j++)
@@ -129,8 +129,6 @@ public static class SpawnPositionGenerator
                     }
                 }
             }
-
-
         }
     }
 
@@ -160,6 +158,19 @@ public static class SpawnPositionGenerator
             }
         }
         return Vector3.zero;
+    }
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Reset all positions.
+    /// </summary>
+    /// <returns></returns>
+    public static void Clear()
+    {
+        playerPosition = new Vector3();
+        targetPosition = new Vector3();
+        healthPotionPositions = new List<Vector3>();
+        enemyPositions = new List<Vector3>();
     }
 
     /// <summary>

@@ -9,52 +9,60 @@ public class GameManager : MonoBehaviour
     private bool paused = false;
 
 
-    private static GameManager _instance;   
- 
+    private static GameManager _instance;
+
     public static GameManager Instance {
         get {
-            if(_instance==null) {
+            if (_instance == null)
+            {
                 _instance = new GameManager();
             }
- 
+
             return _instance;
         }
     }
-    private void Awake() {
+    private void Awake()
+    {
         _instance = this;
     }
 
-    private void Update() {
-        if(Input.GetKeyDown(KeyCode.Escape)){
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
             pause();
             pausePanel.SetActive(true);
         }
     }
 
-    public void restartGame(){
+    public void restartGame()
+    {   
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1;
         paused = false;
     }
 
-    public void startGame(){
+    public void startGame()
+    {
         SceneManager.LoadScene(1);
         Time.timeScale = 1;
         paused = false;
     }
 
-    public void pause(){
+    public void pause()
+    {
         paused = true;
         Time.timeScale = 0;
     }
 
-    public void resume(){
+    public void resume()
+    {
         paused = false;
         Time.timeScale = 1;
     }
 
-    public bool isPaused{
-        get{
+    public bool isPaused {
+        get {
             return paused;
         }
     }
