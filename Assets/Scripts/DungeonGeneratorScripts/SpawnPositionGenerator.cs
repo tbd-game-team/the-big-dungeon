@@ -15,11 +15,13 @@ public static class SpawnPositionGenerator
     /// Calculate the position of the player, the target coin, helath potions and the enemies.
     /// </summary>
     /// <param name="rooms">list of rooms in the dugeon.</param>
+    /// <param name="healthPotionProbability">the chance that a helath potion is spawned</param>
+    /// <param name="enemyDenisityLevels">indicates the density in which the enemies are spawned in levels</param>
     /// <param name="map">dungeon map</param>
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
-    public static void CalculatePositions(List<BoundsInt> rooms, int[,] map, int width, int height)
+    public static void CalculatePositions(List<BoundsInt> rooms, int healthPotionProbability, float[] enemyDenisityLevels, int[,] map, int width, int height)
     {
         // sort rooms ascending according to their size.
         rooms.Sort((r1, r2) => ((r1.size.x * r1.size.y).CompareTo(r2.size.x * r2.size.y)));
@@ -54,99 +56,110 @@ public static class SpawnPositionGenerator
         enemyRooms.RemoveAt(targetIndex);
         pathLengthList.RemoveAt(targetIndex);
 
-        CalculateEnemyAndPotionPositions(enemyRooms, pathLengthList, map, width, height);
+        CalculatePrefabPositions(enemyRooms, pathLengthList, healthPotionProbability, enemyDenisityLevels, map, width, height);
         EnemySpawner.SpawnStarterEnemies();
     }
 
     /// <summary>
     /// @author: Neele Kemper
-    /// Calculate the position of the enemie using the distance from the player positions and the size of the room.
-    /// The positions of the health potions are also determined.
-    /// The farther the room is from the starting position, the more enemies will be spawned in that room.
+    /// The positions for the enemies and for the health potions are calculated.
+    /// Enemy: The position of the enemies  are calculated using the distance from the player positions and the size of the room.  The farther the room is from the starting position, the more enemies will be spawned in that room.
+    /// Health potion: to a certain probability (healthPotionProbability), a health potion is placed in a room.
     /// </summary>
     /// <param name="rooms">list of rooms in the dugeon.</param>
     /// <param name="pathLengths">List of distances of the rooms from the player position.</param>
+    /// <param name="healthPotionProbability">the chance that a helath potion is spawned</param>
+    /// <param name="enemyDenisityLevels">indicates the density in which the enemies are spawned in levels</param>
     /// <param name="map">dungeon map</param>
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
-    private static void CalculateEnemyAndPotionPositions(List<BoundsInt> rooms, List<int> pathLengths, int[,] map, int width, int height)
+    private static void CalculatePrefabPositions(List<BoundsInt> rooms, List<int> pathLengths, int healthPotionProbability, float[] enemyDenisityLevels, int[,] map, int width, int height)
     {
-        int nSteps = 3;
-        int stepsWide = (pathLengths.Max() - pathLengths.Min()) / nSteps;
+        int nLevel = enemyDenisityLevels.Length;
+        int nLevelWidth = (pathLengths.Max() - pathLengths.Min()) / nLevel;
 
         // calculate the number of enemies and their position for each room.
         for (int i = 0; i < rooms.Count; i++)
         {
             BoundsInt room = rooms[i];
             int length = pathLengths[i];
+            
             float enemyDensity = 0.0f;
             // the further the room is from the starting position, the more enemies will be spawned (enemy density increases).
-            if (length <= stepsWide)
+            for (int j = 1; j <= nLevel; j++)
             {
-                enemyDensity = 0.03f;
+                if (length <= j * nLevelWidth)
+                {
+                    enemyDensity = enemyDenisityLevels[j - 1];
+                    break;
+                }
             }
-            else if (length <= 2 * stepsWide)
-            {
-                enemyDensity = 0.06f;
-            }
-            else
-            {
-                enemyDensity = 0.09f;
-            }
+
             // calculate number of enemies
             int roomArea = (room.size.x * room.size.y) / 2;
             int nEnemies = Mathf.Max(1, (int)(roomArea * enemyDensity));
 
-            int count = 0;
+            int enemyCount = 0;
+            // calculate the position for each enemy
+            while (enemyCount < nEnemies)
+            {
+                Vector3 newPosition = GetRandomPositionInRoom(room, map, width, height);
+                if (newPosition != Vector3.zero)
+                {
+                    enemyPositions.Add(newPosition);
+                    enemyCount++;
+
+                }
+
+            }
+
 
             // randomly determine if a health potion is placed in a random position in the room..
-            if (Random.Range(1, 100) < 33)
-            {   
+            if (Random.Range(1, 100) < healthPotionProbability)
+            {
                 bool positionFound = false;
                 while (!positionFound)
                 {
-                    int x = Random.Range(room.min.x, room.max.x);
-                    int y = Random.Range(room.min.y, room.max.y);
-                    if (AlgorithmUtils.IsInMapRange(x, y, width, height))
+                    Vector3 newPosition = GetRandomPositionInRoom(room, map, width, height);
+                    if (newPosition != Vector3.zero)
                     {
-                        Vector3 pos = new Vector3(x, y, 0);
-                        // do not place enemies directly against walls (this may cause them to overlap with the walls)
-                        bool isFloor = (map[x, y] == AlgorithmUtils.floorTile);
-                        if (isFloor)
-                        {
-                            healthPotionPositions.Add(pos);
-                            positionFound = true;
-
-                        }
+                        healthPotionPositions.Add(newPosition);
+                        positionFound = true;
                     }
                 }
-
-
             }
 
-            // calculate the position for each enemy
-            while (count < nEnemies)
-            {
-                // randomly select the position of the enemy in the room.
-                int x = Random.Range(room.min.x, room.max.x);
-                int y = Random.Range(room.min.y, room.max.y);
-                if (AlgorithmUtils.IsInMapRange(x, y, width, height))
-                {
-                    Vector3 pos = new Vector3(x, y, 0);
-                    // do not place enemies directly against walls (this may cause them to overlap with the walls)
-                    int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(x, y, map, width, height);
-                    bool isFloor = (map[x, y] == AlgorithmUtils.floorTile);
-                    if (isFloor && !enemyPositions.Contains(pos) && !healthPotionPositions.Contains(pos) && surroundingWalls < 2)
-                    {
-                        enemyPositions.Add(pos);
-                        count++;
 
-                    }
-                }
+        }
+    }
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Calculate a random position for a prefab in the passed room.
+    /// </summary>
+    /// <param name="room">room in which a prefab is to be placed.</param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns>position of the prefabs</returns>
+    private static Vector3 GetRandomPositionInRoom(BoundsInt room, int[,] map, int width, int height)
+    {
+        int x = Random.Range(room.min.x, room.max.x);
+        int y = Random.Range(room.min.y, room.max.y);
+        if (AlgorithmUtils.IsInMapRange(x, y, width, height))
+        {
+            Vector3 pos = new Vector3(x, y, 0);
+            // do not place prefabs directly next to the wall. (this may cause them to overlap with the walls)
+            int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(x, y, map, width, height);
+            bool isFloor = (map[x, y] == AlgorithmUtils.floorTile);
+            if (isFloor && !enemyPositions.Contains(pos) && !healthPotionPositions.Contains(pos) && surroundingWalls < 2)
+            {
+                return pos;
 
             }
         }
+        return Vector3.zero;
     }
 
     /// <summary>

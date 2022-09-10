@@ -26,6 +26,13 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField]
     private int roomRegionsThreshold = 5;
 
+    [Header("Spawn Parameters")]
+    [SerializeField]
+    private int healthPotionProbability = 20;
+
+    [SerializeField]
+    private float[] enemyDenisityLevels;
+
     void Awake()
     {
         CreateDungeon();
@@ -65,7 +72,7 @@ public class DungeonGenerator : MonoBehaviour
         dungeon = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
         // 7. Calculate the position of the player, the target coin and the enemies.
-        SpawnPositionGenerator.CalculatePositions(finalRooms, dungeonMap, dungeonWidth, dungeonHeight);
+        SpawnPositionGenerator.CalculatePositions(finalRooms, healthPotionProbability,enemyDenisityLevels, dungeonMap, dungeonWidth, dungeonHeight);
 
         // 8. Visualize the dungeon
         tilemapVisualizer.Clear();

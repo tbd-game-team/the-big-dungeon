@@ -12,7 +12,6 @@ public class HealthPotionSpawner : MonoBehaviour
         foreach(Vector3 pos in positions)
         {   
             Instantiate(healthPotionPrefab, pos, Quaternion.identity);
-            Debug.Log("Health potion pos: ("+ pos.x+", "+ pos.y+ ")");
         }
     }
 
