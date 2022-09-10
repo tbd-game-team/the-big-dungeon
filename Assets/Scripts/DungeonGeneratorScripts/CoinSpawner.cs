@@ -8,8 +8,16 @@ using UnityEngine;
 /// </summary>
 public class CoinSpawner : MonoBehaviour
 {
-    void Start()
+    private bool coinIsSpawned = false;
+
+
+    private void Update()
     {
-        transform.position = SpawnPositionGenerator.GetTargetPosition();
+        if (!coinIsSpawned)
+        {
+            // spawn position of player
+            transform.position = SpawnPositionGenerator.GetTargetPosition();
+            coinIsSpawned = true;
+        }
     }
 }

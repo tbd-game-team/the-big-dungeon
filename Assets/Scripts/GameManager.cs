@@ -1,12 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject pausePanel;
+    public GameObject loadingScreen;
+    public Slider loadingSlider;
     private bool paused = false;
+    private int sceneId = 1;
 
 
     private static GameManager _instance;
@@ -24,6 +28,13 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
+        loadingSlider.value = 0;
+    }
+
+
+    public void LoadScene(int s)
+    {
+        StartCoroutine(LoadAsync(s));
     }
 
     private void Update()
@@ -35,16 +46,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     public void restartGame()
-    {   
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    {
+        LoadScene(SceneManager.GetActiveScene().buildIndex);
+
         Time.timeScale = 1;
         paused = false;
     }
 
     public void startGame()
-    {
-        SceneManager.LoadScene(1);
+    {   
+        LoadScene(sceneId);
         Time.timeScale = 1;
         paused = false;
     }
@@ -64,6 +77,19 @@ public class GameManager : MonoBehaviour
     public bool isPaused {
         get {
             return paused;
+        }
+    }
+
+  
+    IEnumerator LoadAsync(int s)
+    {   
+        AsyncOperation operation = SceneManager.LoadSceneAsync(s);
+        loadingScreen.SetActive(true);
+        while (!operation.isDone)
+        {   
+            loadingSlider.value  = Mathf.Clamp01(operation.progress / .9f);
+       
+            yield return null;
         }
     }
 }

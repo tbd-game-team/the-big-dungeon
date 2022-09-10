@@ -31,14 +31,16 @@ namespace Assets.Scripts
         private float invincibleTimer;
         public bool invincible;
 
+        public AudioManager audioManager;
+
         private BoxCollider2D boxCollider;
         private Rigidbody2D rb;
         private Vector3 moveDelta;
 
         private bool isMoving;
         private Vector2 lastPosition;
+        private bool playerIsSpawned = false;
 
-        public AudioManager audioManager;
 
         public void Start()
         {
@@ -52,8 +54,7 @@ namespace Assets.Scripts
             invincibleTimer = invincibleTime;
             invincible = false;
 
-            // spawn position of player
-            transform.position = SpawnPositionGenerator.GetPlayerPosition();
+
             lastPosition = rb.position;
 
             audioManager = FindObjectOfType<AudioManager>();// GetComponent<AudioManager>();
@@ -70,7 +71,14 @@ namespace Assets.Scripts
         }
 
         private void Update()
-        {
+        {   
+            if(!playerIsSpawned)
+            {
+                // spawn position of player
+                transform.position = SpawnPositionGenerator.GetPlayerPosition();
+                playerIsSpawned = true;
+            }
+
             if (alive && !GameManager.Instance.isPaused)
             {
                 handleInvincibility();

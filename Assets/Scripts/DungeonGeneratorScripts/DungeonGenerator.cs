@@ -33,7 +33,7 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField]
     private float[] enemyDenisityLevels;
 
-    void Awake()
+    void Start()
     {
         CreateDungeon();
     }
