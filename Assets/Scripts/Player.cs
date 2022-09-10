@@ -136,7 +136,7 @@ namespace Assets.Scripts
         /// <returns></returns>
         private void handleMovementSound()
         {
-            if (isMoving && !audioManager.isPlaying("PlayerFootsteps"))
+            if (isMoving && !audioManager.IsPlaying("PlayerFootsteps"))
             {
                 audioManager.Play("PlayerFootsteps");
             }

@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.Audio;
 using System;
 using UnityEngine;
 
@@ -49,7 +46,7 @@ public class AudioManager : MonoBehaviour
         s.source.Stop();
     }
 
-    public bool isPlaying(string name)
+    public bool IsPlaying(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null)
