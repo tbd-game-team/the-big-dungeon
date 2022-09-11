@@ -14,6 +14,7 @@ public class VolumeSettings : MonoBehaviour
     [SerializeField]
     private Toggle muteButton;
 
+
     const string MIXER_MASTER = "MasterVolume";
     const string MIXER_BACKGROUND = "BackgroundVolume";
     const string MIXER_EFFECT = "EffectVolume";
@@ -25,6 +26,34 @@ public class VolumeSettings : MonoBehaviour
         muteButton.onValueChanged.AddListener(SetMasterVolume);
     }
 
+    private void Start() {
+        float masterVolume = PlayerPrefs.GetFloat(MIXER_MASTER, 0.0f);
+        if(masterVolume == 0.0f)
+        {
+            muteButton.isOn = true;
+        }
+        else
+        {
+            muteButton.isOn = false;
+        }
+        backgroundSlider.value = PlayerPrefs.GetFloat(MIXER_BACKGROUND, backgroundSlider.value);
+        effectSlider.value = PlayerPrefs.GetFloat(MIXER_EFFECT, effectSlider.value);
+    }
+
+    private void OnDisable() {
+        bool isMuted = !muteButton.isOn;
+        if(isMuted)
+        {
+            PlayerPrefs.SetFloat(MIXER_MASTER, -80.0f);    
+        }
+        else
+        {
+            PlayerPrefs.SetFloat(MIXER_MASTER, 0.0f);    
+        }
+        PlayerPrefs.SetFloat(MIXER_BACKGROUND, backgroundSlider.value);
+        PlayerPrefs.SetFloat(MIXER_EFFECT, effectSlider.value);
+        
+    }
     private void SetMasterVolume(bool state)
     {   
         float value = 0.0f;
