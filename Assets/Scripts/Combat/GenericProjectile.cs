@@ -37,13 +37,13 @@ public class GenericProjectile : MonoBehaviour
             Destroy(this.gameObject);
 
             var player = other.gameObject as GameObject;
-            Console.WriteLine("Hit player " + player);
+            Debug.Log("Hit player " + player);
         }
-        Console.WriteLine("Hit obj " + other.tag);
+        Debug.Log("Hit obj " + other.tag);
     }
 
     void OnCollisionEnter(Collision other)
     {
-        Console.WriteLine("Hit obj 2 " + other);
+        Debug.Log("Hit obj 2 " + other);
     }
 }

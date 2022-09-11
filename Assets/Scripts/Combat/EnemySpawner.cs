@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class EnemySpawner
 {
-    public static void SpawnStarterEnemies()
+    public static void SpawnStarterEnemies(int[,] map, int width, int height)
     {
         var locations = SpawnPositionGenerator.GetEnemyPositions();
 
@@ -16,6 +16,9 @@ public static class EnemySpawner
 
             var enemyController = enemy.GetComponent<GenericEnemy>();
             enemyController.target = GameObject.FindWithTag("Player");
+            enemyController.map = map;
+            enemyController.mapWidth = width;
+            enemyController.mapHeight = height;
 
 
             //Debug.Log("Enemy Positions: (" + loc.x + ", " + loc.y + ")");

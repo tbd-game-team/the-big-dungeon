@@ -71,7 +71,7 @@ public class DungeonGenerator : MonoBehaviour
         dungeon.UnionWith(corridors);
         dungeonMap = AlgorithmUtils.HashSetToMap(dungeon, dungeonWidth, dungeonHeight);
 
-        // 6. Remove the too small wall regions that were created during the creation of the coridor.
+        // 6. Remove the too small wall regions that were created during the creation of the corridor.
         CellularAutomataAlgorithm.FilterWalls(20, dungeonMap, dungeonWidth, dungeonHeight);
         dungeon = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
@@ -83,7 +83,7 @@ public class DungeonGenerator : MonoBehaviour
         WallGenerator.CreateWalls(dungeon, tilemapVisualizer);
 
         // 9. Spawn enemies
-        EnemySpawner.SpawnStarterEnemies();
+        EnemySpawner.SpawnStarterEnemies(dungeonMap, dungeonWidth, dungeonHeight);
     }
 
     /// <summary>

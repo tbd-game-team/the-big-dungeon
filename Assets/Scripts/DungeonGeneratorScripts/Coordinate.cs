@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 
 public class Coordinate
@@ -21,6 +22,19 @@ public class Coordinate
         y = newY;
         centerX = x + 0.5f;
         centerY = y + 0.5f;
+    }
+
+    public Coordinate(UnityEngine.Vector3 p)
+    {
+        x = Mathf.RoundToInt(p.x);
+        y = Mathf.RoundToInt(p.y);
+        centerX = x + 0.5f;
+        centerY = y + 0.5f;
+    }
+
+    public Vector3 ToPosition()
+    {
+        return new UnityEngine.Vector3(x, y, 0);
     }
 
     /// <summary>
@@ -66,4 +80,3 @@ public class Coordinate
         return false;
     }
 }
-

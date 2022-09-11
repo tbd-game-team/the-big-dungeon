@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,8 +29,11 @@ public class GenericEnemy : MonoBehaviour
     [SerializeField]
     private AudioSource footsteps;
 
-    private float nextFire = .0f;
+    public int[,] map;
+    public int mapWidth;
+    public int mapHeight;
 
+    private float nextFire = .0f;
     private Animator characterAnimator;
     private bool isMoving = false;
 
@@ -56,8 +60,15 @@ public class GenericEnemy : MonoBehaviour
 
     Vector3 HandleMovement()
     {
-        var distance = Vector3.Distance(transform.position, target.transform.position);
-        var movement = (target.transform.position - transform.position).normalized * Time.deltaTime * speed;
+        float distance = Vector3.Distance(transform.position, target.transform.position);
+
+        List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight);
+
+        Debug.Log("path " + path);
+
+        // var moveTarget = path[0].ToPosition();
+        var moveTarget = target.transform.position;
+        var movement = (moveTarget - transform.position).normalized * Time.deltaTime * speed;
 
         if (distance >= attackRange)
         {
