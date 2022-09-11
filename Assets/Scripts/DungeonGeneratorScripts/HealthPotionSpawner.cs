@@ -14,7 +14,7 @@ public class HealthPotionSpawner : MonoBehaviour
             List<Vector3> positions = SpawnPositionGenerator.GetHealthPotionPositions();
             foreach (Vector3 pos in positions)
             {
-                Instantiate(healthPotionPrefab, pos, Quaternion.identity);
+                Instantiate(healthPotionPrefab, pos+new Vector3(0.5f,0.5f,0), Quaternion.identity);
             }
             potionIsSpawned = true;
         }

@@ -32,7 +32,7 @@ namespace Assets.Scripts
         private float invincibleTimer;
         public bool invincible;
 
-        public AudioManager audioManager;
+        private AudioManager audioManager;
         public AudioMixerSnapshot snapshotGameOver;
 
         private BoxCollider2D boxCollider;
@@ -73,8 +73,8 @@ namespace Assets.Scripts
         }
 
         private void Update()
-        {   
-            if(!playerIsSpawned)
+        {
+            if (!playerIsSpawned)
             {
                 // spawn position of player
                 transform.position = SpawnPositionGenerator.GetPlayerPosition();
@@ -86,7 +86,7 @@ namespace Assets.Scripts
                 handleInvincibility();
                 handleMovementSound();
                 if (Input.GetMouseButtonDown(0))
-                {   
+                {
                     attack();
                 }
             }
@@ -165,14 +165,27 @@ namespace Assets.Scripts
                 // @Fabian: Todo
                 Debug.Log("You win!");
                 audioManager.Play("PlayerCoinSelection");
-            } 
-            else if(other.gameObject.tag == "HealthPotion")
+            }
+            else if (other.gameObject.tag == "HealthPotion")
             {
                 restoreHealth(other);
             }
+            /*
+            else  if (other.gameObject.tag == "PeakTrap")
+            {
+                Debug.Log("Trap");
+
+                bool activeTrap = other.gameObject.GetComponent<PeakTrap>().isActive;
+                if (activeTrap)
+                {
+                    damage(1);
+                }
+            }*/
+
         }
 
-        private void damage(int amount)
+
+        public void damage(int amount)
         {
             if (!invincible)
             {
@@ -186,7 +199,11 @@ namespace Assets.Scripts
                     gameOverPanel.SetActive(true);
                     snapshotGameOver.TransitionTo(2.0f);
                     GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
-                    pauseBtn.SetActive(false);
+                    if(pauseBtn)
+                    {
+                        pauseBtn.SetActive(false);
+                    }
+                    
 
                 }
                 else
@@ -200,22 +217,22 @@ namespace Assets.Scripts
                 {
                     StartCoroutine(camShake.Shake(0.4f, 0.3f));
                 }
-                healthUi.updateHearts(health);
+                healthUi.updateHearts(health, true);
             }
         }
 
         private void restoreHealth(Collider2D potion)
         {
-            if (health< healthUi.maxHealthPlayer && alive)
+            if (health < healthUi.maxHealthPlayer && alive)
             {
-                health+=1;
+                health += 1;
                 audioManager.Play("PlayeDrinkPotion");
-                healthUi.updateHearts(health);
-            } 
-            else 
+                healthUi.updateHearts(health, false);
+            }
+            else
             {
                 audioManager.Play("PlayeShatterPotion");
-            } 
+            }
             Destroy(potion.gameObject);
         }
 

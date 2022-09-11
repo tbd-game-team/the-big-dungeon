@@ -9,6 +9,7 @@ public static class SpawnPositionGenerator
     private static Vector3 targetPosition = new Vector3();
     private static List<Vector3> healthPotionPositions = new List<Vector3>();
     private static List<Vector3> enemyPositions = new List<Vector3>();
+    private static List<Vector3> trapPositions = new List<Vector3>();
 
     /// <summary>
     /// @author: Neele Kemper
@@ -33,6 +34,11 @@ public static class SpawnPositionGenerator
         Vector2Int startPosition = roomCenters[0];
         playerPosition = new Vector3(startPosition.x, startPosition.y, 0);
         Coordinate startCoordinate = new Coordinate(startPosition.x, startPosition.y);
+
+        trapPositions.Add(playerPosition+new Vector3(0,-2,0));
+        //trapPositions.Add(playerPosition+new Vector3(-2,0,0));
+        //trapPositions.Add(playerPosition+new Vector3(2,0,0));
+        //trapPositions.Add(playerPosition+new Vector3(0,2,0));
 
         roomCenters.Remove(startPosition);
         enemyRooms.Remove(rooms[0]);
@@ -76,7 +82,6 @@ public static class SpawnPositionGenerator
     /// <returns></returns>
     private static void CalculatePrefabPositions(List<BoundsInt> rooms, List<int> pathLengths, int healthPotionProbability, float[] enemyDenisityLevels, int[,] map, int width, int height)
     {   
-        Debug.Log("rooms.Count: " + rooms.Count+ "; pathLength.Count: " + pathLengths.Count);
         int nLevel = enemyDenisityLevels.Length;
         int nLevelWidth = (pathLengths.Max() - pathLengths.Min()) / nLevel;
 
@@ -117,7 +122,7 @@ public static class SpawnPositionGenerator
 
 
             // randomly determine if a health potion is placed in a random position in the room..
-            if (Random.Range(1, 100) < healthPotionProbability)
+            if (Random.Range(1, 100) < healthPotionProbability) 
             {
                 bool positionFound = false;
                 while (!positionFound)
@@ -150,15 +155,19 @@ public static class SpawnPositionGenerator
         {
             Vector3 pos = new Vector3(x, y, 0);
             // do not place prefabs directly next to the wall. (this may cause them to overlap with the walls)
-            int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(x, y, map, width, height);
+            //int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(x, y, map, width, height);
             bool isFloor = (map[x, y] == AlgorithmUtils.floorTile);
-            if (isFloor && !enemyPositions.Contains(pos) && !healthPotionPositions.Contains(pos) && surroundingWalls < 2)
+            if (isFloor && !enemyPositions.Contains(pos) && !healthPotionPositions.Contains(pos))
             {
                 return pos;
 
             }
         }
         return Vector3.zero;
+    }
+
+    private  static void CalculateTrapPositions(){
+
     }
 
     /// <summary>
@@ -172,6 +181,7 @@ public static class SpawnPositionGenerator
         targetPosition = new Vector3();
         healthPotionPositions = new List<Vector3>();
         enemyPositions = new List<Vector3>();
+        trapPositions = new List<Vector3>();
     }
 
     /// <summary>
@@ -212,5 +222,16 @@ public static class SpawnPositionGenerator
     public static List<Vector3> GetHealthPotionPositions()
     {
         return healthPotionPositions;
+    }
+
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Get the spawn positions of the traps.
+    /// </summary>
+    /// <returns>enemy positions</returns>
+    public static List<Vector3> GetTrapPositions()
+    {
+        return trapPositions;
     }
 }

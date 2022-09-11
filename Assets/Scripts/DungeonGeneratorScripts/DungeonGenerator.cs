@@ -78,6 +78,7 @@ public class DungeonGenerator : MonoBehaviour
         // 7. Calculate the position of the player, the target coin and the enemies.
         SpawnPositionGenerator.CalculatePositions(finalRooms, healthPotionProbability, enemyDenisityLevels, dungeonMap, dungeonWidth, dungeonHeight);
         
+        
         // 8. Visualize the dungeon
         tilemapVisualizer.PaintFloorTiles(dungeon);
         WallGenerator.CreateWalls(dungeon, tilemapVisualizer);

@@ -20,14 +20,12 @@ public class HealthUi : MonoBehaviour
         }
     }
 
-    public void updateHearts(int currentHealth){
-        bool damageTaken = false;
+    public void updateHearts(int currentHealth, bool damageTaken){
         for(int i = 0; i < maxHealthPlayer; i++){
             if(i<currentHealth){
                 hearts[i].sprite = fullHeart;
             }else{
                 hearts[i].sprite = emptyHeart;
-                damageTaken = true;
             }
         }
         if(damageTaken){

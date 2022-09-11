@@ -12,10 +12,10 @@ public static class EnemySpawner
         {
             var prefabName = "Enemy";
             var prefab = Resources.Load(prefabName);
-            var enemy = Object.Instantiate(prefab, loc, Quaternion.identity) as GameObject;
+            //var enemy = Object.Instantiate(prefab, loc+new Vector3(0.5f,0.5f,0), Quaternion.identity) as GameObject;
 
-            var enemyController = enemy.GetComponent<GenericEnemy>();
-            enemyController.target = GameObject.FindWithTag("Player");
+            //var enemyController = enemy.GetComponent<GenericEnemy>();
+            //enemyController.target = GameObject.FindWithTag("Player");
 
 
             //Debug.Log("Enemy Positions: (" + loc.x + ", " + loc.y + ")");
