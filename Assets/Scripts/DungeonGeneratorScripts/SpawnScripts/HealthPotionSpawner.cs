@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// @author: Neele Kemper
+/// Spawn the health potions.
+/// </summary>
 public class HealthPotionSpawner : MonoBehaviour
 {
     private bool potionIsSpawned = false;

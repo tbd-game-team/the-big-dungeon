@@ -8,9 +8,9 @@ using UnityEngine;
 public class PeakTrap : MonoBehaviour
 {
 
-
-    public float minDist = 2;
-    public float maxDist = 30;
+    public float minDist = 1;
+    public float maxDist = 10;
+    public float maxVolume = 0.5f;
 
     public AnimationClip clip;
 
@@ -37,7 +37,7 @@ public class PeakTrap : MonoBehaviour
         trapCollider = gameObject.GetComponent<BoxCollider2D>();
         playerCollider = player.GetComponent<BoxCollider2D>();
 
-        float randomOffset = Random.Range(2.0f, 8.0f);
+        float randomOffset = Random.Range(0.5f, 3.0f);
         float waitTime = clip.length + randomOffset;
         InvokeRepeating("ActivateTrap", randomOffset, waitTime);
     }
@@ -47,7 +47,7 @@ public class PeakTrap : MonoBehaviour
         float dist = Vector3.Distance(transform.position, player.transform.position);
         if (dist < minDist)
         {
-            trapAudio.volume = 1;
+            trapAudio.volume = maxVolume;
         }
         else if (dist > maxDist)
         {
@@ -55,14 +55,14 @@ public class PeakTrap : MonoBehaviour
         }
         else
         {
-            trapAudio.volume = 1 - ((dist - minDist) / (maxDist - minDist));
+            trapAudio.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
         }
 
         if (isActive)
         {
             if (playerCollider.IsTouching(trapCollider) && !damageIsTaken)
             {
-                StartCoroutine(WaitingDamage(clip.length - clip.length / 2));
+                StartCoroutine(WaitingDamage(clip.length / 4));
             }
         }
     }

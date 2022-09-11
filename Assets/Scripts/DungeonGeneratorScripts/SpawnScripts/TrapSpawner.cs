@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// @author: Neele Kemper
+/// Spawn the peak traps.
+/// </summary>
 public class TrapSpawner : MonoBehaviour
 {
     private bool trapIsSpawned = false;
