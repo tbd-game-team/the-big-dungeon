@@ -44,7 +44,7 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     private void CreateDungeon()
-    {   
+    {
         // 0. Reset old dungeon 
         SpawnPositionGenerator.Clear();
         tilemapVisualizer.Clear();
@@ -77,10 +77,13 @@ public class DungeonGenerator : MonoBehaviour
 
         // 7. Calculate the position of the player, the target coin and the enemies.
         SpawnPositionGenerator.CalculatePositions(finalRooms, healthPotionProbability, enemyDenisityLevels, dungeonMap, dungeonWidth, dungeonHeight);
-        
+
         // 8. Visualize the dungeon
         tilemapVisualizer.PaintFloorTiles(dungeon);
         WallGenerator.CreateWalls(dungeon, tilemapVisualizer);
+
+        // 9. Spawn enemies
+        EnemySpawner.SpawnStarterEnemies();
     }
 
     /// <summary>
@@ -132,7 +135,3 @@ public class DungeonGenerator : MonoBehaviour
         return corridors;
     }
 }
-
-
-
-
