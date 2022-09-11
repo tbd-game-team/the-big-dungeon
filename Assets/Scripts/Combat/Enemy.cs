@@ -13,6 +13,7 @@ public class Enemy : GenericEnemy
     private float personalSpace = 1f;
     [SerializeField]
     private LayerMask wallLayer;
+    public string searchMode = "";
 
     [Header("Combat")]
     [SerializeField]
@@ -61,6 +62,7 @@ public class Enemy : GenericEnemy
         if (target == null)
         {
             Debug.Log("no enemy");
+            searchMode = "no enemy";
             return transform.position;
         }
         var moveTarget = transform.position;
@@ -69,26 +71,36 @@ public class Enemy : GenericEnemy
         if (distance > seeRange)
         {
             moveTarget = transform.position;
+            searchMode = "no enemy in sight";
         }
         else
         {
             Debug.Log("distance " + distance);
-            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, wallLayer);
+            // Only the walls of the tile map / blocking layer are interesting
+            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, float.PositiveInfinity, wallLayer);
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null)
             {
+                Debug.Log("hitInfo.collider " + hitInfo);
+                Debug.Log("hitInfo.collider " + hitInfo.collider);
+                Debug.Log("hitInfo.collider " + hitInfo.collider.gameObject);
+                Debug.Log("hitInfo.collider " + hitInfo.distance);
+                Debug.Log("hitInfo.collider " + hitInfo.transform);
                 List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight, 15);
                 Debug.Log("path Count " + path.Count);
+                Debug.Log("path " + path);
                 if (path.Count > 0)
                     moveTarget = path[0].ToCentralPosition();
                 if (path.Count > 1)
                     moveTarget = path[1].ToCentralPosition();
                 Debug.Log("move from " + transform.position + " to " + moveTarget + "/" + target.transform.position);
+                searchMode = "search enemy";
             }
             else
             {
                 moveTarget = target.transform.position;
                 Debug.Log("direct move ");
+                searchMode = "approach enemy directly";
             }
         }
 
