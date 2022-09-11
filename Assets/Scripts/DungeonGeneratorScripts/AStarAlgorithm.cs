@@ -21,6 +21,11 @@ public class AStarAlgorithm
     /// <returns>shortest path</returns>
     public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,] map, int width, int height)
     {
+        return AStar(startCoordinate, targetCoordinate, map, width, height, float.PositiveInfinity);
+    }
+
+    public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,] map, int width, int height, float maxCost)
+    {
 
         List<Coordinate> path = new List<Coordinate>();
         // initialize the open list and put the starting node on the open list 
@@ -46,6 +51,12 @@ public class AStarAlgorithm
             {
                 path = CalculatedPath(pathCoordinate);
                 break;
+            }
+
+            // in case we reached the maximum cost, we abort the search, as no solution has been found, and none will be found with less than the current cost
+            if (currentCoordinate.fCost > maxCost)
+            {
+                return new List<Coordinate>();
             }
 
             // pop currentCoordinate of the open list
