@@ -50,7 +50,7 @@ public static class SpawnPositionGenerator
         // The room farthest from the player becomes the target room.
         int maxDistance = pathLengthList.Max();
         int targetIndex = pathLengthList.IndexOf(maxDistance);
-        targetPosition = playerPosition + new Vector3(2,2,0);//new Vector3(roomCenters[targetIndex].x, roomCenters[targetIndex].y, 0);
+        targetPosition = new Vector3(roomCenters[targetIndex].x, roomCenters[targetIndex].y, 0);
 
         // enemies are placed in all other rooms.
         enemyRooms.RemoveAt(targetIndex);
