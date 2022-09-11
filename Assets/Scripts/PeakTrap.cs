@@ -8,14 +8,19 @@ using UnityEngine;
 public class PeakTrap : MonoBehaviour
 {
 
-    public float minDist = 1;
-    public float maxDist = 10;
-    public float maxVolume = 0.5f;
+    [Header("Audio Settings")]
+    [SerializeField]
+    private float minDist = 1;
+    [SerializeField]
+    private float maxDist = 20;
+    [SerializeField]
+    private float maxVolume = 0.8f;
 
-    public AnimationClip clip;
+    [Header("Animation")]
+    [SerializeField]
+    private AnimationClip clip;
 
     private AudioSource trapAudio;
-
     private Animator trapAnimator;
     private GameObject player;
 
@@ -27,8 +32,6 @@ public class PeakTrap : MonoBehaviour
     private bool damageIsTaken = false;
 
 
-
-
     void Start()
     {
         player = GameObject.FindWithTag("Player");
@@ -37,12 +40,25 @@ public class PeakTrap : MonoBehaviour
         trapCollider = gameObject.GetComponent<BoxCollider2D>();
         playerCollider = player.GetComponent<BoxCollider2D>();
 
+        // activate each trap in a random rhythm.
         float randomOffset = Random.Range(0.5f, 3.0f);
         float waitTime = clip.length + randomOffset;
         InvokeRepeating("ActivateTrap", randomOffset, waitTime);
     }
 
     void Update()
+    {
+        handleVolume();
+        handleTrap();
+    }
+
+    
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Fade 2D audio by distance
+    /// </summary>
+    /// <returns></returns>
+    private void handleVolume()
     {
         float dist = Vector3.Distance(transform.position, player.transform.position);
         if (dist < minDist)
@@ -57,7 +73,10 @@ public class PeakTrap : MonoBehaviour
         {
             trapAudio.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
         }
+    }
 
+    private void handleTrap()
+    {
         if (isActive)
         {
             if (playerCollider.IsTouching(trapCollider) && !damageIsTaken)

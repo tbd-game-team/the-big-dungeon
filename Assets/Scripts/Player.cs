@@ -170,18 +170,6 @@ namespace Assets.Scripts
             {
                 restoreHealth(other);
             }
-            /*
-            else  if (other.gameObject.tag == "PeakTrap")
-            {
-                Debug.Log("Trap");
-
-                bool activeTrap = other.gameObject.GetComponent<PeakTrap>().isActive;
-                if (activeTrap)
-                {
-                    damage(1);
-                }
-            }*/
-
         }
 
 
