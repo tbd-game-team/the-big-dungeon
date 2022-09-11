@@ -9,6 +9,10 @@ public class GenericEnemy : MonoBehaviour
     [SerializeField]
     public GameObject target;
 
+    public int[,] map;
+    public int mapWidth;
+    public int mapHeight;
+
     private void Awake()
     {
         if (target == null)

@@ -31,10 +31,6 @@ public class Enemy : GenericEnemy
     [SerializeField]
     private AudioSource footsteps;
 
-    public int[,] map;
-    public int mapWidth;
-    public int mapHeight;
-
     private float nextFire = .0f;
     private Animator characterAnimator;
     private bool isMoving = false;
@@ -62,7 +58,12 @@ public class Enemy : GenericEnemy
 
     Vector3 HandleMovement()
     {
-        var moveTarget = target.transform.position;
+        if (target == null)
+        {
+            Debug.Log("no enemy");
+            return transform.position;
+        }
+        var moveTarget = transform.position;
 
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if (distance > seeRange)
@@ -76,13 +77,13 @@ public class Enemy : GenericEnemy
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null)
             {
-                List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight);
+                List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight, 15);
                 Debug.Log("path Count " + path.Count);
                 if (path.Count > 0)
-                {
-                    moveTarget = path[0].ToPosition();
-                    Debug.Log("move from " + transform.position + " to " + moveTarget + "/" + target.transform.position);
-                }
+                    moveTarget = path[0].ToCentralPosition();
+                if (path.Count > 1)
+                    moveTarget = path[1].ToCentralPosition();
+                Debug.Log("move from " + transform.position + " to " + moveTarget + "/" + target.transform.position);
             }
             else
             {

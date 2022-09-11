@@ -37,6 +37,11 @@ public class Coordinate
         return new UnityEngine.Vector3(x, y, 0);
     }
 
+    public Vector3 ToCentralPosition()
+    {
+        return new UnityEngine.Vector3(centerX, centerY, 0);
+    }
+
     /// <summary>
     /// @author: Neele Kemper
     /// Calculates the FCost of the coordinate for the A* algorithm.

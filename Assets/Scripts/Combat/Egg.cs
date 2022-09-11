@@ -4,7 +4,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Animator))]
-public class Egg : MonoBehaviour
+public class Egg : GenericEnemy
 {
     [SerializeField]
     private float fireCooldown = 8f;
