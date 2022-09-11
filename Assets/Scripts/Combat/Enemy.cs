@@ -71,21 +71,23 @@ public class Enemy : GenericEnemy
         }
         else
         {
-            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget, wallLayer);
+            Debug.Log("distance " + distance);
+            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, wallLayer);
+            Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null)
             {
                 List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight);
-                Debug.Log("path " + path);
                 Debug.Log("path Count " + path.Count);
                 if (path.Count > 0)
                 {
                     moveTarget = path[0].ToPosition();
-                    Debug.Log("moveTarget " + moveTarget);
+                    Debug.Log("move from " + transform.position + " to " + moveTarget + "/" + target.transform.position);
                 }
             }
             else
             {
                 moveTarget = target.transform.position;
+                Debug.Log("direct move ");
             }
         }
 
