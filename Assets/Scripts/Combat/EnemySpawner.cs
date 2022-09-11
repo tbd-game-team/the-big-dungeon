@@ -4,24 +4,33 @@ using UnityEngine;
 
 public static class EnemySpawner
 {
+    private static readonly string[] EnemyTypes = new string[] { "Enemy", "EnemyEgg" };
+
     public static void SpawnStarterEnemies(int[,] map, int width, int height)
     {
+        // Map generation puts out enemy spawn locations
         var locations = SpawnPositionGenerator.GetEnemyPositions();
 
         foreach (var loc in locations)
         {
-            var prefabName = "Enemy";
+            // Determine enemy type
+            string prefabName = GetRandomEnemy();
             var prefab = Resources.Load(prefabName);
+
+            // Spawn enemy
             var enemy = Object.Instantiate(prefab, loc, Quaternion.identity) as GameObject;
 
+            // Configure enemy
             var enemyController = enemy.GetComponent<GenericEnemy>();
             enemyController.target = GameObject.FindWithTag("Player");
             enemyController.map = map;
             enemyController.mapWidth = width;
             enemyController.mapHeight = height;
-
-
-            //Debug.Log("Enemy Positions: (" + loc.x + ", " + loc.y + ")");
         }
+    }
+
+    private static string GetRandomEnemy()
+    {
+        return EnemyTypes[Random.Range(0, EnemyTypes.Length)];
     }
 }
