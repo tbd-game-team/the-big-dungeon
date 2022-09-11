@@ -54,8 +54,6 @@ public class GenericEnemy : MonoBehaviour
     {
         var distance = Vector3.Distance(transform.position, target.transform.position);
 
-        float volume =  Mathf.Clamp(1.0f-(distance/10f),0f,1.0f);
-
         var movement = (target.transform.position - transform.position).normalized * Time.deltaTime * speed;
 
         if (distance >= attackRange)
@@ -79,7 +77,8 @@ public class GenericEnemy : MonoBehaviour
     private void handleSound()
     {
         if(isMoving && !footsteps.isPlaying)
-        {
+        {   
+            // float volume =  Mathf.Clamp(1.0f-(distance/10f),0f,1.0f);
             footsteps.Play();
         }
         else

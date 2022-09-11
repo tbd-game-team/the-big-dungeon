@@ -59,7 +59,7 @@ namespace Assets.Scripts
 
             lastPosition = rb.position;
 
-            audioManager = FindObjectOfType<AudioManager>();// GetComponent<AudioManager>();
+            audioManager = FindObjectOfType<AudioManager>();
         }
 
 
@@ -185,6 +185,8 @@ namespace Assets.Scripts
                     health = 0;
                     gameOverPanel.SetActive(true);
                     snapshotGameOver.TransitionTo(2.0f);
+                    GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
+                    pauseBtn.SetActive(false);
 
                 }
                 else
