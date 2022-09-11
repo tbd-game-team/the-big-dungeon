@@ -8,21 +8,21 @@ public class VolumeSettings : MonoBehaviour
     private AudioMixer mixer;
 
     [SerializeField]
-    private Slider backgroundSlider;
+    private Slider themeSlider;
     [SerializeField]
-    private Slider effectSlider;
+    private Slider sfxSlider;
     [SerializeField]
     private Toggle muteButton;
 
 
     const string MIXER_MASTER = "MasterVolume";
-    const string MIXER_BACKGROUND = "BackgroundVolume";
-    const string MIXER_EFFECT = "EffectVolume";
+    const string MIXER_THEME = "ThemeVolume";
+    const string MIXER_SFX = "SFXVolume";
 
     private void Awake()
     {
-        backgroundSlider.onValueChanged.AddListener(SetBackgroundVolume);
-        effectSlider.onValueChanged.AddListener(SetEffectVolume);
+        themeSlider.onValueChanged.AddListener(SetBackgroundVolume);
+        sfxSlider.onValueChanged.AddListener(SetEffectVolume);
         muteButton.onValueChanged.AddListener(SetMasterVolume);
     }
 
@@ -36,8 +36,8 @@ public class VolumeSettings : MonoBehaviour
         {
             muteButton.isOn = false;
         }
-        backgroundSlider.value = PlayerPrefs.GetFloat(MIXER_BACKGROUND, backgroundSlider.value);
-        effectSlider.value = PlayerPrefs.GetFloat(MIXER_EFFECT, effectSlider.value);
+        themeSlider.value = PlayerPrefs.GetFloat(MIXER_THEME, themeSlider.value);
+        sfxSlider.value = PlayerPrefs.GetFloat(MIXER_SFX, sfxSlider.value);
     }
 
     private void OnDisable() {
@@ -50,8 +50,8 @@ public class VolumeSettings : MonoBehaviour
         {
             PlayerPrefs.SetFloat(MIXER_MASTER, 0.0f);    
         }
-        PlayerPrefs.SetFloat(MIXER_BACKGROUND, backgroundSlider.value);
-        PlayerPrefs.SetFloat(MIXER_EFFECT, effectSlider.value);
+        PlayerPrefs.SetFloat(MIXER_THEME, themeSlider.value);
+        PlayerPrefs.SetFloat(MIXER_SFX, sfxSlider.value);
         
     }
     private void SetMasterVolume(bool state)
@@ -67,12 +67,12 @@ public class VolumeSettings : MonoBehaviour
 
     private void SetBackgroundVolume(float value)
     {
-        mixer.SetFloat(MIXER_BACKGROUND, Mathf.Log10(value) * 20);
+        mixer.SetFloat(MIXER_THEME, Mathf.Log10(value) * 20);
     }
 
 
     private void SetEffectVolume(float value)
     {   
-        mixer.SetFloat(MIXER_EFFECT, Mathf.Log10(value) * 20);
+        mixer.SetFloat(MIXER_SFX, Mathf.Log10(value) * 20);
     }
 }

@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 1;
         paused = false;
-        Lowpass();
+        snapshotUnpaused.TransitionTo(.01f);
     }
 
     public void startGame()
@@ -93,35 +93,21 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(sceneId);
         Time.timeScale = 1;
         paused = false;
-        Lowpass();
-    }
-
-    private void Lowpass()
-    {
-        if(Time.timeScale == 0)
-        {
-            Debug.Log("Snapchot Paused");
-            snapshotPaused.TransitionTo(.01f);
-        } 
-        else
-        {
-            Debug.Log("Snapchot Unpaused");
-            snapshotUnpaused.TransitionTo(.01f);
-        }
+        snapshotUnpaused.TransitionTo(.01f);
     }
 
     public void pause()
     {
         paused = true;
         Time.timeScale =  0;
-        Lowpass();
+        snapshotPaused.TransitionTo(.01f);
     }
 
     public void resume()
     {
         paused = false;
         Time.timeScale = 1;
-        Lowpass();
+        snapshotUnpaused.TransitionTo(.01f);
     }
 
     public bool isPaused {

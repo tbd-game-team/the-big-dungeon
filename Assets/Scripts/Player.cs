@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Assets.Scripts
 {
@@ -32,6 +33,7 @@ namespace Assets.Scripts
         public bool invincible;
 
         public AudioManager audioManager;
+        public AudioMixerSnapshot snapshotGameOver;
 
         private BoxCollider2D boxCollider;
         private Rigidbody2D rb;
@@ -182,6 +184,8 @@ namespace Assets.Scripts
                     audioManager.Play("PlayerDeath");
                     health = 0;
                     gameOverPanel.SetActive(true);
+                    snapshotGameOver.TransitionTo(2.0f);
+
                 }
                 else
                 {
