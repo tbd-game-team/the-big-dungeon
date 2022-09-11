@@ -22,10 +22,13 @@ public static class EnemySpawner
 
             // Configure enemy
             var enemyController = enemy.GetComponent<GenericEnemy>();
-            enemyController.target = GameObject.FindWithTag("Player");
-            enemyController.map = map;
-            enemyController.mapWidth = width;
-            enemyController.mapHeight = height;
+
+            if (enemyController is Enemy e)
+            {
+                e.map = map;
+                e.mapWidth = width;
+                e.mapHeight = height;
+            }
         }
     }
 

@@ -31,8 +31,7 @@ public static class SpawnPositionGenerator
 
         // the center of the smallest room, will be the starting position of the player
         Vector2Int startPosition = roomCenters[0];
-        playerPosition = new Vector3(startPosition.x, startPosition.y, 0);
-        Coordinate startCoordinate = new Coordinate(startPosition.x, startPosition.y);
+        Coordinate startCoordinate = new Coordinate(new Vector3(startPosition.x, startPosition.y, 0));
 
         roomCenters.Remove(startPosition);
         enemyRooms.Remove(rooms[0]);
