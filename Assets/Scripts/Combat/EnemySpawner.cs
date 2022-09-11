@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class EnemySpawner
 {
-    private static readonly string[] EnemyTypes = new string[] { "Enemy", "EnemyEgg" };
+    private static readonly string[] EnemyTypes = new string[] { "Enemy", "EnemyEgg", "EnemyRanged" };
 
     public static void SpawnStarterEnemies(int[,] map, int width, int height)
     {

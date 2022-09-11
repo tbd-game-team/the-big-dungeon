@@ -39,10 +39,6 @@ public class Enemy : GenericEnemy
     private void Awake()
     {
         characterAnimator = GetComponent<Animator>();
-        if (target == null)
-        {
-            target = GameObject.FindWithTag("Player");
-        }
     }
 
     void Update()
