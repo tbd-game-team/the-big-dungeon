@@ -18,6 +18,8 @@ public class Enemy : GenericEnemy
     [SerializeField]
     private float attackRange = 1f;
     [SerializeField]
+    private float seeRange = 15f;
+    [SerializeField]
     private float fireCooldown = .5f;
     [SerializeField]
     private float attackDmg = 1f;
@@ -39,6 +41,10 @@ public class Enemy : GenericEnemy
     private void Awake()
     {
         characterAnimator = GetComponent<Animator>();
+        if (target == null)
+        {
+            target = GameObject.FindWithTag("Player");
+        }
     }
 
     void Update()
@@ -58,7 +64,11 @@ public class Enemy : GenericEnemy
         var moveTarget = target.transform.position;
 
         float distance = Vector3.Distance(transform.position, target.transform.position);
-        if (distance < 10 && lastDistance > distance)
+        if (distance > seeRange)
+        {
+            moveTarget = transform.position;
+        }
+        else if (distance < 10 && lastDistance > distance)
         {
             List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight);
             Debug.Log("path " + path);
