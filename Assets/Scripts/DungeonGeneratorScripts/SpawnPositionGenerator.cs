@@ -75,7 +75,8 @@ public static class SpawnPositionGenerator
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
     private static void CalculatePrefabPositions(List<BoundsInt> rooms, List<int> pathLengths, int healthPotionProbability, float[] enemyDenisityLevels, int[,] map, int width, int height)
-    {
+    {   
+        Debug.Log("rooms.Count: " + rooms.Count+ "; pathLength.Count: " + pathLengths.Count);
         int nLevel = enemyDenisityLevels.Length;
         int nLevelWidth = (pathLengths.Max() - pathLengths.Min()) / nLevel;
 

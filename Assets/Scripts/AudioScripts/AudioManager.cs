@@ -21,7 +21,13 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        Play("Theme");
+        foreach(Sound s in sounds)
+        {
+            if(s.playOnAwake)
+            {
+                Play(s.name);
+            }
+        }
     }
 
     public void Play(string name)

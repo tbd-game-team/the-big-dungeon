@@ -21,12 +21,16 @@ public class GenericEnemy : MonoBehaviour
     [SerializeField]
     private float fireCooldown = .5f;
 
+    [SerializeField]
+    private AudioSource footsteps;
+
     private float nextFire = .0f;
 
     private Animator characterAnimator;
+    private bool isMoving = false;
 
     private void Awake()
-    {
+    {   
         characterAnimator = GetComponent<Animator>();
         if (target == null)
         {
@@ -38,6 +42,7 @@ public class GenericEnemy : MonoBehaviour
     {
         var movement = HandleMovement();
         handleAnimation(movement);
+        handleSound();
     }
 
     void FixedUpdate()
@@ -48,21 +53,39 @@ public class GenericEnemy : MonoBehaviour
     Vector3 HandleMovement()
     {
         var distance = Vector3.Distance(transform.position, target.transform.position);
+
+        float volume =  Mathf.Clamp(1.0f-(distance/10f),0f,1.0f);
+
         var movement = (target.transform.position - transform.position).normalized * Time.deltaTime * speed;
 
         if (distance >= attackRange)
         {
             transform.Translate(movement);
+            isMoving = true;
         }
         else if (distance < personalSpace)
         {
             transform.Translate(-movement);
+            isMoving = true;
         }
         else
         {
             movement = new Vector3(0, 0, 0);
+            isMoving = false;
         }
         return movement;
+    }
+
+    private void handleSound()
+    {
+        if(isMoving && !footsteps.isPlaying)
+        {
+            footsteps.Play();
+        }
+        else
+        {
+            footsteps.Pause();
+        }
     }
 
     void handleAnimation(Vector3 movement)
