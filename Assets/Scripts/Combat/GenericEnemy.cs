@@ -17,9 +17,13 @@ public class GenericEnemy : MonoBehaviour
     [SerializeField]
     private GameObject projectilePrefab;
     [SerializeField]
-    private float attackRange = 3f;
+    private float attackRange = 1f;
     [SerializeField]
     private float fireCooldown = .5f;
+    [SerializeField]
+    private float attackDmg = 1f;
+    [SerializeField]
+    private float prjSpeed = 1f;
 
     [SerializeField]
     private AudioSource footsteps;
@@ -30,7 +34,7 @@ public class GenericEnemy : MonoBehaviour
     private bool isMoving = false;
 
     private void Awake()
-    {   
+    {
         characterAnimator = GetComponent<Animator>();
         if (target == null)
         {
@@ -53,7 +57,6 @@ public class GenericEnemy : MonoBehaviour
     Vector3 HandleMovement()
     {
         var distance = Vector3.Distance(transform.position, target.transform.position);
-
         var movement = (target.transform.position - transform.position).normalized * Time.deltaTime * speed;
 
         if (distance >= attackRange)
@@ -76,8 +79,8 @@ public class GenericEnemy : MonoBehaviour
 
     private void handleSound()
     {
-        if(isMoving && !footsteps.isPlaying)
-        {   
+        if (isMoving && !footsteps.isPlaying)
+        {
             // float volume =  Mathf.Clamp(1.0f-(distance/10f),0f,1.0f);
             footsteps.Play();
         }
@@ -102,6 +105,9 @@ public class GenericEnemy : MonoBehaviour
 
     void handleCombat()
     {
+        if (target == null)
+            return;
+
         var distance = Vector3.Distance(transform.position, target.transform.position);
 
         if (distance < attackRange && Time.time >= nextFire)
@@ -109,7 +115,9 @@ public class GenericEnemy : MonoBehaviour
             nextFire = Time.time + fireCooldown;
 
             var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
-            // var projectileController = projectile.GetComponent<GenericProjectile>();
+            var projectileController = projectile.GetComponent<GenericProjectile>();
+            projectileController.damage = attackDmg;
+            projectileController.speed = prjSpeed;
 
             var relative = projectile.transform.InverseTransformPoint(target.transform.position);
             var angle = 90 - Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;

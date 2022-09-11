@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +7,8 @@ using UnityEngine;
 public class GenericProjectile : MonoBehaviour
 {
 
-    [SerializeField]
-    private float speed = 40f;
+    public float speed = 40f;
+    public float damage = 0f;
 
     public GameObject explosion;
     private Vector2 screenBounds;
@@ -34,6 +35,15 @@ public class GenericProjectile : MonoBehaviour
         {
             Instantiate(explosion, transform.position, transform.rotation);
             Destroy(this.gameObject);
+
+            var player = other.gameObject as GameObject;
+            Console.WriteLine("Hit player " + player);
         }
+        Console.WriteLine("Hit obj " + other.tag);
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        Console.WriteLine("Hit obj 2 " + other);
     }
 }
