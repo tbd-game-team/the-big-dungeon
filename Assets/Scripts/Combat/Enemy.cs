@@ -11,6 +11,8 @@ public class Enemy : GenericEnemy
     private float speed = 3.5f;
     [SerializeField]
     private float personalSpace = 1f;
+    [SerializeField]
+    private LayerMask wallLayer;
 
     [Header("Combat")]
     [SerializeField]
@@ -34,7 +36,6 @@ public class Enemy : GenericEnemy
     public int mapHeight;
 
     private float nextFire = .0f;
-    private float lastDistance = .0f;
     private Animator characterAnimator;
     private bool isMoving = false;
 
@@ -68,18 +69,25 @@ public class Enemy : GenericEnemy
         {
             moveTarget = transform.position;
         }
-        else if (distance < 10 && lastDistance > distance)
+        else
         {
-            List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight);
-            Debug.Log("path " + path);
-            Debug.Log("path Count " + path.Count);
-            if (path.Count > 0)
+            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget, wallLayer);
+            if (hitInfo.collider != null)
             {
-                moveTarget = path[0].ToPosition();
-                Debug.Log("moveTarget " + moveTarget);
+                List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight);
+                Debug.Log("path " + path);
+                Debug.Log("path Count " + path.Count);
+                if (path.Count > 0)
+                {
+                    moveTarget = path[0].ToPosition();
+                    Debug.Log("moveTarget " + moveTarget);
+                }
+            }
+            else
+            {
+                moveTarget = target.transform.position;
             }
         }
-        lastDistance = distance;
 
         var movement = (moveTarget - transform.position).normalized * Time.deltaTime * speed;
 
