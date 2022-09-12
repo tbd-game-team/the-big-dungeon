@@ -1,28 +1,27 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Assets.Scripts;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
-public abstract class GenericEnemy : MonoBehaviour
+namespace Assets.Scripts.Combat
 {
-    [SerializeField]
-    public GameObject target;
-    [SerializeField]
-    public int[,] map;
-    [SerializeField]
-    public int mapWidth;
-    [SerializeField]
-    public int mapHeight;
-
-    private void Awake()
+    [RequireComponent(typeof(Animator))]
+    public abstract class GenericEnemy : MonoBehaviour
     {
-        if (target == null)
-        {
-            target = GameObject.FindWithTag("Player");
-        }
-    }
+        [SerializeField]
+        public GameObject target;
+        [SerializeField]
+        public int[,] map;
+        [SerializeField]
+        public int mapWidth;
+        [SerializeField]
+        public int mapHeight;
 
-    public abstract void OnHitPlayer(Player player);
+        private void Awake()
+        {
+            if (target == null)
+            {
+                target = GameObject.FindWithTag("Player");
+            }
+        }
+
+        public abstract void OnHitPlayer(Player player);
+    }
 }
