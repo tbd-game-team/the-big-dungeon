@@ -43,7 +43,7 @@ public class Enemy : GenericEnemy
 
     private float nextFire = .0f;
     private bool isMoving = false;
-    
+
     private Animator characterAnimator;
     private Rigidbody2D rb2d;
     private BoxCollider2D bc2d;
@@ -113,15 +113,22 @@ public class Enemy : GenericEnemy
 
             // Find a way
             // Only the walls of the tile map / blocking layer are interesting
-            RaycastHit2D hitInfo = Physics2D.BoxCast(transform.position, bc2d.size, 0,moveTarget - transform.position, distance, wallLayer);
+            RaycastHit2D hitInfo = Physics2D.BoxCast(transform.position, bc2d.size, 0, moveTarget - transform.position, distance, wallLayer);
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null && hitInfo.distance < distance)
             {
                 var fCord = new Coordinate(transform.position);
                 var tCord = new Coordinate(moveTarget);
 
+                // Abort for glitchy cases for speedup
+                if (map[tCord.x, tCord.y] != AlgorithmUtils.floorTile || map[fCord.x, fCord.y] != AlgorithmUtils.floorTile)
+                {
+                    Debug.LogWarning("Glitchy path found");
+                    isMoving = false;
+                    return moveTarget;
+                }
                 // Limit here the max cost to not hog cpu for far enemies
-                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, true, 3000);
+                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, true, 2000);
 
                 // A way has been found
                 if (path.Count > 0)
