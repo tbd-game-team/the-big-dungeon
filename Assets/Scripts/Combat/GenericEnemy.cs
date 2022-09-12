@@ -18,7 +18,7 @@ namespace Assets.Scripts.Combat
         {
             if (target == null)
             {
-                target = GameObject.FindWithTag("Player");
+                target = GameObject.FindWithTag(Keys.TAG_PLAYER);
             }
         }
 

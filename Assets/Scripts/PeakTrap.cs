@@ -1,6 +1,5 @@
 using System.Collections;
 using Assets.Scripts;
-
 using UnityEngine;
 
 
@@ -33,7 +32,7 @@ public class PeakTrap : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.FindWithTag("Player");
+        player = GameObject.FindWithTag(Keys.TAG_PLAYER);
         trapAnimator = gameObject.GetComponent<Animator>();
         trapAudio = gameObject.GetComponent<AudioSource>();
         trapCollider = gameObject.GetComponent<BoxCollider2D>();
@@ -51,7 +50,7 @@ public class PeakTrap : MonoBehaviour
         handleTrap();
     }
 
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// Fade 2D audio by distance
@@ -80,7 +79,6 @@ public class PeakTrap : MonoBehaviour
     /// Inflict damage to the player when he is standing over an active trap.
     /// </summary>
     /// <returns></returns>
-
     private void handleTrap()
     {
         if (isActive)
@@ -98,7 +96,6 @@ public class PeakTrap : MonoBehaviour
     /// Activate the trap
     /// </summary>
     /// <returns></returns>
-
     void ActivateTrap()
     {
         //start animation and audio
@@ -109,16 +106,15 @@ public class PeakTrap : MonoBehaviour
         // activate and deactivate the trap after a short delay.
         StartCoroutine(SetActive(clip.length / 2));
         StartCoroutine(SetDeactivate(clip.length));
-    }   
+    }
 
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// Set the active flag of the trap to true
     /// <param name="time">the waiting time in seconds</param>
     /// </summary>
     /// <returns></returns>
-
     IEnumerator SetActive(float time)
     {
         yield return new WaitForSeconds(time);

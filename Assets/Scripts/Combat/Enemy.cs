@@ -58,7 +58,7 @@ namespace Assets.Scripts.Combat
             bc2d = GetComponent<BoxCollider2D>();
             if (target == null)
             {
-                target = GameObject.FindWithTag("Player");
+                target = GameObject.FindWithTag(Keys.TAG_PLAYER);
             }
         }
 
@@ -143,7 +143,7 @@ namespace Assets.Scripts.Combat
                 List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, true, 2000);
 
                 // A way has been found
-                if (path.Count > 0)
+                if (path.Count > 1)
                 {
                     // We draw the way to analyse the movement path chosen
                     var lastCord = path[0];

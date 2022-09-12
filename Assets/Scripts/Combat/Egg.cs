@@ -71,7 +71,7 @@ namespace Assets.Scripts.Combat
         {
             var enemy = Instantiate(enemyPrefab, transform.position, transform.rotation);
             var enemyController = enemy.GetComponent<GenericEnemy>();
-            enemyController.target = GameObject.FindWithTag("Player");
+            enemyController.target = GameObject.FindWithTag(Keys.TAG_PLAYER);
             enemyController.map = map;
             enemyController.mapHeight = mapHeight;
             enemyController.mapWidth = mapWidth;
