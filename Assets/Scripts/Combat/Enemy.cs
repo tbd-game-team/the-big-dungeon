@@ -117,18 +117,27 @@ public class Enemy : GenericEnemy
                 var fCord = new Coordinate(transform.position);
                 var tCord = new Coordinate(moveTarget);
 
-                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, 1500);
+                // Limit here the max cost to not hog cpu for far enemies
+                // Also disallow diagonal movement, as it makes enemies walk against walls
+                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, false, 2000);
 
+                // A way has been found
                 if (path.Count > 0)
                 {
+                    // We draw the way to analyse the movement path chosen
                     var lastCord = path[0];
                     foreach (var cord in path)
                     {
-                        Debug.DrawLine(lastCord.ToCentralPosition(), cord.ToCentralPosition(), Color.blue);
+                        Debug.DrawLine(lastCord.ToCentralPosition(), cord.ToCentralPosition(), Color.cyan);
                         lastCord = cord;
                     }
 
-                    moveTarget = path[path.Count - 1].ToCentralPosition();
+                    // Move towards the next step of the path
+                    // The first tile is the starting tile, so use second
+                    moveTarget = path.Count > 1 ? path[1].ToCentralPosition() : path[0].ToCentralPosition();
+
+                    Debug.DrawLine(transform.position, moveTarget, Color.blue);
+
                     searchMode += "/" + path.Count + " tiles";
                 }
                 else
@@ -136,13 +145,15 @@ public class Enemy : GenericEnemy
                     moveTarget = transform.position;
                     searchMode += "/no way";
                 }
-                Debug.Log("move from " + transform.position + " to " + moveTarget + "/" + target.transform.position);
                 searchMode += "/searching";
             }
             else
             {
                 moveTarget = target.transform.position;
-                Debug.Log("direct move ");
+
+                // We draw the way to analyse the movement path chosen
+                Debug.DrawLine(transform.position, moveTarget, Color.blue);
+
                 searchMode += "/direct";
             }
             isMoving = true;
