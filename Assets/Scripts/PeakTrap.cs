@@ -81,33 +81,34 @@ public class PeakTrap : MonoBehaviour
         {
             if (playerCollider.IsTouching(trapCollider) && !damageIsTaken)
             {
-                StartCoroutine(WaitingDamage(clip.length / 4));
+                player.GetComponent<Player>().damage(1);
+                damageIsTaken = true;
             }
         }
     }
 
     void ActivateTrap()
     {
-        isActive = true;
+       
         trapAnimator.SetTrigger("Activate");
         trapAudio.Play();
         trapAnimator.SetTrigger("Deactivate");
-        StartCoroutine(Waiting(clip.length));
+
+        StartCoroutine(SetActive(clip.length / 2));
+        StartCoroutine(SetDeactivate(clip.length));
+    }   
+
+    
+    IEnumerator SetActive(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isActive = true;
     }
 
-    IEnumerator Waiting(float time)
+    IEnumerator SetDeactivate(float time)
     {
         yield return new WaitForSeconds(time);
         isActive = false;
         damageIsTaken = false;
     }
-
-
-    IEnumerator WaitingDamage(float time)
-    {
-        yield return new WaitForSeconds(time);
-        player.GetComponent<Player>().damage(1);
-        damageIsTaken = true;
-    }
-
 }
