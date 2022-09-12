@@ -260,16 +260,20 @@ public class Enemy : GenericEnemy
 
         float distance = Vector3.Distance(transform.position, target.transform.position);
 
-        if (!(distance < attackRange) || !(Time.time >= nextFire))
+        // Nothing to do if on cooldown or out of distance or not ranged enemy
+        if (distance > attackRange || Time.time < nextFire)
             return;
 
+        // Refresh cd
         nextFire = Time.time + fireCooldown;
 
+        // Shoot projectile
         var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
         var projectileController = projectile.GetComponent<Projectile>();
         projectileController.damage = rangedAttackDmg;
         projectileController.speed = prjSpeed;
 
+        // Aim projectile
         var relative = projectile.transform.InverseTransformPoint(target.transform.position);
         float angle = 90 - Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
         projectile.transform.Rotate(0, 0, angle);
@@ -277,6 +281,7 @@ public class Enemy : GenericEnemy
 
     public override void OnHitPlayer(Player player)
     {
+        // Close combat
         player.damage(Mathf.CeilToInt(nearAttackDmg));
     }
 }
