@@ -64,13 +64,7 @@ namespace Assets.Scripts
 
 
         private void FixedUpdate()
-        {
-            if (alive && !GameManager.Instance.isPaused)
-            {
-                handleMovement();
-
-            }
-        }
+        {}
 
         private void Update()
         {
@@ -83,6 +77,7 @@ namespace Assets.Scripts
 
             if (alive && !GameManager.Instance.isPaused)
             {
+                handleMovement();
                 handleInvincibility();
                 handleMovementSound();
                 if (Input.GetMouseButtonDown(0))
@@ -93,42 +88,24 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// @author: Florian Weber, Neele Kemper
-        /// 
+        /// @author: Florian Weber
+        /// Manages player movement.
         /// </summary>
         /// <returns></returns>
-        private void handleMovement()
-        {
+        private void handleMovement(){
             var x = Input.GetAxis("Horizontal");
             var y = Input.GetAxis("Vertical");
-            moveDelta = new Vector3(x, y, 0);
 
-            // Swap spirit direction
-            if (moveDelta.x > 0)
-            {
-                transform.localScale = Vector3.one;
-            }
-            else if (moveDelta.x < 0)
-            {
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
-
-
-            rb.MovePosition(transform.position + moveDelta * Time.deltaTime * walkSpeed);
-
-            if (rb.position != lastPosition)
-            {
-
+            if(x != 0 && y != 0){
                 isMoving = true;
-            }
-            else
-            {
+            }else{
                 isMoving = false;
             }
-            lastPosition = rb.position;
 
+            if (x > 0) transform.localScale = Vector3.one;
+            else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
 
-
+            transform.Translate(new Vector2(x, y) * Time.deltaTime * walkSpeed);
         }
 
         /// <summary>
