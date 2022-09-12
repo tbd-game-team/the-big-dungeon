@@ -18,7 +18,7 @@ public static class EnemySpawner
             var prefab = Resources.Load(prefabName);
 
             // Spawn enemy
-            var enemy = Object.Instantiate(prefab, loc, Quaternion.identity) as GameObject;
+            var enemy = Object.Instantiate(prefab, loc + new Vector3(0.5f, 0.5f, 0), Quaternion.identity) as GameObject;
 
             // Configure enemy
             var enemyController = enemy.GetComponent<GenericEnemy>();

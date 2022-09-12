@@ -30,6 +30,13 @@ public class Enemy : GenericEnemy
     [SerializeField]
     private float prjSpeed = 1f;
 
+    [Header("Audio Settings")]
+    [SerializeField]
+    private float minDist = 1;
+    [SerializeField]
+    private float maxDist = 20;
+    [SerializeField]
+    private float maxVolume = 0.8f;
     [SerializeField]
     private AudioSource footsteps;
 
@@ -53,6 +60,7 @@ public class Enemy : GenericEnemy
         var movement = HandleMovement();
         handleAnimation(movement);
         handleSound();
+        handleVolume();
     }
 
     void FixedUpdate()
@@ -140,6 +148,28 @@ public class Enemy : GenericEnemy
         else
         {
             footsteps.Pause();
+        }
+    }
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Fade 2D audio by distance
+    /// </summary>
+    /// <returns></returns>
+    private void handleVolume()
+    {
+        float dist = Vector3.Distance(transform.position, target.transform.position);
+        if (dist < minDist)
+        {
+            footsteps.volume = maxVolume;
+        }
+        else if (dist > maxDist)
+        {
+            footsteps.volume = 0;
+        }
+        else
+        {
+            footsteps.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
         }
     }
 

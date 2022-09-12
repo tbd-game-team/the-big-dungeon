@@ -28,7 +28,12 @@ public class DungeonGenerator : MonoBehaviour
 
     [Header("Spawn Parameters")]
     [SerializeField]
+    [Range(1, 100)]
     private int healthPotionProbability = 20;
+
+    [SerializeField]
+    [Range(1, 100)]
+    private int trapPobability = 20;
 
     [SerializeField]
     private float[] enemyDenisityLevels;
@@ -50,6 +55,7 @@ public class DungeonGenerator : MonoBehaviour
         tilemapVisualizer.Clear();
 
         HashSet<Vector2Int> dungeon = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> dungeonCorridors = new HashSet<Vector2Int>();
 
         // 1. Partition the space into subspaces using the Binary Space Partitioning (BSP) algorithm.
         List<BoundsInt> binarySpaces = SplitDungeonSpace();
@@ -64,10 +70,12 @@ public class DungeonGenerator : MonoBehaviour
 
         // 4. Connect the closest CA rooms with each other.
         HashSet<Vector2Int> corridors = CreateCorridors(dungeon, finalRooms);
+        dungeonCorridors.UnionWith(corridors);
         dungeon.UnionWith(corridors);
 
         // 5. Connect the closest subspaces with each other.
         corridors = CreateCorridors(dungeon, binarySpaces);
+        dungeonCorridors.UnionWith(corridors);
         dungeon.UnionWith(corridors);
         dungeonMap = AlgorithmUtils.HashSetToMap(dungeon, dungeonWidth, dungeonHeight);
 
@@ -75,8 +83,8 @@ public class DungeonGenerator : MonoBehaviour
         CellularAutomataAlgorithm.FilterWalls(20, dungeonMap, dungeonWidth, dungeonHeight);
         dungeon = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
-        // 7. Calculate the position of the player, the target coin and the enemies.
-        SpawnPositionGenerator.CalculatePositions(finalRooms, healthPotionProbability, enemyDenisityLevels, dungeonMap, dungeonWidth, dungeonHeight);
+        // 7. Calculate the position of the player, the target coin, the traps and the enemies.
+        SpawnPositionGenerator.CalculatePositions(finalRooms, dungeonCorridors, healthPotionProbability, trapPobability, enemyDenisityLevels, dungeonMap, dungeonWidth, dungeonHeight);
 
         // 8. Visualize the dungeon
         tilemapVisualizer.PaintFloorTiles(dungeon);

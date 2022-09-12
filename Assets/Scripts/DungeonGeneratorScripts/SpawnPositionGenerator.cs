@@ -9,19 +9,22 @@ public static class SpawnPositionGenerator
     private static Vector3 targetPosition = new Vector3();
     private static List<Vector3> healthPotionPositions = new List<Vector3>();
     private static List<Vector3> enemyPositions = new List<Vector3>();
+    private static List<Vector3> trapPositions = new List<Vector3>();
 
     /// <summary>
     /// @author: Neele Kemper
-    /// Calculate the position of the player, the target coin, helath potions and the enemies.
+    /// Calculate the position of the player, the target coin, helath potions, traps and the enemies.
     /// </summary>
+    /// <param name="dungeonCorridors">the dungeon corridors connecting the rooms</param>
     /// <param name="rooms">list of rooms in the dugeon.</param>
     /// <param name="healthPotionProbability">the chance that a helath potion is spawned</param>
+    /// <param name="trapProbability">the chance that a trap is spawned</param>
     /// <param name="enemyDenisityLevels">indicates the density in which the enemies are spawned in levels</param>
     /// <param name="map">dungeon map</param>
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
-    public static void CalculatePositions(List<BoundsInt> rooms, int healthPotionProbability, float[] enemyDenisityLevels, int[,] map, int width, int height)
+    public static void CalculatePositions(List<BoundsInt> rooms, HashSet<Vector2Int> dungeonCorridors, int healthPotionProbability, int trapProbability, float[] enemyDenisityLevels, int[,] map, int width, int height)
     {
         // sort rooms ascending according to their size.
         rooms.Sort((r1, r2) => ((r1.size.x * r1.size.y).CompareTo(r2.size.x * r2.size.y)));
@@ -51,11 +54,13 @@ public static class SpawnPositionGenerator
         int targetIndex = pathLengthList.IndexOf(maxDistance);
         targetPosition = new Vector3(roomCenters[targetIndex].x, roomCenters[targetIndex].y, 0);
 
-        // enemies are placed in all other rooms.
+        // enemies and health potions are placed in all other rooms.
         enemyRooms.RemoveAt(targetIndex);
         pathLengthList.RemoveAt(targetIndex);
 
         CalculatePrefabPositions(enemyRooms, pathLengthList, healthPotionProbability, enemyDenisityLevels, map, width, height);
+
+        CalculateTrapPositions(dungeonCorridors, trapProbability, map, width, height);
     }
 
     /// <summary>
@@ -79,7 +84,7 @@ public static class SpawnPositionGenerator
         int nLevelWidth = (pathLengths.Max() - pathLengths.Min()) / nLevel;
 
         // calculate the number of enemies and their position for each room.
-        for (int i = 0; i < rooms.Count; i++)
+        for (int i = 0; i < pathLengths.Count; i++)
         {
             BoundsInt room = rooms[i];
             int length = pathLengths[i];
@@ -148,15 +153,38 @@ public static class SpawnPositionGenerator
         {
             Vector3 pos = new Vector3(x, y, 0);
             // do not place prefabs directly next to the wall. (this may cause them to overlap with the walls)
-            int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(x, y, map, width, height);
+            //int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(x, y, map, width, height);
             bool isFloor = (map[x, y] == AlgorithmUtils.floorTile);
-            if (isFloor && !enemyPositions.Contains(pos) && !healthPotionPositions.Contains(pos) && surroundingWalls < 2)
+            if (isFloor && !enemyPositions.Contains(pos) && !healthPotionPositions.Contains(pos))
             {
                 return pos;
 
             }
         }
         return Vector3.zero;
+    }
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Traps are placed randomly in corridors
+    /// </summary>
+    /// <param name="dungeonCorridors">the dungeon corridors connecting the rooms</param>
+    /// <param name="trapProbability">the chance that a trap is spawned</param>
+    /// <param name="map">dungeon map</param>
+    /// <param name="width">width of the dungeon</param>
+    /// <param name="height">height of the dungeon</param>
+    /// <returns></returns>
+
+    private static void CalculateTrapPositions(HashSet<Vector2Int> dungeonCorridors, int trapProbability, int[,] map, int width, int height)
+    {
+        foreach (Vector2Int corridor in dungeonCorridors)
+        {
+            int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(corridor.x, corridor.y, map, width, height);
+            if (surroundingWalls == 6 && Random.Range(1, 100) < trapProbability)
+            {
+                trapPositions.Add(new Vector3(corridor.x, corridor.y, 0));
+            }
+        }
     }
 
     /// <summary>
@@ -170,6 +198,7 @@ public static class SpawnPositionGenerator
         targetPosition = new Vector3();
         healthPotionPositions = new List<Vector3>();
         enemyPositions = new List<Vector3>();
+        trapPositions = new List<Vector3>();
     }
 
     /// <summary>
@@ -210,5 +239,16 @@ public static class SpawnPositionGenerator
     public static List<Vector3> GetHealthPotionPositions()
     {
         return healthPotionPositions;
+    }
+
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Get the spawn positions of the traps.
+    /// </summary>
+    /// <returns>enemy positions</returns>
+    public static List<Vector3> GetTrapPositions()
+    {
+        return trapPositions;
     }
 }

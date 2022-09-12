@@ -16,7 +16,7 @@ public class CoinSpawner : MonoBehaviour
         if (!coinIsSpawned)
         {
             // spawn position of player
-            transform.position = SpawnPositionGenerator.GetTargetPosition();
+            transform.position = SpawnPositionGenerator.GetTargetPosition()+new Vector3(0.5f,0.5f,0);
             coinIsSpawned = true;
         }
     }

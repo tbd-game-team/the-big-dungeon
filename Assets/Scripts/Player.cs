@@ -20,6 +20,7 @@ namespace Assets.Scripts
         [Header("UI")]
         public HealthUi healthUi;
         public GameObject gameOverPanel;
+        public GameObject winPanel;
         private bool alive = true;
 
         [Header("Combat")]
@@ -32,7 +33,7 @@ namespace Assets.Scripts
         private float invincibleTimer;
         public bool invincible;
 
-        public AudioManager audioManager;
+        private AudioManager audioManager;
         public AudioMixerSnapshot snapshotGameOver;
 
         private BoxCollider2D boxCollider;
@@ -64,17 +65,11 @@ namespace Assets.Scripts
 
 
         private void FixedUpdate()
-        {
-            if (alive && !GameManager.Instance.isPaused)
-            {
-                handleMovement();
-
-            }
-        }
+        {}
 
         private void Update()
-        {   
-            if(!playerIsSpawned)
+        {
+            if (!playerIsSpawned)
             {
                 // spawn position of player
                 transform.position = SpawnPositionGenerator.GetPlayerPosition();
@@ -83,52 +78,35 @@ namespace Assets.Scripts
 
             if (alive && !GameManager.Instance.isPaused)
             {
+                handleMovement();
                 handleInvincibility();
                 handleMovementSound();
                 if (Input.GetMouseButtonDown(0))
-                {   
+                {
                     attack();
                 }
             }
         }
 
         /// <summary>
-        /// @author: Florian Weber, Neele Kemper
-        /// 
+        /// @author: Florian Weber
+        /// Manages player movement.
         /// </summary>
         /// <returns></returns>
-        private void handleMovement()
-        {
+        private void handleMovement(){
             var x = Input.GetAxis("Horizontal");
             var y = Input.GetAxis("Vertical");
-            moveDelta = new Vector3(x, y, 0);
 
-            // Swap spirit direction
-            if (moveDelta.x > 0)
-            {
-                transform.localScale = Vector3.one;
-            }
-            else if (moveDelta.x < 0)
-            {
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
-
-
-            rb.MovePosition(transform.position + moveDelta * Time.deltaTime * walkSpeed);
-
-            if (rb.position != lastPosition)
-            {
-
+            if(x != 0 && y != 0){
                 isMoving = true;
-            }
-            else
-            {
+            }else{
                 isMoving = false;
             }
-            lastPosition = rb.position;
 
+            if (x > 0) transform.localScale = Vector3.one;
+            else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
 
-
+            transform.Translate(new Vector2(x, y) * Time.deltaTime * walkSpeed);
         }
 
         /// <summary>
@@ -148,6 +126,11 @@ namespace Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// @author: Florian Weber, Neele Kemper
+        /// Manages player attack
+        /// </summary>
+        /// <returns></returns>
         private void attack()
         {
             weaponAnimator.SetTrigger("attack");
@@ -162,17 +145,30 @@ namespace Assets.Scripts
             }
             else if (other.gameObject.tag == "Coin")
             {
-                // @Fabian: Todo
-                Debug.Log("You win!");
                 audioManager.Play("PlayerCoinSelection");
-            } 
-            else if(other.gameObject.tag == "HealthPotion")
+                GameManager.Instance.pause();
+                audioManager.Stop("PlayerFootsteps");
+                audioManager.Play("PlayerDeath");
+                winPanel.SetActive(true);
+                snapshotGameOver.TransitionTo(2.0f);
+                GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
+                if(pauseBtn)
+                {
+                    pauseBtn.SetActive(false);
+                }
+            }
+            else if (other.gameObject.tag == "HealthPotion")
             {
                 restoreHealth(other);
             }
         }
 
-        private void damage(int amount)
+        /// <summary>
+        /// @author: Florian Weber
+        /// Manages player getting damage
+        /// </summary>
+        /// <returns></returns>
+        public void damage(int amount)
         {
             if (!invincible)
             {
@@ -186,7 +182,11 @@ namespace Assets.Scripts
                     gameOverPanel.SetActive(true);
                     snapshotGameOver.TransitionTo(2.0f);
                     GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
-                    pauseBtn.SetActive(false);
+                    if(pauseBtn)
+                    {
+                        pauseBtn.SetActive(false);
+                    }
+                    
 
                 }
                 else
@@ -200,25 +200,30 @@ namespace Assets.Scripts
                 {
                     StartCoroutine(camShake.Shake(0.4f, 0.3f));
                 }
-                healthUi.updateHearts(health);
+                healthUi.updateHearts(health, true);
             }
         }
 
         private void restoreHealth(Collider2D potion)
         {
-            if (health< healthUi.maxHealthPlayer && alive)
+            if (health < healthUi.maxHealthPlayer && alive)
             {
-                health+=1;
+                health += 1;
                 audioManager.Play("PlayeDrinkPotion");
-                healthUi.updateHearts(health);
-            } 
-            else 
+                healthUi.updateHearts(health, false);
+            }
+            else
             {
                 audioManager.Play("PlayeShatterPotion");
-            } 
+            }
             Destroy(potion.gameObject);
         }
 
+        /// <summary>
+        /// @author: Florian Weber
+        /// Manages player invincibility after getting hit
+        /// </summary>
+        /// <returns></returns>
         private void handleInvincibility()
         {
             if (invincibleTimer <= 0 && invincible)
@@ -237,6 +242,11 @@ namespace Assets.Scripts
             return health;
         }
 
+        /// <summary>
+        /// @author: Florian Weber
+        /// Makes Player flashing; used after receiving damage
+        /// </summary>
+        /// <returns></returns>
         IEnumerator Flasher()
         {
             var renderer = gameObject.GetComponent<SpriteRenderer>();

@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// @author: Florian Weber
+/// Manages Dash Move.
 public class dashMove : MonoBehaviour
 {
     private Rigidbody2D rb; 
