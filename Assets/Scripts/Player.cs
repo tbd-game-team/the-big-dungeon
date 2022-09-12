@@ -25,6 +25,10 @@ namespace Assets.Scripts
         private bool alive = true;
 
         [Header("Combat")]
+        [SerializeField]
+        private LayerMask enemyLayer;
+        [SerializeField]
+        private float attackRange = 1.5f;
         // Attack parameters
         public float invincibleTime;
         public Color collideColor;
@@ -85,7 +89,7 @@ namespace Assets.Scripts
                 handleMovementSound();
                 if (Input.GetMouseButtonDown(0))
                 {
-                    attack();
+                    Attack();
                 }
             }
         }
@@ -137,10 +141,37 @@ namespace Assets.Scripts
         /// Manages player attack
         /// </summary>
         /// <returns></returns>
-        private void attack()
+        private void Attack()
         {
             weaponAnimator.SetTrigger("attack");
             audioManager.Play("PlayerSword");
+
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
+            foreach (var hitCollider in colliders)
+            {
+                if (hitCollider.gameObject.tag != Keys.TAG_ENEMY)
+                    continue;
+
+                if (hitCollider.transform.position.x > transform.position.x)
+                {
+                    // Hit is to -x, but player looks at +x
+                    if (transform.localScale != Vector3.one)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    // Hit is to +x, but player looks at -x
+                    if (transform.localScale == Vector3.one)
+                    {
+                        continue;
+                    }
+                }
+
+                var enemy = hitCollider.gameObject.gameObject.GetComponent<GenericEnemy>();
+                enemy.OnBeingHit();
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -168,7 +199,7 @@ namespace Assets.Scripts
             {
                 restoreHealth(other);
             }
-            else if (other.gameObject.tag == "Projectile")
+            else if (other.gameObject.tag == Keys.TAG_PROJECTILE)
             {
                 var p = other.gameObject.GetComponent<Projectile>();
                 p.OnHitPlayer(this);

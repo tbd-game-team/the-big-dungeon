@@ -23,5 +23,10 @@ namespace Assets.Scripts.Combat
         }
 
         public abstract void OnHitPlayer(Player player);
+
+        public virtual void OnBeingHit()
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
