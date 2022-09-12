@@ -110,18 +110,23 @@ public class Enemy : GenericEnemy
             // Find a way
             Debug.Log("distance " + distance);
             // Only the walls of the tile map / blocking layer are interesting
-            // Physics2D.queriesStartInColliders = true;
-            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, float.PositiveInfinity, wallLayer);
+            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, distance, wallLayer);
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null && hitInfo.distance < distance)
             {
                 Debug.Log("hitInfo.collider " + hitInfo.collider);
-                List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight, 15);
+                var fCord = new Coordinate(transform.position);
+                var tCord = new Coordinate(moveTarget);
 
-                Debug.DrawRay(transform.position, Vector3.down); // ok
-                Debug.DrawRay(new Coordinate(transform.position).ToCentralPosition(), Vector3.up);
-                Debug.Log("path from " + new Coordinate(transform.position) + " - " + new Coordinate(transform.position).ToCentralPosition());
-                Debug.Log("path to " + new Coordinate(target.transform.position) + " - " + new Coordinate(target.transform.position).ToCentralPosition());
+                Debug.DrawRay(transform.position, Vector3.down);
+                Debug.DrawRay(fCord.ToCentralPosition(), Vector3.up);
+                Debug.DrawRay(tCord.ToCentralPosition(), Vector3.up);
+                Debug.Log("path from " + fCord + " - " + fCord.ToCentralPosition());
+                Debug.Log("path to " + tCord + " - " + tCord.ToCentralPosition());
+                Debug.Log("map " + map);
+
+                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight);
+
                 if (path.Count > 0)
                 {
                     Debug.Log("path " + path.Count);

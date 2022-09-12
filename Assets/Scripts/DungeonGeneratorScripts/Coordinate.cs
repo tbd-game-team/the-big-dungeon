@@ -15,8 +15,6 @@ public class Coordinate
     public float fCost = float.MaxValue;
     public Coordinate cameFromeCoordinate = null;
 
-    private static TilemapVisualizer tilemapVisualizer = Object.FindObjectOfType<TilemapVisualizer>();
-
     public Coordinate() { }
     public Coordinate(int newX, int newY)
     {
@@ -28,6 +26,7 @@ public class Coordinate
 
     public Coordinate(Vector3 worldCoordinate)
     {
+        TilemapVisualizer tilemapVisualizer = Object.FindObjectOfType<TilemapVisualizer>();
         var cell = tilemapVisualizer.floorTilemap.WorldToCell(worldCoordinate);
         x = cell.x;
         y = cell.y;
@@ -37,6 +36,7 @@ public class Coordinate
 
     public Vector3 ToPosition()
     {
+        TilemapVisualizer tilemapVisualizer = Object.FindObjectOfType<TilemapVisualizer>();
         return tilemapVisualizer.floorTilemap.CellToWorld(new Vector3Int(x, y, 0));
     }
 
