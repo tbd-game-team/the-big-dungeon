@@ -5,6 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(BoxCollider2D))]
 public class Enemy : GenericEnemy
 {
     [Header("Movement")]
@@ -41,14 +42,17 @@ public class Enemy : GenericEnemy
     private AudioSource footsteps;
 
     private float nextFire = .0f;
+    private bool isMoving = false;
+    
     private Animator characterAnimator;
     private Rigidbody2D rb2d;
-    private bool isMoving = false;
+    private BoxCollider2D bc2d;
 
     private void Awake()
     {
         characterAnimator = GetComponent<Animator>();
         rb2d = GetComponent<Rigidbody2D>();
+        bc2d = GetComponent<BoxCollider2D>();
         if (target == null)
         {
             target = GameObject.FindWithTag("Player");
@@ -108,9 +112,8 @@ public class Enemy : GenericEnemy
             }
 
             // Find a way
-            Debug.Log("distance " + distance);
             // Only the walls of the tile map / blocking layer are interesting
-            RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, distance, wallLayer);
+            RaycastHit2D hitInfo = Physics2D.BoxCast(transform.position, bc2d.size, 0,moveTarget - transform.position, distance, wallLayer);
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null && hitInfo.distance < distance)
             {
@@ -118,8 +121,7 @@ public class Enemy : GenericEnemy
                 var tCord = new Coordinate(moveTarget);
 
                 // Limit here the max cost to not hog cpu for far enemies
-                // Also disallow diagonal movement, as it makes enemies walk against walls
-                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, false, 2000);
+                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, true, 3000);
 
                 // A way has been found
                 if (path.Count > 0)
@@ -134,7 +136,9 @@ public class Enemy : GenericEnemy
 
                     // Move towards the next step of the path
                     // The first tile is the starting tile, so use second
-                    moveTarget = path.Count > 1 ? path[1].ToCentralPosition() : path[0].ToCentralPosition();
+                    var targetTile = path.Count > 1 ? path[1] : path[0];
+
+                    moveTarget = targetTile.ToCentralPosition();
 
                     Debug.DrawLine(transform.position, moveTarget, Color.blue);
 
