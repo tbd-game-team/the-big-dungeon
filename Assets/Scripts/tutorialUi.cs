@@ -10,7 +10,7 @@ public class tutorialUi : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        tutorialPanel.SetActive(true);
     }
 
     // Update is called once per frame
