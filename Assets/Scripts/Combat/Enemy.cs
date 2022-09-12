@@ -86,7 +86,7 @@ public class Enemy : GenericEnemy
             searchMode = "no enemy in sight";
             isMoving = false;
         }
-        else if (distance < attackRange)
+        else if (distance < attackRange && distance > personalSpace)
         {
             searchMode = "attacking";
             isMoving = false;
@@ -104,14 +104,13 @@ public class Enemy : GenericEnemy
             else
             {
                 moveTarget = target.transform.position;
-                searchMode = "attacking";
+                searchMode = "approaching";
             }
 
             // Find a way
             Debug.Log("distance " + distance);
             // Only the walls of the tile map / blocking layer are interesting
             // Physics2D.queriesStartInColliders = true;
-            Debug.Log("hitInfo.collider all " + Physics2D.RaycastAll(transform.position, moveTarget - transform.position, float.PositiveInfinity));
             RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, float.PositiveInfinity, wallLayer);
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null)
@@ -119,10 +118,21 @@ public class Enemy : GenericEnemy
                 Debug.Log("hitInfo.collider " + hitInfo.collider);
                 List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight, 15);
                 Debug.Log("path " + path);
+                Debug.Log("path from " + new Coordinate(transform.position).ToCentralPosition());
+                Debug.Log("path to " + new Coordinate(target.transform.position).ToCentralPosition());
                 if (path.Count > 0)
-                    moveTarget = path[0].ToCentralPosition();
-                if (path.Count > 1)
-                    moveTarget = path[1].ToCentralPosition();
+                {
+                    Debug.Log("path 0 " + path[0].ToCentralPosition());
+                    Debug.Log("path l " + path[path.Count - 1].ToCentralPosition());
+
+                    moveTarget = path[path.Count - 1].ToCentralPosition();
+                    searchMode += "/" + path.Count + " tiles";
+                }
+                else
+                {
+                    moveTarget = transform.position;
+                    searchMode += "/no way";
+                }
                 Debug.Log("move from " + transform.position + " to " + moveTarget + "/" + target.transform.position);
                 searchMode += "/searching";
             }
@@ -130,7 +140,7 @@ public class Enemy : GenericEnemy
             {
                 moveTarget = target.transform.position;
                 Debug.Log("direct move ");
-                searchMode += "/approaching";
+                searchMode += "/direct";
             }
             isMoving = true;
         }
