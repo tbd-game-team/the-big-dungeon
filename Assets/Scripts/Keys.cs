@@ -7,5 +7,6 @@ namespace Assets.Scripts
         public const string TAG_PROJECTILE = "Projectile";
         public const string TAG_ENEMY = "Enemy";
         public const string TAG_PLAYER = "Player";
+        public const string ANIMATION_DEAD_KEY = "Dead";
     }
 }

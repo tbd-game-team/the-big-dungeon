@@ -44,6 +44,8 @@ namespace Assets.Scripts.Combat
         [SerializeField]
         private AudioSource footsteps;
 
+        private bool alive = true;
+
         private float nextFire = .0f;
         private bool isMoving = false;
 
@@ -68,6 +70,11 @@ namespace Assets.Scripts.Combat
             HandleAnimation(movement);
             handleSound();
             handleVolume();
+
+            if (!alive && !(characterAnimator.GetCurrentAnimatorStateInfo(0).length > characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime))
+            {
+                Destroy(this.gameObject);
+            }
         }
 
         void FixedUpdate()
@@ -77,8 +84,15 @@ namespace Assets.Scripts.Combat
 
         Vector3 HandleMovement()
         {
+            if (!alive)
+            {
+                isMoving = false;
+                return transform.position;
+            }
+
             if (target == null)
             {
+                isMoving = false;
                 searchMode = "no enemy";
                 return transform.position;
             }
@@ -281,8 +295,24 @@ namespace Assets.Scripts.Combat
 
         public override void OnHitPlayer(Player player)
         {
+            if (!alive)
+            {
+                return;
+            }
+
             // Close combat
             player.damage(Mathf.CeilToInt(nearAttackDmg));
+        }
+
+        public override void OnBeingHit()
+        {
+            if (!alive)
+            {
+                return;
+            }
+
+            alive = false;
+            characterAnimator.SetTrigger(Keys.ANIMATION_DEAD_KEY);
         }
     }
 }
