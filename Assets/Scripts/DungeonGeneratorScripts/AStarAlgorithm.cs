@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,14 +18,8 @@ public class AStarAlgorithm
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
     /// <returns>shortest path</returns>
-    public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,] map, int width, int height)
+    public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,] map, int width, int height, float maxCost = float.PositiveInfinity)
     {
-        return AStar(startCoordinate, targetCoordinate, map, width, height, float.PositiveInfinity);
-    }
-
-    public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,] map, int width, int height, float maxCost)
-    {
-
         List<Coordinate> path = new List<Coordinate>();
         // initialize the open list and put the starting node on the open list 
         List<Coordinate> openList = new List<Coordinate> { startCoordinate };

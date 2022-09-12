@@ -114,26 +114,18 @@ public class Enemy : GenericEnemy
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null && hitInfo.distance < distance)
             {
-                Debug.Log("hitInfo.collider " + hitInfo.collider);
                 var fCord = new Coordinate(transform.position);
                 var tCord = new Coordinate(moveTarget);
 
-                Debug.DrawRay(transform.position, Vector3.down);
-                Debug.DrawRay(fCord.ToCentralPosition(), Vector3.up);
-                Debug.DrawRay(tCord.ToCentralPosition(), Vector3.up);
-                Debug.Log("path from " + fCord + " - " + fCord.ToCentralPosition());
-                Debug.Log("path to " + tCord + " - " + tCord.ToCentralPosition());
-                Debug.Log("map " + map);
-
-                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight);
+                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, 1500);
 
                 if (path.Count > 0)
                 {
-                    Debug.Log("path " + path.Count);
-                    foreach (var coord in path)
+                    var lastCord = path[0];
+                    foreach (var cord in path)
                     {
-                        Debug.DrawRay(coord.ToCentralPosition(), new Vector3(1, 1, 0));
-                        Debug.Log("path: " + coord.ToCentralPosition());
+                        Debug.DrawLine(lastCord.ToCentralPosition(), cord.ToCentralPosition(), Color.blue);
+                        lastCord = cord;
                     }
 
                     moveTarget = path[path.Count - 1].ToCentralPosition();
@@ -141,7 +133,6 @@ public class Enemy : GenericEnemy
                 }
                 else
                 {
-                    Debug.Log("no way");
                     moveTarget = transform.position;
                     searchMode += "/no way";
                 }
