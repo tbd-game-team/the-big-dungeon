@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : GenericEnemy
 {
     [Header("Movement")]
@@ -34,11 +35,13 @@ public class Enemy : GenericEnemy
 
     private float nextFire = .0f;
     private Animator characterAnimator;
+    private Rigidbody2D rb2d;
     private bool isMoving = false;
 
     private void Awake()
     {
         characterAnimator = GetComponent<Animator>();
+        rb2d = GetComponent<Rigidbody2D>();
         if (target == null)
         {
             target = GameObject.FindWithTag("Player");
@@ -77,6 +80,8 @@ public class Enemy : GenericEnemy
         {
             Debug.Log("distance " + distance);
             // Only the walls of the tile map / blocking layer are interesting
+            Physics2D.queriesStartInColliders = true;
+            Debug.Log("hitInfo.collider " + Physics2D.RaycastAll(transform.position, moveTarget - transform.position, float.PositiveInfinity));
             RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, float.PositiveInfinity, wallLayer);
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null)
@@ -108,12 +113,13 @@ public class Enemy : GenericEnemy
 
         if (distance >= attackRange)
         {
-            transform.Translate(movement);
+            rb2d.MovePosition(transform.position + movement);
             isMoving = true;
         }
         else if (distance < personalSpace)
         {
-            transform.Translate(-movement);
+            // TODO move up
+            rb2d.MovePosition(transform.position - movement);
             isMoving = true;
         }
         else
