@@ -143,7 +143,14 @@ public class Enemy : GenericEnemy
 
                     // Move towards the next step of the path
                     // The first tile is the starting tile, so use second
-                    var targetTile = path.Count > 1 ? path[1] : path[0];
+                    var dist0 = Vector3.Distance(path[0].ToCentralPosition(), transform.position);
+                    var dist1 = Vector3.Distance(path[1].ToCentralPosition(), transform.position);
+                    Coordinate targetTile;
+                    if (dist1 < 1.4)
+                        targetTile = path[1];
+                    else
+                        targetTile = path[0];
+                    Debug.Log("0 " + dist0 + " ... 1 " + dist1);
 
                     // Manage diagonal moves, as enemies will stop at walls otherwise
                     if (targetTile.x != fCord.x && targetTile.y != fCord.y)
