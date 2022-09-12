@@ -2,6 +2,10 @@ using UnityEngine.Audio;
 using UnityEngine.UI;
 using UnityEngine;
 
+/// <summary>
+/// @author: Neele Kemper
+/// Class handles the audio settings for the music menu and the audio mixer.
+/// </summary>
 public class VolumeSettings : MonoBehaviour
 {
     [SerializeField]
@@ -27,6 +31,7 @@ public class VolumeSettings : MonoBehaviour
     }
 
     private void Start() {
+        // load the player's saved settings.
         float masterVolume = PlayerPrefs.GetFloat(MIXER_MASTER, 0.0f);
         if(masterVolume == 0.0f)
         {
@@ -41,6 +46,7 @@ public class VolumeSettings : MonoBehaviour
     }
 
     private void OnDisable() {
+        // save the player's music settings.
         bool isMuted = !muteButton.isOn;
         if(isMuted)
         {
@@ -54,23 +60,41 @@ public class VolumeSettings : MonoBehaviour
         PlayerPrefs.SetFloat(MIXER_SFX, sfxSlider.value);
         
     }
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Mute all audio sounds
+    /// <param name="state">status of the toggle button</param>
+    /// </summary>
+    /// <returns></returns>
     private void SetMasterVolume(bool state)
     {   
         float value = 0.0f;
         if(!state)
         {
+            // mute
             value = -80.0f;
         }
         mixer.SetFloat(MIXER_MASTER, value);
     }
 
-
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Set the volume of the theme music
+    /// <param name="value">volume value</param>
+    /// </summary>
+    /// <returns></returns>
     private void SetBackgroundVolume(float value)
     {
         mixer.SetFloat(MIXER_THEME, Mathf.Log10(value) * 20);
     }
 
-
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Set the volume of the game effects
+    /// <param name="value">volume value</param>
+    /// </summary>
+    /// <returns></returns>
     private void SetEffectVolume(float value)
     {   
         mixer.SetFloat(MIXER_SFX, Mathf.Log10(value) * 20);
