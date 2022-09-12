@@ -83,60 +83,61 @@ public class Enemy : GenericEnemy
         float distance = Vector3.Distance(transform.position, target.transform.position);
         if (distance > seeRange)
         {
-            moveTarget = transform.position;
             searchMode = "no enemy in sight";
+            isMoving = false;
+        }
+        else if (distance < attackRange)
+        {
+            searchMode = "attacking";
+            isMoving = false;
         }
         else
         {
+            isMoving = true;
+
+            // Determine where to move to
+            if (distance < personalSpace)
+            {
+                moveTarget = transform.position - (target.transform.position - transform.position);
+                searchMode = "fleeing";
+            }
+            else
+            {
+                moveTarget = target.transform.position;
+                searchMode = "attacking";
+            }
+
+            // Find a way
             Debug.Log("distance " + distance);
             // Only the walls of the tile map / blocking layer are interesting
-            Physics2D.queriesStartInColliders = true;
-            Debug.Log("hitInfo.collider " + Physics2D.RaycastAll(transform.position, moveTarget - transform.position, float.PositiveInfinity));
+            // Physics2D.queriesStartInColliders = true;
+            Debug.Log("hitInfo.collider all " + Physics2D.RaycastAll(transform.position, moveTarget - transform.position, float.PositiveInfinity));
             RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, float.PositiveInfinity, wallLayer);
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
             if (hitInfo.collider != null)
             {
-                Debug.Log("hitInfo.collider " + hitInfo);
                 Debug.Log("hitInfo.collider " + hitInfo.collider);
-                Debug.Log("hitInfo.collider " + hitInfo.collider.gameObject);
-                Debug.Log("hitInfo.collider " + hitInfo.distance);
-                Debug.Log("hitInfo.collider " + hitInfo.transform);
                 List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight, 15);
-                Debug.Log("path Count " + path.Count);
                 Debug.Log("path " + path);
                 if (path.Count > 0)
                     moveTarget = path[0].ToCentralPosition();
                 if (path.Count > 1)
                     moveTarget = path[1].ToCentralPosition();
                 Debug.Log("move from " + transform.position + " to " + moveTarget + "/" + target.transform.position);
-                searchMode = "search enemy";
+                searchMode += "/searching";
             }
             else
             {
                 moveTarget = target.transform.position;
                 Debug.Log("direct move ");
-                searchMode = "approach enemy directly";
+                searchMode += "/approaching";
             }
+            isMoving = true;
         }
 
         var movement = (moveTarget - transform.position).normalized * Time.deltaTime * speed;
+        rb2d.MovePosition(transform.position + movement);
 
-        if (distance >= attackRange)
-        {
-            rb2d.MovePosition(transform.position + movement);
-            isMoving = true;
-        }
-        else if (distance < personalSpace)
-        {
-            // TODO move up
-            rb2d.MovePosition(transform.position - movement);
-            isMoving = true;
-        }
-        else
-        {
-            movement = new Vector3(0, 0, 0);
-            isMoving = false;
-        }
         return movement;
     }
 
