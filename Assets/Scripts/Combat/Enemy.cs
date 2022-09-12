@@ -81,7 +81,6 @@ public class Enemy : GenericEnemy
     {
         if (target == null)
         {
-            Debug.Log("no enemy");
             searchMode = "no enemy";
             return transform.position;
         }
@@ -100,12 +99,10 @@ public class Enemy : GenericEnemy
         }
         else
         {
-            isMoving = true;
-
             // Determine where to move to
             if (distance < personalSpace)
             {
-                moveTarget = transform.position - (target.transform.position - transform.position);
+                moveTarget = transform.position - (target.transform.position - transform.position).normalized;
                 searchMode = "fleeing";
             }
             else
@@ -114,92 +111,99 @@ public class Enemy : GenericEnemy
                 searchMode = "approaching";
             }
 
-            // Find a way
-            // Only the walls of the tile map / blocking layer are interesting
-            RaycastHit2D hitInfo = Physics2D.BoxCast(transform.position, bc2d.size, 0, moveTarget - transform.position, distance, wallLayer);
-            Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
-            if (hitInfo.collider != null && hitInfo.distance < distance)
-            {
-                var fCord = new Coordinate(transform.position);
-                var tCord = new Coordinate(moveTarget);
-
-                // Abort for glitchy cases for speedup
-                if (map[tCord.x, tCord.y] != AlgorithmUtils.floorTile || map[fCord.x, fCord.y] != AlgorithmUtils.floorTile)
-                {
-                    Debug.LogWarning("Glitchy path found");
-                    isMoving = false;
-                    return moveTarget;
-                }
-                // Limit here the max cost to not hog cpu for far enemies
-                List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, true, 2000);
-
-                // A way has been found
-                if (path.Count > 0)
-                {
-                    // We draw the way to analyse the movement path chosen
-                    var lastCord = path[0];
-                    foreach (var cord in path)
-                    {
-                        Debug.DrawLine(lastCord.ToCentralPosition(), cord.ToCentralPosition(), Color.cyan);
-                        lastCord = cord;
-                    }
-
-                    // Move towards the next step of the path
-                    // The first tile is the starting tile, so use second
-                    Coordinate targetTile = path[1];
-
-                    // Manage diagonal moves, as enemies will stop at walls otherwise
-                    if (targetTile.x != fCord.x && targetTile.y != fCord.y)
-                    {
-                        if (map[targetTile.x, fCord.y] == AlgorithmUtils.wallTile)
-                        {
-                            targetTile = new Coordinate(fCord.x, targetTile.y);
-                        }
-                        else if (map[fCord.x, targetTile.y] == AlgorithmUtils.wallTile)
-                        {
-                            targetTile = new Coordinate(targetTile.x, fCord.y);
-                        }
-                    }
-
-                    // In case we cannot reach this tile we probably have to move more to the center of the "current" tile
-                    hitInfo = Physics2D.BoxCast(transform.position, bc2d.size, 0, targetTile.ToCentralPosition() - transform.position, 0.3f, wallLayer);
-                    if (hitInfo.collider != null)
-                    {
-                        // We would want to go here, as soon as we can reach it
-                        Debug.DrawLine(transform.position, targetTile.ToCentralPosition(), Color.yellow);
-
-                        targetTile = path[0];
-                    }
-
-                    moveTarget = targetTile.ToCentralPosition();
-
-                    Debug.DrawLine(transform.position, moveTarget, Color.blue);
-
-                    searchMode += "/" + path.Count + " tiles";
-                }
-                else
-                {
-                    moveTarget = transform.position;
-                    searchMode += "/no way";
-                }
-                searchMode += "/searching";
-            }
-            else
-            {
-                moveTarget = target.transform.position;
-
-                // We draw the way to analyse the movement path chosen
-                Debug.DrawLine(transform.position, moveTarget, Color.blue);
-
-                searchMode += "/direct";
-            }
-            isMoving = true;
+            moveTarget = MoveToTarget(moveTarget, distance);
+            isMoving = moveTarget != transform.position;
         }
 
         var movement = (moveTarget - transform.position).normalized * Time.deltaTime * speed;
         rb2d.MovePosition(transform.position + movement);
 
         return movement;
+    }
+
+    private Vector3 MoveToTarget(Vector3 moveTarget, float distance)
+    {
+        // Find a way
+        // Only the walls of the tile map / blocking layer are interesting
+        RaycastHit2D hitInfo = Physics2D.BoxCast(transform.position, bc2d.size, 0, moveTarget - transform.position, distance, wallLayer);
+        Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
+        if (hitInfo.collider != null && hitInfo.distance < distance)
+        {
+            var fCord = new Coordinate(transform.position);
+            var tCord = new Coordinate(moveTarget);
+
+            // Abort for glitchy cases for speedup
+            if (map[tCord.x, tCord.y] != AlgorithmUtils.floorTile || map[fCord.x, fCord.y] != AlgorithmUtils.floorTile)
+            {
+                Debug.LogWarning("Glitchy path found");
+                searchMode += "/glitchy";
+                return transform.position;
+            }
+
+            // Limit here the max cost to not hog cpu for far enemies
+            List<Coordinate> path = AStarAlgorithm.AStar(fCord, tCord, map, mapWidth, mapHeight, true, 2000);
+
+            // A way has been found
+            if (path.Count > 0)
+            {
+                // We draw the way to analyse the movement path chosen
+                var lastCord = path[0];
+                foreach (var cord in path)
+                {
+                    Debug.DrawLine(lastCord.ToCentralPosition(), cord.ToCentralPosition(), Color.cyan);
+                    lastCord = cord;
+                }
+
+                // Move towards the next step of the path
+                // The first tile is the starting tile, so use second
+                Coordinate targetTile = path[1];
+
+                // Manage diagonal moves, as enemies will stop at walls otherwise
+                if (targetTile.x != fCord.x && targetTile.y != fCord.y)
+                {
+                    if (map[targetTile.x, fCord.y] == AlgorithmUtils.wallTile)
+                    {
+                        targetTile = new Coordinate(fCord.x, targetTile.y);
+                    }
+                    else if (map[fCord.x, targetTile.y] == AlgorithmUtils.wallTile)
+                    {
+                        targetTile = new Coordinate(targetTile.x, fCord.y);
+                    }
+                }
+
+                // In case we cannot reach this tile we probably have to move more to the center of the "current" tile
+                hitInfo = Physics2D.BoxCast(transform.position, bc2d.size, 0, targetTile.ToCentralPosition() - transform.position, 0.3f, wallLayer);
+                if (hitInfo.collider != null)
+                {
+                    // We would want to go here, as soon as we can reach it
+                    Debug.DrawLine(transform.position, targetTile.ToCentralPosition(), Color.yellow);
+
+                    targetTile = path[0];
+                }
+
+                moveTarget = targetTile.ToCentralPosition();
+
+                Debug.DrawLine(transform.position, moveTarget, Color.blue);
+
+                searchMode += "/" + path.Count + " tiles";
+            }
+            else
+            {
+                moveTarget = transform.position;
+                searchMode += "/no way";
+            }
+            searchMode += "/searching";
+        }
+        else
+        {
+            moveTarget = target.transform.position;
+
+            // We draw the way to analyse the movement path chosen
+            Debug.DrawLine(transform.position, moveTarget, Color.blue);
+
+            searchMode += "/direct";
+        }
+        return moveTarget;
     }
 
     private void handleSound()
