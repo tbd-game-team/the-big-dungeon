@@ -145,6 +145,19 @@ public class Enemy : GenericEnemy
                     // The first tile is the starting tile, so use second
                     var targetTile = path.Count > 1 ? path[1] : path[0];
 
+                    // Manage diagonal moves, as enemies will stop at walls otherwise
+                    if (targetTile.x != fCord.x && targetTile.y != fCord.y)
+                    {
+                        if (map[targetTile.x, fCord.y] == AlgorithmUtils.wallTile)
+                        {
+                            targetTile = new Coordinate(fCord.x, targetTile.y);
+                        }
+                        else if (map[fCord.x, targetTile.y] == AlgorithmUtils.wallTile)
+                        {
+                            targetTile = new Coordinate(targetTile.x, fCord.y);
+                        }
+                    }
+
                     moveTarget = targetTile.ToCentralPosition();
 
                     Debug.DrawLine(transform.position, moveTarget, Color.blue);
