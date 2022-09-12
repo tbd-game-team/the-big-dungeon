@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Assets.Scripts;
 
 using UnityEngine;
@@ -75,39 +74,67 @@ public class PeakTrap : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Inflict damage to the player when he is standing over an active trap.
+    /// </summary>
+    /// <returns></returns>
+
     private void handleTrap()
     {
         if (isActive)
         {
             if (playerCollider.IsTouching(trapCollider) && !damageIsTaken)
             {
-                StartCoroutine(WaitingDamage(clip.length / 4));
+                player.GetComponent<Player>().damage(1);
+                damageIsTaken = true;
             }
         }
     }
 
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Activate the trap
+    /// </summary>
+    /// <returns></returns>
+
     void ActivateTrap()
     {
-        isActive = true;
+        //start animation and audio
         trapAnimator.SetTrigger("Activate");
         trapAudio.Play();
         trapAnimator.SetTrigger("Deactivate");
-        StartCoroutine(Waiting(clip.length));
+
+        // activate and deactivate the trap after a short delay.
+        StartCoroutine(SetActive(clip.length / 2));
+        StartCoroutine(SetDeactivate(clip.length));
+    }   
+
+    
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Set the active flag of the trap to true
+    /// <param name="time">the waiting time in seconds</param>
+    /// </summary>
+    /// <returns></returns>
+
+    IEnumerator SetActive(float time)
+    {
+        yield return new WaitForSeconds(time);
+        isActive = true;
     }
 
-    IEnumerator Waiting(float time)
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Set the active flag of the trap to false
+    /// <param name="time">the waiting time in seconds</param>
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator SetDeactivate(float time)
     {
         yield return new WaitForSeconds(time);
         isActive = false;
         damageIsTaken = false;
     }
-
-
-    IEnumerator WaitingDamage(float time)
-    {
-        yield return new WaitForSeconds(time);
-        player.GetComponent<Player>().damage(1);
-        damageIsTaken = true;
-    }
-
 }

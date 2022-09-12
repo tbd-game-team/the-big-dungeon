@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
         loadingSlider.value = 0;
     }
 
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// Load a scene, defined by passed scene id
@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LoadAsync(s));
     }
 
-    
+
     /// <summary>
     /// @author: Neele Kemper
     /// Load a scene asynchron and display the loading screen
@@ -55,13 +55,13 @@ public class GameManager : MonoBehaviour
     /// <param name="s">the scenen id</param>
     /// <returns></returns>
     IEnumerator LoadAsync(int s)
-    {   
+    {
         AsyncOperation operation = SceneManager.LoadSceneAsync(s);
         loadingScreen.SetActive(true);
         while (!operation.isDone)
-        {   
-            loadingSlider.value  = Mathf.Clamp01(operation.progress / .9f);
-       
+        {
+            loadingSlider.value = Mathf.Clamp01(operation.progress / .9f);
+
             yield return null;
         }
     }
@@ -69,11 +69,16 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
-        {   
-            if(!isPaused)
+        {
+            if (!isPaused)
             {
                 pause();
                 pausePanel.SetActive(true);
+            }
+            else
+            {
+                pausePanel.SetActive(false);
+                resume();
             }
         }
     }
@@ -98,7 +103,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     public void startGame()
-    {   
+    {
         SceneManager.LoadScene(sceneId);
         Time.timeScale = 1;
         paused = false;
@@ -125,7 +130,7 @@ public class GameManager : MonoBehaviour
     public void pause()
     {
         paused = true;
-        Time.timeScale =  0;
+        Time.timeScale = 0;
         snapshotPaused.TransitionTo(.01f);
     }
 

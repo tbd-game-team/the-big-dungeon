@@ -1,8 +1,10 @@
 using UnityEngine.Audio;
 using UnityEngine;
 
-
-
+/// <summary>
+/// @author: Neele Kemper
+/// Class to set the audio source parameters.
+/// </summary>
 [System.Serializable]
 public class Sound
 {
@@ -18,9 +20,9 @@ public class Sound
     [SerializeField]
     [Range(0f, 1f)]
     public float volume;
-    [Range(0.1f, 3.0f)]
-
+    
     [SerializeField]
+    [Range(0.1f, 3.0f)]
     public float pitch;
 
     [SerializeField]
