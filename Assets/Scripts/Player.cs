@@ -170,7 +170,7 @@ namespace Assets.Scripts
             }
             else if (other.gameObject.tag == "Projectile")
             {
-                var p = other.gameObject.GetComponent<GenericProjectile>();
+                var p = other.gameObject.GetComponent<Projectile>();
                 p.OnHitPlayer(this);
             }
         }

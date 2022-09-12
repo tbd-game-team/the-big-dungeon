@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using Assets.Scripts.Combat;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ public class Enemy : GenericEnemy
     private float personalSpace = 1f;
     [SerializeField]
     private LayerMask wallLayer;
-    public string searchMode = "";
+    [SerializeField]
+    private string searchMode = "";
 
     [Header("Combat")]
     [SerializeField]
@@ -28,7 +30,9 @@ public class Enemy : GenericEnemy
     [SerializeField]
     private float fireCooldown = .5f;
     [SerializeField]
-    private float attackDmg = 1f;
+    private float nearAttackDmg = 1f;
+    [SerializeField]
+    private float rangedAttackDmg = 1f;
     [SerializeField]
     private float prjSpeed = 1f;
 
@@ -58,8 +62,6 @@ public class Enemy : GenericEnemy
         {
             target = GameObject.FindWithTag("Player");
         }
-
-        onTouchDmg = 1;
     }
 
     void Update()
@@ -149,7 +151,6 @@ public class Enemy : GenericEnemy
                     // Manage diagonal moves, as enemies will stop at walls otherwise
                     if (targetTile.x != fCord.x && targetTile.y != fCord.y)
                     {
-                        Debug.Log("diagonal movement");
                         if (map[targetTile.x, fCord.y] == AlgorithmUtils.wallTile)
                         {
                             targetTile = new Coordinate(fCord.x, targetTile.y);
@@ -261,13 +262,18 @@ public class Enemy : GenericEnemy
             nextFire = Time.time + fireCooldown;
 
             var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
-            var projectileController = projectile.GetComponent<GenericProjectile>();
-            projectileController.damage = attackDmg;
+            var projectileController = projectile.GetComponent<Projectile>();
+            projectileController.damage = rangedAttackDmg;
             projectileController.speed = prjSpeed;
 
             var relative = projectile.transform.InverseTransformPoint(target.transform.position);
             var angle = 90 - Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
             projectile.transform.Rotate(0, 0, angle);
         }
+    }
+
+    public override void OnHitPlayer(Player player)
+    {
+        player.damage(Mathf.CeilToInt(nearAttackDmg));
     }
 }

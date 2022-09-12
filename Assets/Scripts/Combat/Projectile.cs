@@ -6,7 +6,7 @@ namespace Assets.Scripts.Combat
     /// Projectile being shot by ranged enemies
     /// </summary>
     [RequireComponent(typeof(BoxCollider2D))]
-    public class GenericProjectile : MonoBehaviour
+    public class Projectile : MonoBehaviour
     {
 
         [SerializeField]
@@ -39,6 +39,5 @@ namespace Assets.Scripts.Combat
             Destroy(gameObject);
             player.damage(Mathf.CeilToInt(damage));
         }
-
     }
 }

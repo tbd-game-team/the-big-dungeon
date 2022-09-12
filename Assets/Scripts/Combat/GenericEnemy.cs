@@ -5,16 +5,16 @@ using Assets.Scripts;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class GenericEnemy : MonoBehaviour
+public abstract class GenericEnemy : MonoBehaviour
 {
     [SerializeField]
     public GameObject target;
-
+    [SerializeField]
     public int[,] map;
+    [SerializeField]
     public int mapWidth;
+    [SerializeField]
     public int mapHeight;
-
-    public float onTouchDmg = 0;
 
     private void Awake()
     {
@@ -24,9 +24,5 @@ public class GenericEnemy : MonoBehaviour
         }
     }
 
-    public virtual void OnHitPlayer(Player player)
-    {
-        Destroy(gameObject);
-        player.damage(Mathf.CeilToInt(onTouchDmg));
-    }
+    public abstract void OnHitPlayer(Player player);
 }
