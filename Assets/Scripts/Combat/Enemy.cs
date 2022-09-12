@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Assets.Scripts;
 using Assets.Scripts.Combat;
@@ -67,14 +65,14 @@ public class Enemy : GenericEnemy
     void Update()
     {
         var movement = HandleMovement();
-        handleAnimation(movement);
+        HandleAnimation(movement);
         handleSound();
         handleVolume();
     }
 
     void FixedUpdate()
     {
-        handleCombat();
+        HandleCombat();
     }
 
     Vector3 HandleMovement()
@@ -102,6 +100,7 @@ public class Enemy : GenericEnemy
             // Determine where to move to
             if (distance < personalSpace)
             {
+                // Flee in opposite direction
                 moveTarget = transform.position - (target.transform.position - transform.position).normalized;
                 searchMode = "fleeing";
             }
@@ -241,7 +240,7 @@ public class Enemy : GenericEnemy
         }
     }
 
-    void handleAnimation(Vector3 movement)
+    void HandleAnimation(Vector3 movement)
     {
         characterAnimator.SetFloat(Keys.ANIMATION_SPEED_KEY, movement.magnitude / Time.deltaTime);
         if (movement.x > 0)
@@ -254,26 +253,26 @@ public class Enemy : GenericEnemy
         }
     }
 
-    void handleCombat()
+    private void HandleCombat()
     {
         if (target == null)
             return;
 
-        var distance = Vector3.Distance(transform.position, target.transform.position);
+        float distance = Vector3.Distance(transform.position, target.transform.position);
 
-        if (distance < attackRange && Time.time >= nextFire)
-        {
-            nextFire = Time.time + fireCooldown;
+        if (!(distance < attackRange) || !(Time.time >= nextFire))
+            return;
 
-            var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
-            var projectileController = projectile.GetComponent<Projectile>();
-            projectileController.damage = rangedAttackDmg;
-            projectileController.speed = prjSpeed;
+        nextFire = Time.time + fireCooldown;
 
-            var relative = projectile.transform.InverseTransformPoint(target.transform.position);
-            var angle = 90 - Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
-            projectile.transform.Rotate(0, 0, angle);
-        }
+        var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
+        var projectileController = projectile.GetComponent<Projectile>();
+        projectileController.damage = rangedAttackDmg;
+        projectileController.speed = prjSpeed;
+
+        var relative = projectile.transform.InverseTransformPoint(target.transform.position);
+        float angle = 90 - Mathf.Atan2(relative.x, relative.y) * Mathf.Rad2Deg;
+        projectile.transform.Rotate(0, 0, angle);
     }
 
     public override void OnHitPlayer(Player player)
