@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -50,12 +51,9 @@ public class Egg : GenericEnemy
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    public override void OnHitPlayer(Player player)
     {
-        if (other.tag == "Player")
-        {
-            Instantiate(explosionPrefab, transform.position, transform.rotation);
-            Destroy(this.gameObject);
-        }
+        Instantiate(explosionPrefab, transform.position, transform.rotation);
+        Destroy(this.gameObject);
     }
 }

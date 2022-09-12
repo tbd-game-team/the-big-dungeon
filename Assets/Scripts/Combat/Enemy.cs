@@ -53,6 +53,8 @@ public class Enemy : GenericEnemy
         {
             target = GameObject.FindWithTag("Player");
         }
+
+        onTouchDmg = 1;
     }
 
     void Update()

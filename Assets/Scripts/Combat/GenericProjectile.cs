@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Scripts;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
@@ -29,10 +30,11 @@ public class GenericProjectile : MonoBehaviour
         }
     }
 
-    public void OnHitPlayer()
+    public void OnHitPlayer(Player player)
     {
         Instantiate(explosion, transform.position, transform.rotation);
         Destroy(gameObject);
+        player.damage(Mathf.CeilToInt(damage));
     }
 
 }

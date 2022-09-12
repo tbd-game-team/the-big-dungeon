@@ -146,7 +146,8 @@ namespace Assets.Scripts
         {
             if (other.gameObject.tag == "Enemy")
             {
-                damage(1);
+                var e = other.gameObject.GetComponent<GenericEnemy>();
+                e.OnHitPlayer(this);
             }
             else if (other.gameObject.tag == "Coin")
             {
@@ -169,8 +170,7 @@ namespace Assets.Scripts
             else if (other.gameObject.tag == "Projectile")
             {
                 var p = other.gameObject.GetComponent<GenericProjectile>();
-                p.OnHitPlayer();
-                damage(Mathf.CeilToInt(p.damage));
+                p.OnHitPlayer(this);
             }
         }
 
