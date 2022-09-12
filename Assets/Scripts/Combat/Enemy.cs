@@ -113,23 +113,30 @@ public class Enemy : GenericEnemy
             // Physics2D.queriesStartInColliders = true;
             RaycastHit2D hitInfo = Physics2D.Raycast(transform.position, moveTarget - transform.position, float.PositiveInfinity, wallLayer);
             Debug.DrawRay(transform.position, moveTarget - transform.position, Color.red);
-            if (hitInfo.collider != null)
+            if (hitInfo.collider != null && hitInfo.distance < distance)
             {
                 Debug.Log("hitInfo.collider " + hitInfo.collider);
                 List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(transform.position), new Coordinate(target.transform.position), map, mapWidth, mapHeight, 15);
-                Debug.Log("path " + path);
-                Debug.Log("path from " + new Coordinate(transform.position).ToCentralPosition());
-                Debug.Log("path to " + new Coordinate(target.transform.position).ToCentralPosition());
+
+                Debug.DrawRay(transform.position, Vector3.down); // ok
+                Debug.DrawRay(new Coordinate(transform.position).ToCentralPosition(), Vector3.up);
+                Debug.Log("path from " + new Coordinate(transform.position) + " - " + new Coordinate(transform.position).ToCentralPosition());
+                Debug.Log("path to " + new Coordinate(target.transform.position) + " - " + new Coordinate(target.transform.position).ToCentralPosition());
                 if (path.Count > 0)
                 {
-                    Debug.Log("path 0 " + path[0].ToCentralPosition());
-                    Debug.Log("path l " + path[path.Count - 1].ToCentralPosition());
+                    Debug.Log("path " + path.Count);
+                    foreach (var coord in path)
+                    {
+                        Debug.DrawRay(coord.ToCentralPosition(), new Vector3(1, 1, 0));
+                        Debug.Log("path: " + coord.ToCentralPosition());
+                    }
 
                     moveTarget = path[path.Count - 1].ToCentralPosition();
                     searchMode += "/" + path.Count + " tiles";
                 }
                 else
                 {
+                    Debug.Log("no way");
                     moveTarget = transform.position;
                     searchMode += "/no way";
                 }

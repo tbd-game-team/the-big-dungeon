@@ -7,12 +7,12 @@ using UnityEngine.Tilemaps;
 /// available online at: https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial
 /// </summary>
 public class TilemapVisualizer : MonoBehaviour
-{   
+{
     [Header("Tilemap")]
-    [SerializeField]    
-    private Tilemap floorTilemap;
     [SerializeField]
-    private Tilemap wallTilemap;
+    public Tilemap floorTilemap;
+    [SerializeField]
+    public Tilemap wallTilemap;
 
     [Header("Tile")]
     [SerializeField]
@@ -42,7 +42,8 @@ public class TilemapVisualizer : MonoBehaviour
         if (WallByteTypesHelper.wallTop.Contains(typeAsInt))
         {
             tile = wallTop;
-        }else if (WallByteTypesHelper.wallSideRight.Contains(typeAsInt))
+        }
+        else if (WallByteTypesHelper.wallSideRight.Contains(typeAsInt))
         {
             tile = wallSideRight;
         }
@@ -59,11 +60,11 @@ public class TilemapVisualizer : MonoBehaviour
             tile = wallFull;
         }
 
-        if (tile!=null)
+        if (tile != null)
             PaintSingleTile(wallTilemap, tile, position);
     }
 
-     internal void PaintSingleCornerWall(Vector2Int position, string binaryType)
+    internal void PaintSingleCornerWall(Vector2Int position, string binaryType)
     {
         int typeASInt = System.Convert.ToInt32(binaryType, 2);
         TileBase tile = null;

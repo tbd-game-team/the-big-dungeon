@@ -15,6 +15,8 @@ public class Coordinate
     public float fCost = float.MaxValue;
     public Coordinate cameFromeCoordinate = null;
 
+    private static TilemapVisualizer tilemapVisualizer = Object.FindObjectOfType<TilemapVisualizer>();
+
     public Coordinate() { }
     public Coordinate(int newX, int newY)
     {
@@ -24,22 +26,23 @@ public class Coordinate
         centerY = y + 0.5f;
     }
 
-    public Coordinate(UnityEngine.Vector3 p)
+    public Coordinate(Vector3 worldCoordinate)
     {
-        x = Mathf.RoundToInt(p.x);
-        y = Mathf.RoundToInt(p.y);
+        var cell = tilemapVisualizer.floorTilemap.WorldToCell(worldCoordinate);
+        x = cell.x;
+        y = cell.y;
         centerX = x + 0.5f;
         centerY = y + 0.5f;
     }
 
     public Vector3 ToPosition()
     {
-        return new UnityEngine.Vector3(x, y, 0);
+        return tilemapVisualizer.floorTilemap.CellToWorld(new Vector3Int(x, y, 0));
     }
 
     public Vector3 ToCentralPosition()
     {
-        return new UnityEngine.Vector3(centerX, centerY, 0);
+        return ToPosition() + new Vector3(0.5f, 0.5f, 0);
     }
 
     /// <summary>
@@ -83,5 +86,10 @@ public class Coordinate
             return true;
         }
         return false;
+    }
+
+    public override string ToString()
+    {
+        return "[" + x + "/" + y + "]";
     }
 }
