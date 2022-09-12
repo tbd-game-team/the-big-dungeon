@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     
     /// <summary>
     /// @author: Neele Kemper
-    /// Load a scene asynchon and display the loading screen
+    /// Load a scene asynchron and display the loading screen
     /// </summary>
     /// <param name="s">the scenen id</param>
     /// <returns></returns>
@@ -78,7 +78,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// @author: Florian Weber
+    /// Restart the game
+    /// </summary>
+    /// <returns></returns>
     public void restartGame()
     {
         LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -88,6 +92,11 @@ public class GameManager : MonoBehaviour
         snapshotUnpaused.TransitionTo(.01f);
     }
 
+    /// <summary>
+    /// @author: Florian Weber
+    /// Start the game for first Time
+    /// </summary>
+    /// <returns></returns>
     public void startGame()
     {   
         SceneManager.LoadScene(sceneId);
@@ -96,6 +105,11 @@ public class GameManager : MonoBehaviour
         snapshotUnpaused.TransitionTo(.01f);
     }
 
+    /// <summary>
+    /// @author: Florian Weber
+    /// Pause the game
+    /// </summary>
+    /// <returns></returns>
     public void pause()
     {
         paused = true;
@@ -103,6 +117,11 @@ public class GameManager : MonoBehaviour
         snapshotPaused.TransitionTo(.01f);
     }
 
+    /// <summary>
+    /// @author: Florian Weber
+    /// Resume from paused game
+    /// </summary>
+    /// <returns></returns>
     public void resume()
     {
         paused = false;
@@ -110,6 +129,11 @@ public class GameManager : MonoBehaviour
         snapshotUnpaused.TransitionTo(.01f);
     }
 
+    /// <summary>
+    /// @author: Florian Weber
+    /// get paused status of the game
+    /// </summary>
+    /// <returns></returns>
     public bool isPaused {
         get {
             return paused;

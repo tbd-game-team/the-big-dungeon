@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// @author: Florian Weber
+/// Manages Camera Shake.
 public class cameraShake : MonoBehaviour
 {
     public IEnumerator Shake(float duration, float magnitude){

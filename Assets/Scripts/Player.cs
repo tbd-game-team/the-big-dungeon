@@ -125,6 +125,11 @@ namespace Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// @author: Florian Weber, Neele Kemper
+        /// Manages player attack
+        /// </summary>
+        /// <returns></returns>
         private void attack()
         {
             weaponAnimator.SetTrigger("attack");
@@ -139,7 +144,7 @@ namespace Assets.Scripts
             }
             else if (other.gameObject.tag == "Coin")
             {
-                // @Fabian: Todo
+                // @Florian: Todo
                 Debug.Log("You win!");
                 audioManager.Play("PlayerCoinSelection");
             }
@@ -149,7 +154,11 @@ namespace Assets.Scripts
             }
         }
 
-
+        /// <summary>
+        /// @author: Florian Weber
+        /// Manages player getting damage
+        /// </summary>
+        /// <returns></returns>
         public void damage(int amount)
         {
             if (!invincible)
@@ -201,6 +210,11 @@ namespace Assets.Scripts
             Destroy(potion.gameObject);
         }
 
+        /// <summary>
+        /// @author: Florian Weber
+        /// Manages player invincibility after getting hit
+        /// </summary>
+        /// <returns></returns>
         private void handleInvincibility()
         {
             if (invincibleTimer <= 0 && invincible)
@@ -219,6 +233,11 @@ namespace Assets.Scripts
             return health;
         }
 
+        /// <summary>
+        /// @author: Florian Weber
+        /// Makes Player flashing; used after receiving damage
+        /// </summary>
+        /// <returns></returns>
         IEnumerator Flasher()
         {
             var renderer = gameObject.GetComponent<SpriteRenderer>();

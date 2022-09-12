@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Assets.Scripts;
 
+/// @author: Florian Weber
+/// Manages Health Interface
 public class HealthUi : MonoBehaviour
 {
     public Sprite fullHeart;
@@ -19,7 +21,7 @@ public class HealthUi : MonoBehaviour
             heart.sprite = fullHeart;
         }
     }
-
+    
     public void updateHearts(int currentHealth, bool damageTaken){
         for(int i = 0; i < maxHealthPlayer; i++){
             if(i<currentHealth){
