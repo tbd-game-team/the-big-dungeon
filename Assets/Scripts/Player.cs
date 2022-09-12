@@ -65,7 +65,8 @@ namespace Assets.Scripts
 
 
         private void FixedUpdate()
-        {}
+        {
+        }
 
         private void Update()
         {
@@ -93,13 +94,17 @@ namespace Assets.Scripts
         /// Manages player movement.
         /// </summary>
         /// <returns></returns>
-        private void handleMovement(){
+        private void handleMovement()
+        {
             var x = Input.GetAxis("Horizontal");
             var y = Input.GetAxis("Vertical");
 
-            if(x != 0 && y != 0){
+            if (x != 0 && y != 0)
+            {
                 isMoving = true;
-            }else{
+            }
+            else
+            {
                 isMoving = false;
             }
 
@@ -152,7 +157,7 @@ namespace Assets.Scripts
                 winPanel.SetActive(true);
                 snapshotGameOver.TransitionTo(2.0f);
                 GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
-                if(pauseBtn)
+                if (pauseBtn)
                 {
                     pauseBtn.SetActive(false);
                 }
@@ -160,6 +165,12 @@ namespace Assets.Scripts
             else if (other.gameObject.tag == "HealthPotion")
             {
                 restoreHealth(other);
+            }
+            else if (other.gameObject.tag == "Projectile")
+            {
+                var p = other.gameObject.GetComponent<GenericProjectile>();
+                p.OnHitPlayer();
+                damage(Mathf.CeilToInt(p.damage));
             }
         }
 
@@ -182,12 +193,10 @@ namespace Assets.Scripts
                     gameOverPanel.SetActive(true);
                     snapshotGameOver.TransitionTo(2.0f);
                     GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
-                    if(pauseBtn)
+                    if (pauseBtn)
                     {
                         pauseBtn.SetActive(false);
                     }
-                    
-
                 }
                 else
                 {

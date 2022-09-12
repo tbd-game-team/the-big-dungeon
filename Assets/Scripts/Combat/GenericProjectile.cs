@@ -29,21 +29,10 @@ public class GenericProjectile : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    public void OnHitPlayer()
     {
-        if (other.tag == "Player")
-        {
-            Instantiate(explosion, transform.position, transform.rotation);
-            Destroy(this.gameObject);
-
-            var player = other.gameObject as GameObject;
-            Debug.Log("Hit player " + player);
-        }
-        Debug.Log("Hit obj " + other.tag);
+        Instantiate(explosion, transform.position, transform.rotation);
+        Destroy(gameObject);
     }
 
-    void OnCollisionEnter(Collision other)
-    {
-        Debug.Log("Hit obj 2 " + other);
-    }
 }
