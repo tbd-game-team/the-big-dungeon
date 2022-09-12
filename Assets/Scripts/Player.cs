@@ -20,6 +20,7 @@ namespace Assets.Scripts
         [Header("UI")]
         public HealthUi healthUi;
         public GameObject gameOverPanel;
+        public GameObject winPanel;
         private bool alive = true;
 
         [Header("Combat")]
@@ -144,9 +145,17 @@ namespace Assets.Scripts
             }
             else if (other.gameObject.tag == "Coin")
             {
-                // @Florian: Todo
-                Debug.Log("You win!");
                 audioManager.Play("PlayerCoinSelection");
+                GameManager.Instance.pause();
+                audioManager.Stop("PlayerFootsteps");
+                audioManager.Play("PlayerDeath");
+                winPanel.SetActive(true);
+                snapshotGameOver.TransitionTo(2.0f);
+                GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
+                if(pauseBtn)
+                {
+                    pauseBtn.SetActive(false);
+                }
             }
             else if (other.gameObject.tag == "HealthPotion")
             {
