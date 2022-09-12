@@ -17,7 +17,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
     * **Audio menu/settings**
 * Implementation/Animation of the **health potions**
 * Implementation/Animation of the **peak traps**
-* Animation **Coin**
+* Animation **coin**
 * **Loading menu**
 
 **Scripts**
