@@ -74,8 +74,8 @@ namespace Assets.Scripts.Combat
             handleVolume();
 
             if (!alive
-            && !(characterAnimator.GetCurrentAnimatorStateInfo(0).length > characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime)
-            && !deathAudio.isPlaying)
+                && !(characterAnimator.GetCurrentAnimatorStateInfo(0).length > characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime)
+                && !deathAudio.isPlaying)
             {
                 Destroy(this.gameObject);
             }
@@ -253,14 +253,17 @@ namespace Assets.Scripts.Combat
             if (dist < minDist)
             {
                 footstepsAudio.volume = maxVolume;
+                deathAudio.volume = maxVolume;
             }
             else if (dist > maxDist)
             {
                 footstepsAudio.volume = 0;
+                deathAudio.volume = 0;
             }
             else
             {
                 footstepsAudio.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
+                deathAudio.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
             }
         }
 
