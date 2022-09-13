@@ -72,8 +72,10 @@ public class GameManager : MonoBehaviour
         {
             if (!isPaused)
             {
-                pause();
-                pausePanel.SetActive(true);
+                if(!GetComponent<tutorialUi>().tutorialShowing){
+                    pause();
+                    pausePanel.SetActive(true);
+                }
             }
             else
             {
