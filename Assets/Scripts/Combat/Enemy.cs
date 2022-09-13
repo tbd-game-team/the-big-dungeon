@@ -134,6 +134,12 @@ namespace Assets.Scripts.Combat
             return movement;
         }
 
+        /// <summary>
+        /// Find a sensible way to move towards a given target, respecting walls, edges and distance
+        /// </summary>
+        /// <param name="moveTarget"></param>
+        /// <param name="distance"></param>
+        /// <returns>The position the character is actually supposed to move to now.</returns>
         private Vector3 MoveToTarget(Vector3 moveTarget, float distance)
         {
             // Find a way
