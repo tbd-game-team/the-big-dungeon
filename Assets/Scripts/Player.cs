@@ -39,7 +39,6 @@ namespace Assets.Scripts
         public bool invincible;
 
         private AudioManager audioManager;
-        public AudioMixerSnapshot snapshotGameOver;
 
         private BoxCollider2D boxCollider;
         private Rigidbody2D rb;
@@ -188,7 +187,6 @@ namespace Assets.Scripts
                 audioManager.Stop("PlayerFootsteps");
                 audioManager.Play("PlayerDeath");
                 winPanel.SetActive(true);
-                snapshotGameOver.TransitionTo(2.0f);
                 GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
                 if (pauseBtn)
                 {
@@ -223,7 +221,6 @@ namespace Assets.Scripts
                     audioManager.Play("PlayerDeath");
                     health = 0;
                     gameOverPanel.SetActive(true);
-                    snapshotGameOver.TransitionTo(2.0f);
                     GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
                     if (pauseBtn)
                     {
