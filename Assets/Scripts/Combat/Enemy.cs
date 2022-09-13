@@ -48,6 +48,7 @@ namespace Assets.Scripts.Combat
 
         private bool alive = true;
 
+        public float nextRandomMove = .0f;
         private float nextFire = .0f;
         private bool isMoving = false;
 
@@ -100,6 +101,7 @@ namespace Assets.Scripts.Combat
                 searchMode = "no enemy";
                 return transform.position;
             }
+
             var moveTarget = transform.position;
 
             float distance = Vector3.Distance(transform.position, target.transform.position);
@@ -107,6 +109,15 @@ namespace Assets.Scripts.Combat
             {
                 searchMode = "no enemy in sight";
                 isMoving = false;
+
+                // Randomly change direction from time to time
+                if (Time.time > nextRandomMove)
+                {
+                    nextRandomMove = Time.time + Random.Range(2f, 15f);
+                    moveTarget = transform.position + new Vector3(Random.Range(0, 2) == 0 ? 0.1f : -0.1f, 0);
+
+                    isMoving = true;
+                }
             }
             else if (distance < attackRange && distance > personalSpace)
             {
