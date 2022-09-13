@@ -7,6 +7,28 @@ public static class EnemySpawner
 {
     private static readonly string[] EnemyTypes = new string[] { "Enemy", "EnemyEgg", "EnemyRanged" };
 
+    private static Dictionary<string, GameObject> prefabCache = new Dictionary<string, GameObject>();
+
+    /// <summary>
+    /// Loads prefab from disk. The enemy class can only be recognized if the file is put correctly.
+    /// </summary>
+    private static GameObject GetPrefab(string prefabName)
+    {
+        if (prefabCache.TryGetValue(prefabName, out GameObject value))
+        {
+            return value;
+        }
+
+        var prefab = Resources.Load(prefabName, typeof(GameObject)) as GameObject;
+        prefabCache[prefabName] = prefab;
+
+        return prefab;
+    }
+
+    /// <summary>
+    /// Spawn the initially in the level placed enemies.
+    /// This information is taken from the ActorGenerator.
+    /// </summary>
     public static void SpawnStarterEnemies(int[,] map, int width, int height)
     {
         // Map generation puts out enemy spawn locations
@@ -16,17 +38,28 @@ public static class EnemySpawner
         {
             // Determine enemy type
             string prefabName = GetRandomEnemy();
-            var prefab = Resources.Load(prefabName);
 
-            // Spawn enemy
-            var enemy = Object.Instantiate(prefab, loc + new Vector3(0.5f, 0.5f, 0), Quaternion.identity) as GameObject;
-
-            // Configure enemy
-            var enemyController = enemy.GetComponent<GenericEnemy>();
-            enemyController.map = map;
-            enemyController.mapWidth = width;
-            enemyController.mapHeight = height;
+            SpawnEnemy(prefabName, loc, map, width, height);
         }
+    }
+
+    /// <summary>
+    /// Spawns a single enemy.
+    /// </summary>
+    /// <param name="prefabName">Name of the enemy prefab resource.</param>
+    /// <param name="loc">Where the enemy is to be spawned.</param>
+    public static void SpawnEnemy(string prefabName, Vector3 loc, int[,] map, int width, int height)
+    {
+        var prefab = GetPrefab(prefabName);
+
+        // Spawn enemy
+        var enemy = Object.Instantiate(prefab, loc + new Vector3(0.5f, 0.5f, 0), Quaternion.identity) as GameObject;
+
+        // Configure enemy
+        var enemyController = enemy.GetComponent<GenericEnemy>();
+        enemyController.map = map;
+        enemyController.mapWidth = width;
+        enemyController.mapHeight = height;
     }
 
     private static string GetRandomEnemy()
