@@ -76,7 +76,33 @@ Neele Kemper, Niklas Nett, Floraian Weber
 #### Florian Weber
 
 **Tasks**
+- Conceptation/implementation of player movement and combat
+- Conceptation/implementation/animation of UI/UX
 
 **Scripts**
+- cameraFollow
+- cameraShake
+- dashMove
+- GameManager
+- HealthUI
+- Player
+- tutorialUI
 
 **Game Objects/ Prefabs**
+* UI
+    * Created all Assets in Folder 'Own Graphic Assets' 
+    * Canvas (Main Menu)
+    * TutorialPanel
+    * HitPanel
+    * PausePanel
+    * PauseButton
+    * HelathBar
+    * GameOverPanel
+    * WinPanel
+* Other
+    * GameManager
+    * Player
+    * DashEffect
+
+
+
