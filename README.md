@@ -11,7 +11,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
 #### Neele Kemper
 **Tasks**
 * Implementation of the **procedural dungeon generation**
-    * The tilemap visualization was adopted by [SunnyValleyStudio](https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial)!  
+    * The tilemap visualization was adopted from [SunnyValleyStudio](https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial)!  
 * Audio
     * **Audio** (player, theme, traps, health potions)
     * **Audio menu/settings**
@@ -52,10 +52,26 @@ Neele Kemper, Niklas Nett, Floraian Weber
 
 #### Niklas Nett
 **Tasks**
+- Conceptation/implementation/animation of different enemies
+- Implementation of combat
+- Implementation of AI movement
 
 **Scripts**
+- Combat/Egg
+- Combat/Enemy
+- Combat/GenericEnemy
+- Combat/Projectile
+- DungeonGeneratorScripts/SpawnScripts/EnemySpawner
+- needed modifications to others, like Keys, Player, DungeonGeneratorScripts/Coordinate
 
-**Game Objects/ Prefabs**
+**Game Objects/Prefabs**
+- Animations/Generic/*
+- Animations/Ranged/*
+- Prefabs/Combat/Projectile
+- Prefabs/Combat/ProjectileHit
+- Prefabs/Combat/Resources/Enemy
+- Prefabs/Combat/Resources/EnemyEgg
+- Prefabs/Combat/Resources/RangedEnemy
 
 #### Florian Weber
 

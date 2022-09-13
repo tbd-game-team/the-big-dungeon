@@ -35,7 +35,6 @@ public static class SpawnPositionGenerator
         // the center of the smallest room, will be the starting position of the player
         Vector2Int startPosition = roomCenters[0];
         playerPosition = new Vector3(startPosition.x, startPosition.y, 0);
-        Coordinate startCoordinate = new Coordinate(startPosition.x, startPosition.y);
 
         roomCenters.Remove(startPosition);
         enemyRooms.Remove(rooms[0]);
@@ -46,7 +45,7 @@ public static class SpawnPositionGenerator
         foreach (Vector2Int center in roomCenters)
         {
             Coordinate roomCoordinate = new Coordinate(center.x, center.y);
-            List<Coordinate> path = AStarAlgorithm.AStar(startCoordinate, roomCoordinate, map, width, height);
+            List<Coordinate> path = AStarAlgorithm.AStar(new Coordinate(playerPosition), roomCoordinate, map, width, height);
             pathLengthList.Add(path.Count);
         }
 
@@ -60,7 +59,6 @@ public static class SpawnPositionGenerator
         pathLengthList.RemoveAt(targetIndex);
 
         CalculatePrefabPositions(enemyRooms, pathLengthList, healthPotionProbability, enemyDenisityLevels, map, width, height);
-        EnemySpawner.SpawnStarterEnemies();
 
         CalculateTrapPositions(dungeonCorridors, trapProbability, map, width, height);
     }
@@ -80,7 +78,8 @@ public static class SpawnPositionGenerator
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
     private static void CalculatePrefabPositions(List<BoundsInt> rooms, List<int> pathLengths, int healthPotionProbability, float[] enemyDenisityLevels, int[,] map, int width, int height)
-    {   
+    {
+        Debug.Log("rooms.Count: " + rooms.Count + "; pathLength.Count: " + pathLengths.Count);
         int nLevel = enemyDenisityLevels.Length;
         int nLevelWidth = (pathLengths.Max() - pathLengths.Min()) / nLevel;
 
@@ -121,7 +120,7 @@ public static class SpawnPositionGenerator
 
 
             // randomly determine if a health potion is placed in a random position in the room..
-            if (Random.Range(1, 100) < healthPotionProbability) 
+            if (Random.Range(1, 100) < healthPotionProbability)
             {
                 bool positionFound = false;
                 while (!positionFound)
@@ -176,11 +175,12 @@ public static class SpawnPositionGenerator
     /// <param name="height">height of the dungeon</param>
     /// <returns></returns>
 
-    private  static void CalculateTrapPositions(HashSet<Vector2Int> dungeonCorridors, int trapProbability, int[,] map, int width, int height){
-        foreach(Vector2Int corridor in dungeonCorridors)
+    private static void CalculateTrapPositions(HashSet<Vector2Int> dungeonCorridors, int trapProbability, int[,] map, int width, int height)
+    {
+        foreach (Vector2Int corridor in dungeonCorridors)
         {
             int surroundingWalls = AlgorithmUtils.CountSurroundingWalls(corridor.x, corridor.y, map, width, height);
-            if(surroundingWalls == 6 && Random.Range(1, 100) < trapProbability)
+            if (surroundingWalls == 6 && Random.Range(1, 100) < trapProbability)
             {
                 trapPositions.Add(new Vector3(corridor.x, corridor.y, 0));
             }

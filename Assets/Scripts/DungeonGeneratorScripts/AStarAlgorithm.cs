@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,9 +18,9 @@ public class AStarAlgorithm
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
     /// <returns>shortest path</returns>
-    public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,] map, int width, int height)
+    public static List<Coordinate> AStar(Coordinate startCoordinate, Coordinate targetCoordinate, int[,] map, int width, int height, bool allowDiagonal = true,
+        float maxCost = float.PositiveInfinity)
     {
-
         List<Coordinate> path = new List<Coordinate>();
         // initialize the open list and put the starting node on the open list 
         List<Coordinate> openList = new List<Coordinate> { startCoordinate };
@@ -48,13 +47,19 @@ public class AStarAlgorithm
                 break;
             }
 
+            // in case we reached the maximum cost, we abort the search, as no solution has been found, and none will be found with less than the current cost
+            if (currentCoordinate.fCost > maxCost)
+            {
+                return new List<Coordinate>();
+            }
+
             // pop currentCoordinate of the open list
             openList.Remove(currentCoordinate);
             // push currentCoordinate on the closed list
             closedList.Add(currentCoordinate);
 
             // generate currentCoordinate's 8 successors and set their parents to currentCoordinate
-            List<Coordinate> neighbours = GetNeighbours(currentCoordinate.x, currentCoordinate.y, width, height);
+            List<Coordinate> neighbours = GetNeighbours(currentCoordinate.x, currentCoordinate.y, width, height, allowDiagonal);
 
             // for each successor
             foreach (Coordinate neighbourCoordinate in neighbours)
@@ -101,7 +106,7 @@ public class AStarAlgorithm
     /// <param name="width">width of the dungeon</param>
     /// <param name="height">height of the dungeon</param>
     /// <returns>list of neighbours</returns>
-    private static List<Coordinate> GetNeighbours(int gridX, int gridY, int width, int height)
+    private static List<Coordinate> GetNeighbours(int gridX, int gridY, int width, int height, bool allowDiagonal)
     {
         List<Coordinate> neighbours = new List<Coordinate>();
         for (int neighbourX = gridX - 1; neighbourX < gridX + 2; neighbourX++)
@@ -110,9 +115,12 @@ public class AStarAlgorithm
             {
                 if (AlgorithmUtils.IsInMapRange(neighbourX, neighbourY, width, height))
                 {
-                    if (neighbourX != gridX || neighbourY != gridY)
+                    if (allowDiagonal || (neighbourX - gridX == 0 || neighbourY - gridY == 0))
                     {
-                        neighbours.Add(new Coordinate(neighbourX, neighbourY));
+                        if (neighbourX != gridX || neighbourY != gridY)
+                        {
+                            neighbours.Add(new Coordinate(neighbourX, neighbourY));
+                        }
                     }
                 }
             }
