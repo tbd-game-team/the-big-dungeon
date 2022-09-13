@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class EnemySpawner
 {
-    private static readonly string[] EnemyTypes = new string[] { "EnemyEgg" };
+    private static readonly string[] EnemyTypes = new string[] { "Enemy", "EnemyEgg", "EnemyRanged" };
 
     private static Dictionary<string, GameObject> _prefabCache = new Dictionary<string, GameObject>();
 
