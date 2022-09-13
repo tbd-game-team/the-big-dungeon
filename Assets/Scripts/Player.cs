@@ -103,17 +103,21 @@ namespace Assets.Scripts
             var x = Input.GetAxis("Horizontal");
             var y = Input.GetAxis("Vertical");
 
-            if (x != 0 && y != 0)
+            if (x > 0) transform.localScale = Vector3.one;
+            else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
+
+            
+            if (rb.position != lastPosition)
             {
+
                 isMoving = true;
             }
             else
             {
                 isMoving = false;
             }
+            lastPosition = rb.position;
 
-            if (x > 0) transform.localScale = Vector3.one;
-            else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
 
             transform.Translate(new Vector2(x, y) * Time.deltaTime * walkSpeed);
         }
