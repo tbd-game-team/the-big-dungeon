@@ -69,6 +69,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
 - needed modifications to others, like Keys, Player, DungeonGeneratorScripts/Coordinate
 
 **Game Objects/Prefabs**
+- Animations/Egg/*
 - Animations/Generic/*
 - Animations/Ranged/*
 - Prefabs/Combat/Projectile
