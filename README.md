@@ -14,7 +14,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
     * The tilemap visualization was adopted from [SunnyValleyStudio](https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial)!  
 * Audio
     * pick out audio sources   
-    * **Audio** (player, theme, traps, health potions)
+    * **Audio** (player, theme, traps, health potions, skeletons)
     * **Audio menu/settings**
 * Implementation/animation of the **health potions** and skeletons
 * Implementation/animation of the **peak traps**
