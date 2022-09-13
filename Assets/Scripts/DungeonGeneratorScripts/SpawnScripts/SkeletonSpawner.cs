@@ -4,7 +4,7 @@ using UnityEngine;
 
 /// <summary>
 /// @author: Neele Kemper
-/// Spawn the skeletons potions.
+/// Spawn the skeletons.
 /// </summary>
 public class SkeletonSpawner : MonoBehaviour
 {
