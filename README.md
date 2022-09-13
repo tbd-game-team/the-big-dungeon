@@ -41,6 +41,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
     * DungeonGenerator
     * SpawnPositionGenerator
 * PeakTraps 
+* Skeleton
 
 **Game Objects/ Prefabs**
 * MusicPanel
