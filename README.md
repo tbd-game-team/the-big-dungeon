@@ -13,6 +13,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
 * Implementation of the **procedural dungeon generation**
     * The tilemap visualization was adopted from [SunnyValleyStudio](https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial)!  
 * Audio
+    * pick out audio sources   
     * **Audio** (player, theme, traps, health potions)
     * **Audio menu/settings**
 * Implementation/animation of the **health potions**
