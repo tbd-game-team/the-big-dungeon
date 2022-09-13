@@ -8,12 +8,13 @@ public static class SpawnPositionGenerator
     private static Vector3 playerPosition = new Vector3();
     private static Vector3 targetPosition = new Vector3();
     private static List<Vector3> healthPotionPositions = new List<Vector3>();
+    private static List<Vector3> skeletonPositions = new List<Vector3>();
     private static List<Vector3> enemyPositions = new List<Vector3>();
     private static List<Vector3> trapPositions = new List<Vector3>();
 
     /// <summary>
     /// @author: Neele Kemper
-    /// Calculate the position of the player, the target coin, helath potions, traps and the enemies.
+    /// Calculate the position of the player, the target coin, helath potions (and skeleton), traps and the enemies.
     /// </summary>
     /// <param name="dungeonCorridors">the dungeon corridors connecting the rooms</param>
     /// <param name="rooms">list of rooms in the dugeon.</param>
@@ -67,7 +68,7 @@ public static class SpawnPositionGenerator
     /// @author: Neele Kemper
     /// The positions for the enemies and for the health potions are calculated.
     /// Enemy: The position of the enemies  are calculated using the distance from the player positions and the size of the room.  The farther the room is from the starting position, the more enemies will be spawned in that room.
-    /// Health potion: to a certain probability (healthPotionProbability), a health potion is placed in a room.
+    /// Health potion: to a certain probability (healthPotionProbability), a health potion (and skeleton) is placed in a room.
     /// </summary>
     /// <param name="rooms">list of rooms in the dugeon.</param>
     /// <param name="pathLengths">List of distances of the rooms from the player position.</param>
@@ -129,6 +130,26 @@ public static class SpawnPositionGenerator
                     {
                         healthPotionPositions.Add(newPosition);
                         positionFound = true;
+
+                        // place a skeleton next to each health potion
+                        bool skeletonPositionFound = false;
+                        while (!skeletonPositionFound)
+                        {
+                            Vector2Int randomDirection = Direction2D.eightDirectionsList[Random.Range(0, Direction2D.eightDirectionsList.Count)];
+                            Vector2Int newskeletonPosition =  new Vector2Int((int)newPosition.x, (int)newPosition.y) + randomDirection;
+
+                            bool inMapRange = AlgorithmUtils.IsInMapRange(newskeletonPosition.x, newskeletonPosition.y, width, height);
+                            if (inMapRange)
+                            {
+                                bool isFloor = (map[newskeletonPosition.x, newskeletonPosition.y] == AlgorithmUtils.floorTile);
+                                if (isFloor)
+                                {
+                                    skeletonPositions.Add(new Vector3(newskeletonPosition.x, newskeletonPosition.y,0));
+                                    skeletonPositionFound = true;
+                                }
+
+                            }
+                        }
                     }
                 }
             }
@@ -196,6 +217,7 @@ public static class SpawnPositionGenerator
         playerPosition = new Vector3();
         targetPosition = new Vector3();
         healthPotionPositions = new List<Vector3>();
+        skeletonPositions = new List<Vector3>();
         enemyPositions = new List<Vector3>();
         trapPositions = new List<Vector3>();
     }
@@ -249,5 +271,15 @@ public static class SpawnPositionGenerator
     public static List<Vector3> GetTrapPositions()
     {
         return trapPositions;
+    }
+
+    /// <summary>
+    /// @author: Neele Kemper
+    /// Get the spawn positions of the skeletons.
+    /// </summary>
+    /// <returns>skeleton positions</returns>
+    public static List<Vector3> GetSkeletonPositions()
+    {
+        return skeletonPositions;
     }
 }

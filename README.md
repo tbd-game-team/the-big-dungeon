@@ -16,7 +16,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
     * pick out audio sources   
     * **Audio** (player, theme, traps, health potions)
     * **Audio menu/settings**
-* Implementation/animation of the **health potions**
+* Implementation/animation of the **health potions** and skeletons
 * Implementation/animation of the **peak traps**
 * Implementation/animation of the **coin**
 * **Loading menu**
@@ -30,6 +30,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
     * SpawnScripts  
         * CoinSpawner
         * HealthPotionSpawner
+        * SkeletonSpawner
         * TrapSpawner
     * AlgorithmUtils
     * AStartAlgorithm
@@ -50,6 +51,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
 * HealthPotion
 * ReverbZone
 * PeakTrap
+* Skeleton
 
 #### Niklas Nett
 **Tasks**
