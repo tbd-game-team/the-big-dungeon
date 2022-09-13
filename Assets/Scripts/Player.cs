@@ -1,4 +1,5 @@
 using System.Collections;
+using Assets.Scripts.Combat;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -24,6 +25,10 @@ namespace Assets.Scripts
         private bool alive = true;
 
         [Header("Combat")]
+        [SerializeField]
+        private LayerMask enemyLayer;
+        [SerializeField]
+        private float attackRange = 1.5f;
         // Attack parameters
         public float invincibleTime;
         public Color collideColor;
@@ -34,7 +39,6 @@ namespace Assets.Scripts
         public bool invincible;
 
         private AudioManager audioManager;
-        public AudioMixerSnapshot snapshotGameOver;
 
         private BoxCollider2D boxCollider;
         private Rigidbody2D rb;
@@ -65,7 +69,8 @@ namespace Assets.Scripts
 
 
         private void FixedUpdate()
-        {}
+        {
+        }
 
         private void Update()
         {
@@ -83,7 +88,7 @@ namespace Assets.Scripts
                 handleMovementSound();
                 if (Input.GetMouseButtonDown(0))
                 {
-                    attack();
+                    Attack();
                 }
             }
         }
@@ -93,18 +98,26 @@ namespace Assets.Scripts
         /// Manages player movement.
         /// </summary>
         /// <returns></returns>
-        private void handleMovement(){
+        private void handleMovement()
+        {
             var x = Input.GetAxis("Horizontal");
             var y = Input.GetAxis("Vertical");
 
-            if(x != 0 && y != 0){
-                isMoving = true;
-            }else{
-                isMoving = false;
-            }
-
             if (x > 0) transform.localScale = Vector3.one;
             else if (x < 0) transform.localScale = new Vector3(-1, 1, 1);
+
+            
+            if (rb.position != lastPosition)
+            {
+
+                isMoving = true;
+            }
+            else
+            {
+                isMoving = false;
+            }
+            lastPosition = rb.position;
+
 
             transform.Translate(new Vector2(x, y) * Time.deltaTime * walkSpeed);
         }
@@ -131,17 +144,45 @@ namespace Assets.Scripts
         /// Manages player attack
         /// </summary>
         /// <returns></returns>
-        private void attack()
+        private void Attack()
         {
             weaponAnimator.SetTrigger("attack");
             audioManager.Play("PlayerSword");
+
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, attackRange, enemyLayer);
+            foreach (var hitCollider in colliders)
+            {
+                if (hitCollider.gameObject.tag != Keys.TAG_ENEMY)
+                    continue;
+
+                if (hitCollider.transform.position.x > transform.position.x)
+                {
+                    // Hit is to -x, but player looks at +x
+                    if (transform.localScale != Vector3.one)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    // Hit is to +x, but player looks at -x
+                    if (transform.localScale == Vector3.one)
+                    {
+                        continue;
+                    }
+                }
+
+                var enemy = hitCollider.gameObject.gameObject.GetComponent<GenericEnemy>();
+                enemy.OnBeingHit();
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.gameObject.tag == "Enemy")
             {
-                damage(1);
+                var e = other.gameObject.GetComponent<GenericEnemy>();
+                e.OnHitPlayer(this);
             }
             else if (other.gameObject.tag == "Coin")
             {
@@ -150,9 +191,8 @@ namespace Assets.Scripts
                 audioManager.Stop("PlayerFootsteps");
                 audioManager.Play("PlayerDeath");
                 winPanel.SetActive(true);
-                snapshotGameOver.TransitionTo(2.0f);
                 GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
-                if(pauseBtn)
+                if (pauseBtn)
                 {
                     pauseBtn.SetActive(false);
                 }
@@ -160,6 +200,11 @@ namespace Assets.Scripts
             else if (other.gameObject.tag == "HealthPotion")
             {
                 restoreHealth(other);
+            }
+            else if (other.gameObject.tag == Keys.TAG_PROJECTILE)
+            {
+                var p = other.gameObject.GetComponent<Projectile>();
+                p.OnHitPlayer(this);
             }
         }
 
@@ -180,14 +225,11 @@ namespace Assets.Scripts
                     audioManager.Play("PlayerDeath");
                     health = 0;
                     gameOverPanel.SetActive(true);
-                    snapshotGameOver.TransitionTo(2.0f);
                     GameObject pauseBtn = GameObject.FindGameObjectWithTag("PauseButton");
-                    if(pauseBtn)
+                    if (pauseBtn)
                     {
                         pauseBtn.SetActive(false);
                     }
-                    
-
                 }
                 else
                 {

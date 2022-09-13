@@ -6,10 +6,12 @@ public class tutorialUi : MonoBehaviour
 {
     public GameObject tutorialPanel;
     public Animator tutorialAnimator;
+    public bool tutorialShowing;
 
     // Start is called before the first frame update
     void Start()
     {
+        tutorialShowing = true;
         tutorialPanel.SetActive(true);
     }
 
@@ -18,6 +20,7 @@ public class tutorialUi : MonoBehaviour
     {
         if(tutorialAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1){
             tutorialPanel.SetActive(false);
+            tutorialShowing = false;
         }
     }
 }

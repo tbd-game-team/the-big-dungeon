@@ -1,60 +1,130 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
-[RequireComponent(typeof(Animator))]
-public class Egg : MonoBehaviour
+namespace Assets.Scripts.Combat
 {
-    [SerializeField]
-    private float fireCooldown = 8f;
 
-    [SerializeField]
-    private GameObject explosionPrefab;
-
-    [SerializeField]
-    private GameObject enemyPrefab;
-
-    private float nextFire;
-
-    private Animator characterAnimator;
-
-    void Awake()
+    /// <summary>
+    /// Enemy type that can be destroyed by walking over it, but in case of failing to do so will spawn another enemy
+    /// </summary>
+    [RequireComponent(typeof(BoxCollider2D))]
+    [RequireComponent(typeof(Animator))]
+    public class Egg : GenericEnemy
     {
-        characterAnimator = GetComponent<Animator>();
-    }
+        [Header("\"Combat\"")]
+        [SerializeField]
+        private float timeToBreakMin = 5f;
+        [SerializeField]
+        private float timeToBreakMax = 15f;
+        [SerializeField]
+        private GameObject explosionPrefab;
+        [SerializeField]
+        private GameObject enemyPrefab;
 
-    void Start()
-    {
-        nextFire = Time.time + fireCooldown;
-    }
+        [Header("Audio Settings")]
+        [SerializeField]
+        private float minDist = 1;
+        [SerializeField]
+        private float maxDist = 20;
+        [SerializeField]
+        private float maxVolume = 0.8f;
+        [SerializeField]
+        private AudioSource hatchAudio;
+        [SerializeField]
+        private AudioSource deathAudio;
 
-    void Update()
-    {
-    }
+        private const float EggBreakAnimTime = 1.5f;
 
-    void FixedUpdate()
-    {
-        var eggBreakAnimTime = 2;
-        if (Time.time >= nextFire)
+        private bool alive = true;
+        private float timeToBreak;
+        private float breakTimestamp;
+        private Animator characterAnimator;
+
+        void Awake()
         {
-            var enemy = Instantiate(enemyPrefab, transform.position, transform.rotation);
-            var enemyController = enemy.GetComponent<GenericEnemy>();
-            enemyController.target = GameObject.FindWithTag("Player");
+            characterAnimator = GetComponent<Animator>();
+
+            // Break time is randomized in given range
+            timeToBreak = Random.Range(timeToBreakMin, timeToBreakMax);
+        }
+
+        void Start()
+        {
+            breakTimestamp = Time.time + timeToBreak;
+        }
+
+        private void handleVolume()
+        {
+            float dist = Vector3.Distance(transform.position, new Vector3(Camera.main.transform.position.x, Camera.main.transform.position.y));
+            if (dist < minDist)
+            {
+                hatchAudio.volume = maxVolume;
+                deathAudio.volume = maxVolume;
+            }
+            else if (dist > maxDist)
+            {
+                hatchAudio.volume = 0;
+                deathAudio.volume = 0;
+            }
+            else
+            {
+                hatchAudio.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
+                deathAudio.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
+            }
+        }
+
+        void Update()
+        {
+            handleVolume();
+
+            if (Time.time >= breakTimestamp - EggBreakAnimTime)
+            {
+                characterAnimator.SetBool(Keys.ANIMATION_CRACK_KEY, true);
+                hatchAudio.Play();
+            }
+
+            if (!alive
+                && !(characterAnimator.GetCurrentAnimatorStateInfo(0).length > characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime)
+                && !deathAudio.isPlaying)
+            {
+                Destroy(this.gameObject);
+            }
+        }
+
+        void FixedUpdate()
+        {
+            if (Time.time >= breakTimestamp)
+            {
+                Hatch();
+            }
+        }
+
+        /// <summary>
+        /// Breaking the egg by walking over it destroys it.
+        /// </summary>
+        public override void OnHitPlayer(Player player)
+        {
+            alive = false;
+            hatchAudio.Stop();
+            deathAudio.Play();
+            characterAnimator.SetBool(Keys.ANIMATION_CRACK_KEY, true);
+
+            Instantiate(explosionPrefab, transform.position, transform.rotation);
 
             Destroy(this.gameObject);
         }
-        else if (Time.time >= nextFire - eggBreakAnimTime)
-        {
-            characterAnimator.SetBool(Keys.ANIMATION_CRACK_KEY, true);
-        }
-    }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.tag == "Player")
+        /// <summary>
+        /// In case the egg is left alone it hatches an enemy.
+        /// </summary>
+        private void Hatch()
         {
-            Instantiate(explosionPrefab, transform.position, transform.rotation);
+            var enemy = Instantiate(enemyPrefab, transform.position, transform.rotation);
+            var enemyController = enemy.GetComponent<GenericEnemy>();
+            enemyController.target = GameObject.FindWithTag(Keys.TAG_PLAYER);
+            enemyController.map = map;
+            enemyController.mapHeight = mapHeight;
+            enemyController.mapWidth = mapWidth;
+
             Destroy(this.gameObject);
         }
     }

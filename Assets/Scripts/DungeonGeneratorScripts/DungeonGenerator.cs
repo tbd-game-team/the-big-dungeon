@@ -28,11 +28,11 @@ public class DungeonGenerator : MonoBehaviour
 
     [Header("Spawn Parameters")]
     [SerializeField]
-    [Range(1,100)]
+    [Range(1, 100)]
     private int healthPotionProbability = 20;
 
     [SerializeField]
-    [Range(1,100)]
+    [Range(1, 100)]
     private int trapPobability = 20;
 
     [SerializeField]
@@ -49,7 +49,7 @@ public class DungeonGenerator : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     private void CreateDungeon()
-    {   
+    {
         // 0. Reset old dungeon 
         SpawnPositionGenerator.Clear();
         tilemapVisualizer.Clear();
@@ -79,17 +79,19 @@ public class DungeonGenerator : MonoBehaviour
         dungeon.UnionWith(corridors);
         dungeonMap = AlgorithmUtils.HashSetToMap(dungeon, dungeonWidth, dungeonHeight);
 
-        // 6. Remove the too small wall regions that were created during the creation of the coridor.
+        // 6. Remove the too small wall regions that were created during the creation of the corridor.
         CellularAutomataAlgorithm.FilterWalls(20, dungeonMap, dungeonWidth, dungeonHeight);
         dungeon = AlgorithmUtils.MapToHashSet(new Vector2Int(0, 0), dungeonMap, dungeonWidth, dungeonHeight);
 
         // 7. Calculate the position of the player, the target coin, the traps and the enemies.
         SpawnPositionGenerator.CalculatePositions(finalRooms, dungeonCorridors, healthPotionProbability, trapPobability, enemyDenisityLevels, dungeonMap, dungeonWidth, dungeonHeight);
-        
-        
+
         // 8. Visualize the dungeon
         tilemapVisualizer.PaintFloorTiles(dungeon);
         WallGenerator.CreateWalls(dungeon, tilemapVisualizer);
+
+        // 9. Spawn enemies
+        EnemySpawner.SpawnStarterEnemies(dungeonMap, dungeonWidth, dungeonHeight);
     }
 
     /// <summary>
@@ -141,7 +143,3 @@ public class DungeonGenerator : MonoBehaviour
         return corridors;
     }
 }
-
-
-
-

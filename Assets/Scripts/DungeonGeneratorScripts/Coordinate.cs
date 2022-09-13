@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 
 public class Coordinate
@@ -21,6 +22,27 @@ public class Coordinate
         y = newY;
         centerX = x + 0.5f;
         centerY = y + 0.5f;
+    }
+
+    public Coordinate(Vector3 worldCoordinate)
+    {
+        TilemapVisualizer tilemapVisualizer = Object.FindObjectOfType<TilemapVisualizer>();
+        var cell = tilemapVisualizer.floorTilemap.WorldToCell(worldCoordinate);
+        x = cell.x;
+        y = cell.y;
+        centerX = x + 0.5f;
+        centerY = y + 0.5f;
+    }
+
+    public Vector3 ToPosition()
+    {
+        TilemapVisualizer tilemapVisualizer = Object.FindObjectOfType<TilemapVisualizer>();
+        return tilemapVisualizer.floorTilemap.CellToWorld(new Vector3Int(x, y, 0));
+    }
+
+    public Vector3 ToCentralPosition()
+    {
+        return ToPosition() + new Vector3(0.5f, 0.5f, 0);
     }
 
     /// <summary>
@@ -65,5 +87,9 @@ public class Coordinate
         }
         return false;
     }
-}
 
+    public override string ToString()
+    {
+        return "[" + x + "/" + y + "]";
+    }
+}

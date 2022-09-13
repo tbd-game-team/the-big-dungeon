@@ -13,10 +13,6 @@ public class GameManager : MonoBehaviour
     private bool paused = false;
     private int sceneId = 1;
 
-    public AudioMixerSnapshot snapshotPaused;
-    public AudioMixerSnapshot snapshotUnpaused;
-
-
     private static GameManager _instance;
 
     public static GameManager Instance {
@@ -72,8 +68,10 @@ public class GameManager : MonoBehaviour
         {
             if (!isPaused)
             {
-                pause();
-                pausePanel.SetActive(true);
+                if(!GetComponent<tutorialUi>().tutorialShowing){
+                    pause();
+                    pausePanel.SetActive(true);
+                }
             }
             else
             {
@@ -94,7 +92,6 @@ public class GameManager : MonoBehaviour
 
         Time.timeScale = 1;
         paused = false;
-        snapshotUnpaused.TransitionTo(.01f);
     }
 
     /// <summary>
@@ -107,7 +104,6 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(sceneId);
         Time.timeScale = 1;
         paused = false;
-        snapshotUnpaused.TransitionTo(.01f);
     }
 
     /// <summary>
@@ -131,7 +127,6 @@ public class GameManager : MonoBehaviour
     {
         paused = true;
         Time.timeScale = 0;
-        snapshotPaused.TransitionTo(.01f);
     }
 
     /// <summary>
@@ -143,7 +138,6 @@ public class GameManager : MonoBehaviour
     {
         paused = false;
         Time.timeScale = 1;
-        snapshotUnpaused.TransitionTo(.01f);
     }
 
     /// <summary>

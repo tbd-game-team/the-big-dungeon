@@ -11,11 +11,12 @@ Neele Kemper, Niklas Nett, Floraian Weber
 #### Neele Kemper
 **Tasks**
 * Implementation of the **procedural dungeon generation**
-    * The tilemap visualization was adopted by [SunnyValleyStudio](https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial)!  
+    * The tilemap visualization was adopted from [SunnyValleyStudio](https://github.com/SunnyValleyStudio/Unity_2D_Procedural_Dungoen_Tutorial)!  
 * Audio
-    * **Audio** (player, theme, traps, health potions)
+    * pick out audio sources   
+    * **Audio** (player, theme, traps, health potions, skeletons)
     * **Audio menu/settings**
-* Implementation/animation of the **health potions**
+* Implementation/animation of the **health potions** and skeletons
 * Implementation/animation of the **peak traps**
 * Implementation/animation of the **coin**
 * **Loading menu**
@@ -29,6 +30,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
     * SpawnScripts  
         * CoinSpawner
         * HealthPotionSpawner
+        * SkeletonSpawner
         * TrapSpawner
     * AlgorithmUtils
     * AStartAlgorithm
@@ -39,6 +41,7 @@ Neele Kemper, Niklas Nett, Floraian Weber
     * DungeonGenerator
     * SpawnPositionGenerator
 * PeakTraps 
+* Skeleton
 
 **Game Objects/ Prefabs**
 * MusicPanel
@@ -49,18 +52,61 @@ Neele Kemper, Niklas Nett, Floraian Weber
 * HealthPotion
 * ReverbZone
 * PeakTrap
+* Skeleton
 
 #### Niklas Nett
 **Tasks**
+- Conceptation/implementation/animation of different enemies
+- Implementation of combat
+- Implementation of AI movement
 
 **Scripts**
+- Combat/Egg
+- Combat/Enemy
+- Combat/GenericEnemy
+- Combat/Projectile
+- DungeonGeneratorScripts/SpawnScripts/EnemySpawner
+- needed modifications to others, like Keys, Player, DungeonGeneratorScripts/Coordinate
 
-**Game Objects/ Prefabs**
+**Game Objects/Prefabs**
+- Animations/Generic/*
+- Animations/Ranged/*
+- Prefabs/Combat/Projectile
+- Prefabs/Combat/ProjectileHit
+- Prefabs/Combat/Resources/Enemy
+- Prefabs/Combat/Resources/EnemyEgg
+- Prefabs/Combat/Resources/RangedEnemy
 
 #### Florian Weber
 
 **Tasks**
+- Conceptation/implementation of player movement and combat
+- Conceptation/implementation/animation of UI/UX
 
 **Scripts**
+- cameraFollow
+- cameraShake
+- dashMove
+- GameManager
+- HealthUI
+- Player
+- tutorialUI
 
 **Game Objects/ Prefabs**
+* UI
+    * Created all Assets in Folder 'Own Graphic Assets' 
+    * Canvas (Main Menu)
+    * TutorialPanel
+    * HitPanel
+    * PausePanel
+    * PauseButton
+    * HelathBar
+    * GameOverPanel
+    * WinPanel
+* Other
+    * GameManager
+    * Player
+    * DashEffect
+
+
+
