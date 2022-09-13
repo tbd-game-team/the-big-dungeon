@@ -42,7 +42,9 @@ namespace Assets.Scripts.Combat
         [SerializeField]
         private float maxVolume = 0.8f;
         [SerializeField]
-        private AudioSource footsteps;
+        private AudioSource footstepsAudio;
+        [SerializeField]
+        private AudioSource deathAudio;
 
         private bool alive = true;
 
@@ -71,7 +73,9 @@ namespace Assets.Scripts.Combat
             handleSound();
             handleVolume();
 
-            if (!alive && !(characterAnimator.GetCurrentAnimatorStateInfo(0).length > characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime))
+            if (!alive
+            && !(characterAnimator.GetCurrentAnimatorStateInfo(0).length > characterAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime)
+            && !deathAudio.isPlaying)
             {
                 Destroy(this.gameObject);
             }
@@ -227,14 +231,14 @@ namespace Assets.Scripts.Combat
 
         private void handleSound()
         {
-            if (isMoving && !footsteps.isPlaying)
+            if (isMoving && !footstepsAudio.isPlaying)
             {
                 // float volume =  Mathf.Clamp(1.0f-(distance/10f),0f,1.0f);
-                footsteps.Play();
+                footstepsAudio.Play();
             }
             else
             {
-                footsteps.Pause();
+                footstepsAudio.Pause();
             }
         }
 
@@ -248,15 +252,15 @@ namespace Assets.Scripts.Combat
             float dist = Vector3.Distance(transform.position, target.transform.position);
             if (dist < minDist)
             {
-                footsteps.volume = maxVolume;
+                footstepsAudio.volume = maxVolume;
             }
             else if (dist > maxDist)
             {
-                footsteps.volume = 0;
+                footstepsAudio.volume = 0;
             }
             else
             {
-                footsteps.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
+                footstepsAudio.volume = maxVolume - ((dist - minDist) / (maxDist - minDist));
             }
         }
 
@@ -318,6 +322,7 @@ namespace Assets.Scripts.Combat
             }
 
             alive = false;
+            deathAudio.Play();
             characterAnimator.SetTrigger(Keys.ANIMATION_DEAD_KEY);
         }
     }
